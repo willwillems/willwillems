@@ -13,9 +13,9 @@ Alright this will be a very short blog post. If you already know where this is h
 
 OpenAI has trained a model called [ChatGPT](https://openai.com/blog/chatgpt/) which interacts in a conversational way. The dialogue format makes it possible for ChatGPT to answer followup questions, admit its mistakes, and challenge incorrect premise.
 
-This post goes into enabling the model to run Javscript in its own browser tab.
+This is a short guide on modding the ChatGPT page to run genrated JS. It also goes into convincing the model this is actually happening, and explains how this is useful.
 
-If you haven’t used Violentmonkey yet to inject JS or CSS, here’s a quick guide:
+If you're not familiar with Violentmonkey, here’s a quick guide:
 1. Install the Violentmonkey browser extension for [Chrome](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag?hl=en) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/).
 2. Once Violentmonkey is installed, visit the ChatGPT page and click on the Violentmonkey icon in the top-right corner of the screen. This will open the Violentmonkey dashboard.
 3. In the dashboard, click on the "New script" button to create a new script.
