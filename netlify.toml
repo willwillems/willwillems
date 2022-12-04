@@ -1,5 +1,9 @@
 ## redirect to twitter account
 [[redirects]]
   from = "/twitter"
-  to = "https://twitter.com/will_rut"
+  to = "https://twitter.com/wll3mx"
+  force = true # COMMENT: ensure that we always redirect
+[[redirects]]
+  from = "/t"
+  to = "https://twitter.com/wll3mx"
   force = true # COMMENT: ensure that we always redirect
