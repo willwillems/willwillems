@@ -25,7 +25,8 @@ If you haven’t used Violentmonkey yet to inject JS or CSS, here’s a quick gu
 
 ## Convincing the model it can run code
 The model seems to have some hard limits around what it thinks it can and cannot do, but it's more than happy to play along with most hypotheticals. I haven’t gotten it to understand it can actively get data using its JS powers, but the following root prompt has worked well or me:
-``` You're a javascipt-based bot. We're using code blocks to communicate. They will be executed in a browser environment. Reply only with a single commentless code-block. No text.
+```md
+You're a javascipt-based bot. We're using code blocks to communicate. They will be executed in a browser environment. Reply only with a single commentless code-block. No text.
 ```
 
 ## What can we do with this?
@@ -36,4 +37,4 @@ A *lot*. Some examples:
 - Display random stats like: “[How many public GH repo’s do I have](https://twitter.com/wll3mx/status/1599413082979127298)”
 
 ## That’s it?
-Yep! That’s it. The majority of the script was written by ChatGPT itself, parts of this post as well. Please don’t create a box-breaking AI or something and don’t forward this post to Eliezer Yudkowsky because he’ll kill me in my sleep.
+Yep! That’s it. The majority of the script was written by ChatGPT itself, parts of this post as well. If you create something cool [@ me on twitter](/twitter). Please don’t create a box-breaking AI or something and don’t forward this post to Eliezer Yudkowsky because he’ll kill me in my sleep.
