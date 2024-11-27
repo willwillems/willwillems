@@ -11,6 +11,8 @@ lang: en-US
 
 # Dishes by city
 
+_Note: this guide is outdated and most of these places went out of business but I’m keeping it around out of nostalgia._
+
 I wouldn't consider myself that much of a foodie but more of a person suffering from a strong culinary FOMO, thus I end up visiting a lot of restaurants in the cities that I stay in. This often ends up with me strongly associating a city with my respective favourite dish/culinary experience. 
 
 I'm not claiming these dishes are the best ones you'll find in the city, though they certainly are very good. Most of these will be vegetarian so if you are, don't worry. Here they are:
