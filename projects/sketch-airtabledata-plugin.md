@@ -6,7 +6,7 @@ year: 2018
 tags: Design, Sketch, JS
 icon: '/img/icon/sadp-dark.svg'
 iconDark: '/img/icon/sadp-dark.svg'
-projectUrl: https://sketchairtabledataplugin.com/
+projectUrl: https://sketchairtabledataplugin.netlify.app
 
 ---
 
