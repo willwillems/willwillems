@@ -1,7 +1,8 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import HeaderLink from '../components/HeaderLink.astro';
+
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
@@ -11,39 +12,223 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
+		<Header>
+			<HeaderLink href="/">Home</HeaderLink>
+			<HeaderLink href="#articles">Articles</HeaderLink>
+			<HeaderLink href="#projects">Projects</HeaderLink>
+			<HeaderLink href="#posts">Posts</HeaderLink>
+		</Header>
+		<!-- Hero Section -->
+		<section class="hero">
+			<div class="hero-content">
+				<div class="hero-text">
+					<p class="hero-greeting">Hi there, I'm <strong>Will</strong></p>
+					<p class="hero-description">
+						Passionate developer and web development consultant. I'm currently obsessed with creating blazing fast modern web apps.
+					</p>
+				</div>
+				<div class="hero-image">
+					<div class="image-container">
+						<!-- Image placeholder - replace src with actual image -->
+						<div class="image-placeholder">
+							<span>Image</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	</body>
 </html>
+
+<style>
+	.hero {
+		min-height: 100vh;
+		background-color: var(--bg-dark);
+		padding: 0 4rem;
+	}
+
+	/* Navigation */
+	.nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1.5rem 0;
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	.nav-logo {
+		display: flex;
+		align-items: baseline;
+		font-size: 1rem;
+		position: relative;
+	}
+
+	.logo-name {
+		color: var(--text-primary);
+	}
+
+	.logo-superscript {
+		font-size: 0.65rem;
+		vertical-align: super;
+		margin: 0 0.1rem;
+		color: var(--text-primary);
+	}
+
+	.logo-dot {
+		width: 6px;
+		height: 6px;
+		background-color: var(--accent);
+		border-radius: 50%;
+		margin-left: 0.25rem;
+		display: inline-block;
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 2.5rem;
+	}
+
+	.nav-link {
+		color: var(--text-secondary);
+		font-size: 0.95rem;
+		transition: color 0.2s ease;
+	}
+
+	.nav-link:hover {
+		color: var(--text-primary);
+	}
+
+	.nav-social {
+		display: flex;
+		align-items: center;
+	}
+
+	.social-link {
+		color: var(--text-secondary);
+		transition: color 0.2s ease;
+	}
+
+	.social-link:hover {
+		color: var(--text-primary);
+	}
+
+	/* Hero Content */
+	.hero-content {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: center;
+		gap: 4rem;
+		max-width: 1400px;
+		margin: 0 auto;
+		min-height: calc(100vh - 100px);
+		padding: 2rem 0;
+	}
+
+	.hero-text {
+		max-width: 500px;
+	}
+
+	.hero-greeting {
+		font-size: 1.25rem;
+		color: var(--text-secondary);
+		margin-bottom: 0.5rem;
+	}
+
+	.hero-greeting strong {
+		color: var(--text-primary);
+	}
+
+	.hero-description {
+		font-size: 1.25rem;
+		color: var(--text-secondary);
+		line-height: 1.7;
+		margin: 0;
+	}
+
+	/* Hero Image */
+	.hero-image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.image-container {
+		position: relative;
+		width: 100%;
+		max-width: 450px;
+	}
+
+	.image-placeholder {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+		border-radius: 2rem 2rem 2rem 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-secondary);
+		font-size: 1.5rem;
+		overflow: hidden;
+	}
+
+	.image-placeholder img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Responsive */
+	@media (max-width: 1024px) {
+		.hero {
+			padding: 0 2rem;
+		}
+
+		.hero-content {
+			grid-template-columns: 1fr;
+			text-align: center;
+			gap: 3rem;
+		}
+
+		.hero-text {
+			max-width: 100%;
+			order: 1;
+		}
+
+		.hero-image {
+			order: 0;
+		}
+
+		.image-container {
+			max-width: 350px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero {
+			padding: 0 1.5rem;
+		}
+
+		.nav {
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		.nav-links {
+			order: 3;
+			width: 100%;
+			justify-content: center;
+			gap: 1.5rem;
+			padding-top: 1rem;
+		}
+
+		.hero-greeting,
+		.hero-description {
+			font-size: 1.1rem;
+		}
+
+		.image-container {
+			max-width: 280px;
+		}
+	}
+</style>
