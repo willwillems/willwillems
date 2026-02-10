@@ -5,6 +5,7 @@ Ensure your code is _declarative_, _elegant_, _functional_, and _maintainable_. 
 ## Declarative Resilience
 
 Write HTML/CSS/JS to be robust by default:
+
 - Prefer semantic structure and native elements over extra wrappers or utility-only markup.
 - Keep CSS selectors low-specificity and simple.
 - Use class names intentionally for stable structure (for example component block + repeated child role), not for one-off visual tweaks.
