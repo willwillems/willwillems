@@ -1,15 +1,13 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
-import FullBleed from '../components/FullBleed.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate } = Astro.props;
 ---
 
 <html lang="en">
@@ -18,17 +16,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<style>
 			article {
 				padding-block: 1rem 3rem;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				width: 100%;
-				max-height: 32rem;
-				object-fit: cover;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
 			}
 			.prose {
 				max-width: 45rem;
@@ -59,9 +46,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
 		<main>
 			<article class="layout">
-				<FullBleed class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</FullBleed>
 				<div class="prose">
 					<div class="title">
 						<div class="date">
