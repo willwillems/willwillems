@@ -1,6 +1,6 @@
 # Development Guide
 
-Ensure your code is _declarative_, _elegant_, _functional_, and _maintainable_. Prefer expressions, avoid nesting, and return early. Check your work using type checks and linting.
+Ensure your code is _declarative_, _elegant_, _functional_, and _maintainable_. This project, primarily, should be the pinnacle of elegance and maintainabillity. Prefer expressions, avoid nesting, and return early. Check your work using type checks and linting.
 
 ## Declarative Resilience
 
