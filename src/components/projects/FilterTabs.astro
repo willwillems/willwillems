@@ -1,0 +1,56 @@
+---
+interface Tab {
+	label: string;
+	href: string;
+	active?: boolean;
+}
+
+interface Props {
+	tabs: Tab[];
+}
+
+const { tabs } = Astro.props;
+---
+
+<nav class="filter-tabs" aria-label="Project filters">
+	{
+		tabs.map((tab) => (
+			<a
+				class:list={['filter-tabs__tab', { active: tab.active }]}
+				href={tab.href}
+			>
+				{tab.label}
+			</a>
+		))
+	}
+</nav>
+
+<style>
+	.filter-tabs {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+	}
+
+	.filter-tabs__tab {
+		font-family: 'Inter', sans-serif;
+		font-weight: 500;
+		font-size: 14px;
+		line-height: normal;
+		color: #757575;
+		text-decoration: none;
+		transition: color 0.15s ease;
+
+		&.active {
+			color: white;
+		}
+
+		&:hover {
+			color: #a2a2a2;
+		}
+
+		&.active:hover {
+			color: white;
+		}
+	}
+</style>
