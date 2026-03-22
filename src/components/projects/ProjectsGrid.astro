@@ -1,0 +1,19 @@
+---
+/**
+ * A two-column grid that spaces project cards to match the Figma layout.
+ * Renders its children (ProjectCard components) into a CSS grid.
+ */
+---
+
+<div class="projects-grid">
+	<slot />
+</div>
+
+<style>
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		column-gap: 67px;
+		row-gap: 29px;
+	}
+</style>

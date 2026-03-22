@@ -1,50 +1,62 @@
----
-layout: Home
-meta:
-  - name: "theme-color"
-  - content: "#fff4e5"
----
+# Astro Starter Kit: Blog
 
-# Will Willems' Blog
+```sh
+npm create astro@latest -- --template blog
+```
 
-Passionate developer and web development consultant. I’m currently obsessed with creating blazing fast modern web apps.
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-::: slot about
-Who am I? 
+Features:
 
-Well... I am many things, I am passionate about digital design and development, which plays a big role in my life. 
+- ✅ Minimal styling (make it your own!)
+- ✅ 100/100 Lighthouse performance
+- ✅ SEO-friendly with canonical URLs and OpenGraph data
+- ✅ Sitemap support
+- ✅ RSS Feed support
+- ✅ Markdown & MDX support
 
-I like traveling, long-term. I am rarely a tourist.
+## 🚀 Project Structure
 
-I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious. 
+Inside of your Astro project, you'll see the following folders and files:
 
-I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.
+```text
+├── public/
+├── src/
+│   ├── components/
+│   ├── content/
+│   ├── layouts/
+│   └── pages/
+├── astro.config.mjs
+├── README.md
+├── package.json
+└── tsconfig.json
+```
 
-Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes. 
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-I am a work in progress, I love to take on ambitious projects that venture into areas I’m unfamiliar with. I’m really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.
+The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
 
-I love a challenge, I try to steer towards discomfort. It’s not about what pleasures you want in your live it’s about what kind of struggles you want.
+Any static assets, like images, can be placed in the `public/` directory.
 
-I am also curious about who you are, feel free to contact me, I’d love to hear from you... ↓
-:::
+## 🧞 Commands
 
-<!-- ::: slot writings
-## Writings
+All commands are run from the root of the project, from a terminal:
 
-I like articles, sometimes I even write one. Covering various topics I try to provide some value here and there. You might like them, you might not, [curious?](https://medium.com/@rut.willems)
-:::
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-::: slot projects
-## Projects
+## 👀 Want to learn more?
 
-I do projects. Projects for multinationals with millions of customers and little ones with a few happy users. Most of them trough [Nickolas Boyer](https://nickolasboyer.com/), check them out!
-:::
+Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
-::: slot contact
-## Contact
+## Credit
 
-You can contact me trough [twitter](https://twitter.com/will_rut) or [email](mailto:will@nickolasboyer.com). The former for quick chit-chat and the latter for more structured long-term communication.
-::: -->
+This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).

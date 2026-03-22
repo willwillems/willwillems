@@ -1,19 +1,37 @@
 {
-  "scripts": {
-    "dev": "vuepress dev",
-    "build": "vuepress build"
-  },
-  "devDependencies": {
-    "node-sass": "^4.14.1",
-    "pug": "^2.0.4",
-    "pug-plain-loader": "^1.1.0",
-    "sass-loader": "^7.3.1",
-    "vuepress": "^1.8.0",
-    "vuepress-plugin-feed": "^0.1.9"
-  },
-  "dependencies": {
-    "lodash": "^4.17.20",
-    "vue-analytics": "^5.22.1",
-    "vuepress-plugin-autometa": "^0.1.13"
-  }
+	"name": "",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"check": "astro check",
+		"lint": "eslint . --ext .js,.mjs,.ts,.astro",
+		"lint:fix": "npm run lint -- --fix",
+		"format": "prettier . --write",
+		"format:check": "prettier . --check",
+		"validate": "npm run check && npm run lint && npm run format:check"
+	},
+	"dependencies": {
+		"@astrojs/mdx": "^5.0.0-beta.2",
+		"@astrojs/rss": "^4.0.15-beta.3",
+		"@astrojs/sitemap": "^3.6.1-beta.2",
+		"@tailwindcss/vite": "^4.1.18",
+		"astro": "^6.0.0-beta.3",
+		"sharp": "^0.34.3",
+		"tailwindcss": "^4.1.18"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.6",
+		"@eslint/js": "^9.39.2",
+		"eslint": "^9.39.2",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-astro": "^1.5.0",
+		"prettier": "^3.8.1",
+		"prettier-plugin-astro": "^0.14.1",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.55.0"
+	}
 }
