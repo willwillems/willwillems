@@ -1,15 +1,9 @@
 ---
-duration: 5 min
-author: Will Willems
-category: Svelte
-img: ''
-image: ''
-date: 10/27/2020
-lang: en-US
-
+title: "Add Tailwind to a Svelte Webpack project"
+pubDate: 2020-10-27
+duration: "5 min"
+category: "Svelte"
 ---
-# Add Tailwind to a Svelte Webpack project
-
 Wanna use Tailwind with a Svelte Webpack project? It's super easy, takes about 5 minutes and should work without any problems!
 
 ## Install tailwind

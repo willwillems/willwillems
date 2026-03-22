@@ -1,15 +1,9 @@
 ---
-duration: 15 min
-author: Will Willems
-category: Svelte
-img: ''
-image: ''
-date: 09/03/2020
-lang: en-US
-
+title: "Store patterns in Svelte: Gitlab's Vuex"
+pubDate: 2020-09-03
+duration: "15 min"
+category: "Svelte"
 ---
-# Store patterns in Svelte: Gitlab's Vuex
-
 When your JS project gets big you often end up needing a data store. With larger apps or SPA's this can get complex really quick. When working with Vue I usually use [Gitlab's Vuex Frontend Development Guidelines](https://docs.gitlab.com/ee/development/fe_guide/vuex.html). A guide that aims to provide structure and order when working with Vuex, Vue.js' store.
 
 For more technical web projects/apps I've switched to Svelte. It allows for more versatility, flexibility, makes my technical project more maintainable and reduces development time.

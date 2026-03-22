@@ -1,16 +1,9 @@
 ---
-duration: 2 min
-author: Will Willems
-category: VuePress
-img: ''
-image: ''
-date: 12/18/2020
-lang: en-US
-
+title: "Creating a simple table of contents in Vuepress"
+pubDate: 2020-12-18
+duration: "2 min"
+category: "VuePress"
 ---
-
-# Creating a simple table of contents in Vuepress
-
 Most examples use pretty complicated Markdown extensions or way to extensive implementations, here's a super simple way.
 
 It's kinda hard to find in the docs but you can access a page's headers trough `this.$page.headers`. This will give you an array filled with objects like these: `{ level: 2, slug: "why-vuepress", title: "Why Vuepress?" }` describing the page's headers.

@@ -1,15 +1,9 @@
 ---
-duration: 6 min
-author: Will Willems
-category: Other
-date: 10/04/2020
-img: ''
-image: ''
-lang: en-US
-
+title: "Send email from Gmail using a Google Domains domain"
+pubDate: 2020-10-04
+duration: "6 min"
+category: "Other"
 ---
-# Send email from Gmail using a Google Domains domain 
-
 If you're using Google Domains you cannot only receive emails for free but also send them for free using Gmail. It's pretty simple and provides you with free professional email addresses.
 
 Before you start, make sure you've setup Google Domains to forward email from the address you'd like to add to your Gmail address. To start go to Gmail's settings: `Settings` > `Accounts and Import` > `Add another email address`.

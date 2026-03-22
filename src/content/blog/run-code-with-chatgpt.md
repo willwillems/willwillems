@@ -1,14 +1,10 @@
 ---
-duration: 4 min
-author: Will Willems
-category: ML
-date: 12/04/2022
-img: 'https://i.imgur.com/NqKNJDS.jpg'
-lang: en-US
-
+title: "Javascript code execution in ChatGPT"
+pubDate: 2022-12-04
+duration: "4 min"
+category: "ML"
+heroImage: "https://i.imgur.com/NqKNJDS.jpg"
 ---
-
-# Javascript code execution in ChatGPT
 Alright this will be a very short blog post. If you already know where this is heading, here’s the [link to the script](https://gist.github.com/willwillems/13019ba1115690d0589ac9992433f2dc).
 
 OpenAI has trained a model called [ChatGPT](https://openai.com/blog/chatgpt/) which interacts in a conversational way. The dialogue format makes it possible for ChatGPT to answer followup questions, admit its mistakes, and challenge incorrect premise.

@@ -1,16 +1,10 @@
 ---
-duration: 4 min
-author: Will Willems
-category: Personal
-date: 02/15/2019
-img: 'https://source.unsplash.com/N_Y88TWmGwA/'
-image: 'https://source.unsplash.com/N_Y88TWmGwA/'
-lang: en-US
-
+title: "Dishes by city"
+pubDate: 2019-02-15
+duration: "4 min"
+category: "Personal"
+heroImage: "https://source.unsplash.com/N_Y88TWmGwA/"
 ---
-
-# Dishes by city
-
 _Note: this guide is outdated and most of these places went out of business but I’m keeping it around out of nostalgia._
 
 I wouldn't consider myself that much of a foodie but more of a person suffering from a strong culinary FOMO, thus I end up visiting a lot of restaurants in the cities that I stay in. This often ends up with me strongly associating a city with my respective favourite dish/culinary experience. 

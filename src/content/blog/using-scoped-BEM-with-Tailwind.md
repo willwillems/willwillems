@@ -1,15 +1,10 @@
 ---
-duration: 8 min
-author: Will Willems
-category: Development
-img: 'https://i.imgur.com/V8KMjHP.png'
-image: 'https://i.imgur.com/V8KMjHP.png'
-date: 11/18/2020
-lang: en-US
-
+title: "Tailwind for actual front-end developers"
+pubDate: 2020-11-18
+duration: "8 min"
+category: "Development"
+heroImage: "https://i.imgur.com/V8KMjHP.png"
 ---
-# Tailwind for actual front-end developers
-
 Let's be honest. Exclusively using a framework with predefined CSS atoms will never be a proper solution for anyone designing a custom front-end. Thoroughly customising Tailwind already gets you pretty far but you'll never be able to reasonably bridge [the Bailwind gap](https://twitter.com/ryanflorence/status/1251589516617379840) with it. However. Using scoped CSS and BEM naming with Tailwind you can write some of the most maintainable and readable CSS while still decreasing development time and improving readability.
 
 ## Scoping

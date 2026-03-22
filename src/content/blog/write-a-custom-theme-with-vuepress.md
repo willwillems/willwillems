@@ -1,15 +1,10 @@
 ---
-duration: 12 min
-author: Will Willems
-category: VuePress
-date: 01/28/2019
-img: 'https://source.unsplash.com/mIylM2RC16M/800x800'
-lang: en-US
-
+title: "Write a custom Vuepress theme"
+pubDate: 2019-01-28
+duration: "12 min"
+category: "VuePress"
+heroImage: "https://source.unsplash.com/mIylM2RC16M/800x800"
 ---
-
-# Write a custom Vuepress theme
-
 VuePress offers a very solid system to integrate your own theme into a project and it is a lot easier than you might think.
 
 ::: info

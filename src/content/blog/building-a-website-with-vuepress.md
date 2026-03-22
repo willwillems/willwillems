@@ -1,16 +1,10 @@
 ---
-duration: 8 min
-author: Will Willems
-category: VuePress
-date: 01/23/2019
-img: 'https://source.unsplash.com/Wiu3w-99tNg/'
-image: 'https://source.unsplash.com/Wiu3w-99tNg/'
-lang: en-US
-
+title: "Building a website with VuePress"
+pubDate: 2019-01-23
+duration: "8 min"
+category: "VuePress"
+heroImage: "https://source.unsplash.com/Wiu3w-99tNg/"
 ---
-
-# Building a website with VuePress
-
 VuePress is a simple static site generator initially created to support the docs for large projects. It however it can do many more things as you are about to learn, personally I use it to generate [my website and blog](https://willwillems.com). 
 
 **Why VuePress:**

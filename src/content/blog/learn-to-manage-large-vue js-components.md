@@ -1,14 +1,10 @@
 ---
-duration: 4 min
-author: Will Willems
-category: Vue.js
-date: 11/20/2018
-img: '/img/vue-components-thumb.png'
-lang: en-US
-
+title: "Learn to manage large Vue.js components in 4 min"
+pubDate: 2018-11-20
+duration: "4 min"
+category: "Vue.js"
+heroImage: "/img/vue-components-thumb.png"
 ---
-# Learn to manage large Vue.js components in 4 min
-
 Vue.js is, in my opinion, the nicest JS framework currently available. One of the features I like the most are the `.vue` single-file components. It can get quite hard to manage larger ones tough, especially when you start creating custom sub-components and adding static assets. Here are some things I’ve tried, you might like them too.
 
 _Figure 1: You when handling large components before reading this post._

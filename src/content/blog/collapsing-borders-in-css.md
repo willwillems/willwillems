@@ -1,15 +1,10 @@
 ---
-duration: 4 min
-author: Will Willems
-category: Development
-date: 12/20/2020
-img: 'https://i.imgur.com/2Ng6N2a.png'
-lang: en-US
-
+title: "Collapsing borders in CSS with box-shadow"
+pubDate: 2020-12-20
+duration: "4 min"
+category: "Development"
+heroImage: "https://i.imgur.com/2Ng6N2a.png"
 ---
-
-# Collapsing borders in CSS with box-shadow
-
 Thank god nobody uses tables for layout anymore but we can't collapse borders using regular CSS elements, unless...
 
 ## Box-shadow as a border

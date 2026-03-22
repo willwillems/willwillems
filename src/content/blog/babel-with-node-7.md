@@ -1,14 +1,10 @@
 ---
-duration: 4 min
-author: Will Willems
-category: Development
-date: 09/11/2018
-img: '/img/babel+node-thumb.jpeg'
-lang: en-US
-
+title: "Using node with Babel 7"
+pubDate: 2018-09-11
+duration: "4 min"
+category: "Development"
+heroImage: "/img/babel+node-thumb.jpeg"
 ---
-# Using node with Babel 7
-
 So you want to use the new babel 7 with node? Our goal here will be to set up a minimal node application that is able to run locally and has a build command for remote deployment. Lets get started!
 
 There are a couple of differences with the babel you might be familiar with and v7.

@@ -1,15 +1,10 @@
 ---
-duration: 7 min
-author: Will Willems
-category: Hardware
-img: 'https://i.imgur.com/S8VBkrj.png'
-image: 'https://i.imgur.com/S8VBkrj.png'
-date: 07/20/2015
-lang: en-US
-
+title: "The "Generic MIDI controller""
+pubDate: 2015-07-20
+duration: "7 min"
+category: "Hardware"
+heroImage: "https://i.imgur.com/S8VBkrj.png"
 ---
-# The "Generic MIDI controller"
-
 *Diclaimer: I published this on a forum I joined at the age of 15 so some of the writing may be a little less than perfect but I decided not to edit anything when moving this to my own blog from the [DJTT forum](https://forum.djtechtools.com) on 3-11-19.*
 
 I've been researching DIY midi controllers for as long as I am a member of DJTT. However it has always been difficult for me to settle on a design that really suits my needs instead of a quick project that I do not actually need. One thing I notice a LOT is that I would like to have a dedicated controller for my effects that enables me to control all of them without the need for shift buttons or weird button placement. I think this design is the solution for me. This controller is going to be placed behind a standard 12" mixer.
