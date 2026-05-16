@@ -1,0 +1,56 @@
+---
+interface Props {
+	images: {
+		src: string;
+		alt: string;
+	}[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="carousel">
+	{images.map((image) => (
+		<div class="carousel__slide">
+			<img src={image.src} alt={image.alt} loading="eager" />
+		</div>
+	))}
+</div>
+
+<style>
+	.carousel {
+		display: flex;
+		gap: 1.5rem;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.carousel__slide {
+		flex-shrink: 0;
+		height: 420px;
+		overflow: hidden;
+		border-radius: 0.25rem;
+
+		&:first-child {
+			width: 280px;
+		}
+
+		&:nth-child(2) {
+			width: 670px;
+		}
+
+		&:nth-child(2n + 3) {
+			width: 280px;
+		}
+
+		&:nth-child(2n + 4) {
+			width: 670px;
+		}
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+</style>

@@ -1,1 +1,25 @@
 @import 'tailwindcss';
+
+@font-face {
+	font-family: 'Gochi Hand';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/gochi-hand.ttf') format('truetype');
+}
+
+:root {
+	--bg-dark: #020202;
+	--text-primary: #ffffff;
+	--text-secondary: #a0a0a0;
+}
+
+body {
+	background: radial-gradient(
+			50.46% 119.63% at 17.86% 2.9%,
+			rgba(96, 54, 16, 0.08),
+			rgba(0, 0, 0, 0.2)
+		)
+		var(--bg-dark);
+	color: var(--text-primary);
+}

@@ -3,8 +3,15 @@ import BaseHead from '../components/BaseHead.astro';
 import FullBleed from '../components/FullBleed.astro';
 import Header from '../components/Header.astro';
 import HeaderLink from '../components/HeaderLink.astro';
+import ImageCarousel from '../components/ImageCarousel.astro';
 
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const heroImages = [
+	{ src: '/img/hero-carousel-1.jpg', alt: 'Will at a table' },
+	{ src: '/img/hero-carousel-2.jpg', alt: 'Mountain landscape with friends' },
+	{ src: '/img/hero-image.jpg', alt: 'Will reading at a bar' },
+];
 ---
 
 <!doctype html>
@@ -21,14 +28,14 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		</Header>
 		<main>
 			<section class="section hero">
-				<p class="hero__text">
-					Hi there, I'm <strong>Will</strong>
-					Passionate developer and web development consultant. I'm currently
-					obsessed with creating blazing fast modern web apps.
-				</p>
-				<div class="hero__portrait">
-					<img src="/img/hero-image.jpg" alt="Will reading at a bar" />
+				<div class="hero__carousel">
+					<ImageCarousel images={heroImages} />
 				</div>
+				<p class="hero__text">
+					Hi there, I'm <span class="hero__name">Will</span>
+					<br /><br />
+					I work at <strong>Deducta</strong> as a product engineer. Previously I worked on <strong>Devsync</strong>. In addition to engineering on the web, I've always been obsessed with <em>creative hardware interfaces</em> with a specific focus on <span class="hero__accent">audio</span>.
+				</p>
 			</section>
 		</main>
 	</body>
@@ -43,27 +50,40 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	}
 
 	.hero {
-		display: grid;
-		grid-template-columns: 1fr 1.2fr;
-		align-items: center;
-		gap: 4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
 
 		min-height: calc(100dvh - 5rem);
 		padding-block: 2rem;
-		
+
 		font-size: 1.25rem;
 
-		.hero__portrait {
-			aspect-ratio: 9 / 10;
-			background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-			border-radius: 1.5rem;
-			overflow: hidden;
+		.hero__carousel {
+			width: 100%;
+		}
 
-			img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
+		.hero__text {
+			max-width: 976px;
+
+			strong {
+				font-weight: 600;
 			}
+
+			em {
+				font-style: normal;
+				font-weight: 500;
+			}
+		}
+
+		.hero__name {
+			font-family: 'Gochi Hand', cursive;
+			font-size: 1.55rem;
+		}
+
+		.hero__accent {
+			font-family: 'Gochi Hand', cursive;
+			font-size: 1.55rem;
 		}
 	}
 </style>
