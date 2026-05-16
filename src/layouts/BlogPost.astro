@@ -13,53 +13,26 @@ const { title, description = '', pubDate, updatedDate } = Astro.props;
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
-		<style>
-			article {
-				padding-block: 1rem 3rem;
-			}
-			.prose {
-				max-width: 45rem;
-				margin-inline: auto;
-				padding: 1em;
-				color: var(--text-secondary);
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
 	</head>
 
 	<body>
 		<Header />
 		<main>
-			<article class="layout">
-				<div class="prose">
-					<div class="title">
-						<div class="date">
+			<article class="py-4 pb-12">
+				<div class="prose mx-auto max-w-2xl p-4 text-text-secondary">
+					<div class="mb-4 py-4 text-center leading-none">
+						<div class="mb-2 text-text-secondary">
 							<FormattedDate date={pubDate} />
 							{
 								updatedDate && (
-									<div class="last-updated-on">
+									<div class="italic">
 										Last updated on{' '}
 										<FormattedDate date={updatedDate} />
 									</div>
 								)
 							}
 						</div>
-						<h1>{title}</h1>
+						<h1 class="m-0 mb-2">{title}</h1>
 						<hr />
 					</div>
 					<slot />

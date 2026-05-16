@@ -9,15 +9,19 @@ interface Props {
 const { name, description, href, verified = false } = Astro.props;
 ---
 
-<article class="project-card">
-	<div class="project-card__icon" aria-hidden="true"></div>
-	<div class="project-card__info">
-		<div class="project-card__title-row">
-			<p class="project-card__name">{name}</p>
+<article class="flex items-center gap-6">
+	<div
+		class="size-14 shrink-0 rounded-[11px] border border-border bg-surface"
+		aria-hidden="true"
+	>
+	</div>
+	<div class="flex min-w-0 flex-1 flex-col gap-1">
+		<div class="flex items-center gap-3">
+			<p class="text-base font-medium text-text">{name}</p>
 			{
 				verified && (
 					<svg
-						class="project-card__badge"
+						class="shrink-0"
 						width="16"
 						height="16"
 						viewBox="0 0 16 16"
@@ -54,12 +58,12 @@ const { name, description, href, verified = false } = Astro.props;
 				)
 			}
 		</div>
-		<p class="project-card__description">{description}</p>
+		<p class="text-base font-medium text-text-secondary">{description}</p>
 	</div>
 	{
 		href && (
 			<a
-				class="project-card__link"
+				class="ml-auto flex shrink-0 items-center justify-center"
 				href={href}
 				target="_blank"
 				rel="noopener noreferrer"
@@ -77,77 +81,16 @@ const { name, description, href, verified = false } = Astro.props;
 						fill-rule="evenodd"
 						clip-rule="evenodd"
 						d="M3.4 4.4C3.24087 4.4 3.08826 4.46321 2.97574 4.57574C2.86321 4.68826 2.8 4.84087 2.8 5V11.8C2.8 12.1312 3.0688 12.4 3.4 12.4H10.2C10.3591 12.4 10.5117 12.3368 10.6243 12.2243C10.7368 12.1117 10.8 11.9591 10.8 11.8V8.6C10.8 8.44087 10.8632 8.28826 10.9757 8.17574C11.0883 8.06322 11.2409 8 11.4 8C11.5591 8 11.7117 8.06322 11.8243 8.17574C11.9368 8.28826 12 8.44087 12 8.6V11.8C12 12.2774 11.8104 12.7352 11.4728 13.0728C11.1352 13.4104 10.6774 13.6 10.2 13.6H3.4C2.92261 13.6 2.46477 13.4104 2.12721 13.0728C1.78964 12.7352 1.6 12.2774 1.6 11.8V5C1.6 4.52261 1.78964 4.06477 2.12721 3.72721C2.46477 3.38964 2.92261 3.2 3.4 3.2H7.4C7.55913 3.2 7.71174 3.26321 7.82426 3.37574C7.93679 3.48826 8 3.64087 8 3.8C8 3.95913 7.93679 4.11174 7.82426 4.22426C7.71174 4.33679 7.55913 4.4 7.4 4.4H3.4Z"
-						fill="#757575"
+						fill="currentColor"
 					/>
 					<path
 						fill-rule="evenodd"
 						clip-rule="evenodd"
 						d="M4.9552 10.2024C5.00807 10.2609 5.07195 10.3084 5.1432 10.3422C5.21444 10.376 5.29165 10.3954 5.37041 10.3994C5.44917 10.4033 5.52793 10.3917 5.60219 10.3652C5.67645 10.3386 5.74476 10.2977 5.8032 10.2448L13.2 3.552V5.8C13.2 5.95913 13.2632 6.11174 13.3757 6.22426C13.4883 6.33679 13.6409 6.4 13.8 6.4C13.9591 6.4 14.1117 6.33679 14.2243 6.22426C14.3368 6.11174 14.4 5.95913 14.4 5.8V2.2C14.4 2.04087 14.3368 1.88826 14.2243 1.77574C14.1117 1.66321 13.9591 1.6 13.8 1.6H10.2C10.0409 1.6 9.88826 1.66321 9.77574 1.77574C9.66321 1.88826 9.6 2.04087 9.6 2.2C9.6 2.35913 9.66321 2.51174 9.77574 2.62426C9.88826 2.73679 10.0409 2.8 10.2 2.8H12.2424L4.9976 9.3552C4.93909 9.40807 4.89158 9.47195 4.85778 9.5432C4.82398 9.61444 4.80456 9.69165 4.80062 9.77041C4.79668 9.84917 4.80831 9.92793 4.83483 10.0022C4.86135 10.0765 4.90226 10.144 4.9552 10.2024Z"
-						fill="#757575"
+						fill="currentColor"
 					/>
 				</svg>
 			</a>
 		)
 	}
 </article>
-
-<style>
-	.project-card {
-		display: flex;
-		align-items: center;
-		gap: 24px;
-	}
-
-	.project-card__icon {
-		flex-shrink: 0;
-		width: 56px;
-		height: 56px;
-		background: #333;
-		border: 1px solid #3f3f3f;
-		border-radius: 11px;
-	}
-
-	.project-card__info {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		flex: 1;
-		min-width: 0;
-	}
-
-	.project-card__title-row {
-		display: flex;
-		align-items: center;
-		gap: 11px;
-	}
-
-	.project-card__name {
-		font-family: 'Inter', sans-serif;
-		font-weight: 500;
-		font-size: 16px;
-		line-height: normal;
-		color: white;
-	}
-
-	.project-card__badge {
-		flex-shrink: 0;
-	}
-
-	.project-card__description {
-		font-family: 'Inter', sans-serif;
-		font-weight: 500;
-		font-size: 16px;
-		line-height: normal;
-		color: #a2a2a2;
-	}
-
-	.project-card__link {
-		margin-left: auto;
-		flex-shrink: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 16px;
-		height: 16px;
-	}
-</style>

@@ -54,23 +54,11 @@ const projects = [
 			title={`Projects - ${SITE_TITLE}`}
 			description="Projects and work"
 		/>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-			rel="stylesheet"
-		/>
 	</head>
 	<body>
-		<!-- <Header>
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="#articles">Articles</HeaderLink>
-			<HeaderLink href="/projects">Projects</HeaderLink>
-			<HeaderLink href="#posts">Posts</HeaderLink>
-		</Header> -->
-		<main class="projects-page">
-			<div class="projects-page__header">
-				<h1 class="projects-page__title">Projects</h1>
+		<main class="mx-auto max-w-5xl px-8 pt-4">
+			<div class="mb-12 flex items-baseline justify-between">
+				<h1 class="text-base font-medium text-text">Projects</h1>
 				<FilterTabs tabs={filterTabs} />
 			</div>
 			<ProjectsGrid>
@@ -79,33 +67,3 @@ const projects = [
 		</main>
 	</body>
 </html>
-
-<style is:global>
-	html {
-		background-color: #000;
-	}
-</style>
-
-<style>
-	.projects-page {
-		max-width: 1030px;
-		margin-inline: auto;
-		padding-inline: 2rem;
-		padding-block-start: 1rem;
-	}
-
-	.projects-page__header {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		margin-block-end: 48px;
-	}
-
-	.projects-page__title {
-		font-family: 'Inter', sans-serif;
-		font-weight: 500;
-		font-size: 16px;
-		line-height: normal;
-		color: white;
-	}
-</style>

@@ -12,11 +12,16 @@ interface Props {
 const { tabs } = Astro.props;
 ---
 
-<nav class="filter-tabs" aria-label="Project filters">
+<nav class="flex items-center gap-5" aria-label="Project filters">
 	{
 		tabs.map((tab) => (
 			<a
-				class:list={['filter-tabs__tab', { active: tab.active }]}
+				class:list={[
+					'text-sm font-medium no-underline transition-colors duration-150',
+					tab.active
+						? 'text-text hover:text-text'
+						: 'text-text-inactive hover:text-text-secondary',
+				]}
 				href={tab.href}
 			>
 				{tab.label}
@@ -24,33 +29,3 @@ const { tabs } = Astro.props;
 		))
 	}
 </nav>
-
-<style>
-	.filter-tabs {
-		display: flex;
-		align-items: center;
-		gap: 20px;
-	}
-
-	.filter-tabs__tab {
-		font-family: 'Inter', sans-serif;
-		font-weight: 500;
-		font-size: 14px;
-		line-height: normal;
-		color: #757575;
-		text-decoration: none;
-		transition: color 0.15s ease;
-
-		&.active {
-			color: white;
-		}
-
-		&:hover {
-			color: #a2a2a2;
-		}
-
-		&.active:hover {
-			color: white;
-		}
-	}
-</style>

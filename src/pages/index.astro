@@ -19,65 +19,25 @@ const heroImages = [
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section class="hero">
-				<div class="hero__carousel">
-					<ImageCarousel images={heroImages} />
-				</div>
-				<p class="hero__text">
-					Hi there, I'm <span class="hero__name">Will</span>
+		<main class="mx-auto max-w-5xl px-8">
+			<section class="flex flex-col gap-8 py-8">
+				<ImageCarousel images={heroImages} />
+				<p class="text-lg leading-[1.7]">
+					Hi there, I'm <span class="font-accent text-[25px]"
+						>Will</span
+					>
 					<br /><br />
-					I work at <strong>Deducta</strong> as a product engineer. Previously
-					I worked on <strong>Devsync</strong>. In addition to
-					engineering on the web, I've always been obsessed with <em
+					I work at <strong class="font-semibold">Deducta</strong> as a
+					product engineer. Previously I worked on <strong
+						class="font-semibold">Devsync</strong
+					>. In addition to engineering on the web, I've always been
+					obsessed with <em class="not-italic font-medium"
 						>creative hardware interfaces</em
-					> with a specific focus on <span class="hero__accent"
-						>audio</span
+					> with a specific focus on <span
+						class="font-accent text-[25px]">audio</span
 					>.
 				</p>
 			</section>
 		</main>
 	</body>
 </html>
-
-<style>
-	p {
-		line-height: 1.7;
-	}
-
-	main {
-		max-width: var(--layout-content-max);
-		margin-inline: auto;
-		padding-inline: var(--layout-inline-padding);
-	}
-
-	.hero {
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
-		padding-block: 2rem;
-	}
-
-	.hero__text {
-		font-size: 1.25rem;
-
-		strong {
-			font-weight: 600;
-		}
-
-		em {
-			font-style: normal;
-			font-weight: 500;
-		}
-	}
-
-	.hero__name {
-		font-family: 'Gochi Hand', cursive;
-		font-size: 1.55rem;
-	}
-
-	.hero__accent {
-		font-family: 'Gochi Hand', cursive;
-		font-size: 1.55rem;
-	}
-</style>

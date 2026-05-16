@@ -8,13 +8,16 @@
 	src: url('/fonts/gochi-hand.ttf') format('truetype');
 }
 
-:root {
-	--bg-dark: #020202;
-	--text-primary: #ffffff;
-	--text-secondary: #a0a0a0;
+@theme {
+	--color-bg: #020202;
+	--color-text: #ffffff;
+	--color-text-secondary: #a2a2a2;
+	--color-text-inactive: #757575;
+	--color-surface: #333333;
+	--color-border: #3f3f3f;
 
-	--layout-content-max: 1024px;
-	--layout-inline-padding: 2rem;
+	--font-sans: 'Inter', sans-serif;
+	--font-accent: 'Gochi Hand', cursive;
 }
 
 body {
@@ -23,6 +26,6 @@ body {
 			rgba(96, 54, 16, 0.08),
 			rgba(0, 0, 0, 0.2)
 		)
-		var(--bg-dark);
-	color: var(--text-primary);
+		var(--color-bg);
+	color: var(--color-text);
 }
