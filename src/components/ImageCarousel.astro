@@ -10,11 +10,13 @@ const { images } = Astro.props;
 ---
 
 <div class="carousel">
-	{images.map((image) => (
-		<div class="carousel__slide">
-			<img src={image.src} alt={image.alt} loading="eager" />
-		</div>
-	))}
+	{
+		images.map((image) => (
+			<div class="carousel__slide">
+				<img src={image.src} alt={image.alt} loading="eager" />
+			</div>
+		))
+	}
 </div>
 
 <style>

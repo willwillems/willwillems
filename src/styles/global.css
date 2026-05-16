@@ -12,6 +12,9 @@
 	--bg-dark: #020202;
 	--text-primary: #ffffff;
 	--text-secondary: #a0a0a0;
+
+	--layout-content-max: 1024px;
+	--layout-inline-padding: 2rem;
 }
 
 body {
