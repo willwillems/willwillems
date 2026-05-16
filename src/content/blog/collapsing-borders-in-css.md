@@ -1,10 +1,11 @@
 ---
-title: "Collapsing borders in CSS with box-shadow"
+title: 'Collapsing borders in CSS with box-shadow'
 pubDate: 2020-12-20
-duration: "4 min"
-category: "Development"
-heroImage: "https://i.imgur.com/2Ng6N2a.png"
+duration: '4 min'
+category: 'Development'
+heroImage: 'https://i.imgur.com/2Ng6N2a.png'
 ---
+
 Thank god nobody uses tables for layout anymore but we can't collapse borders using regular CSS elements, unless...
 
 ## Box-shadow as a border
@@ -39,13 +40,13 @@ Using grid it's super simple, just apply grid rules to the parent, and a box-sha
 
 ```css
 .parent {
-  display: grid;
-  grid-gap: 3px;
-  grid-template-rows: 2rem 2rem auto;
+	display: grid;
+	grid-gap: 3px;
+	grid-template-rows: 2rem 2rem auto;
 }
 
 .children {
-	box-shadow:0 0 0 3px black;
+	box-shadow: 0 0 0 3px black;
 }
 ```
 
@@ -53,12 +54,12 @@ I'd use margin primarily for the box-in-a-box look with collapsing borders which
 
 ```css
 .box {
-	box-shadow:0 0 0 3px black;
+	box-shadow: 0 0 0 3px black;
 }
 
 .box-in-a-box {
 	margin: 6px 6px 0 0;
-	box-shadow:0 0 0 3px black;
+	box-shadow: 0 0 0 3px black;
 }
 ```
 

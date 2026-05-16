@@ -1,10 +1,11 @@
 ---
-title: "Tailwind for actual front-end developers"
+title: 'Tailwind for actual front-end developers'
 pubDate: 2020-11-18
-duration: "8 min"
-category: "Development"
-heroImage: "https://i.imgur.com/V8KMjHP.png"
+duration: '8 min'
+category: 'Development'
+heroImage: 'https://i.imgur.com/V8KMjHP.png'
 ---
+
 Let's be honest. Exclusively using a framework with predefined CSS atoms will never be a proper solution for anyone designing a custom front-end. Thoroughly customising Tailwind already gets you pretty far but you'll never be able to reasonably bridge [the Bailwind gap](https://twitter.com/ryanflorence/status/1251589516617379840) with it. However. Using scoped CSS and BEM naming with Tailwind you can write some of the most maintainable and readable CSS while still decreasing development time and improving readability.
 
 ## Scoping
@@ -20,12 +21,12 @@ To give an example, these two would not conflict using scoped CSS.
 ```css
 /* AppModal */
 .title {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 
 /* TheHeader */
 .title {
-  font-size: 4rem;
+	font-size: 4rem;
 }
 ```
 
@@ -43,27 +44,26 @@ On GetBEM they mark menu items as elements and the menu as a block, where one dr
 
 ```scss
 .menu {
-  height: 3rem;
+	height: 3rem;
 
-  &__icon{
-    height: 2rem;
-    width: 2rem;
-  }
+	&__icon {
+		height: 2rem;
+		width: 2rem;
+	}
 }
 
 .menu-item {
-  color: gray;
-  font-weight: bold;
+	color: gray;
+	font-weight: bold;
 
-  &__status-indicator {
-    border-radius: 50%;
-    
-    &--active {
-      background-color: green;
-    }
-  }
+	&__status-indicator {
+		border-radius: 50%;
+
+		&--active {
+			background-color: green;
+		}
+	}
 }
-    
 ```
 
 You might not be familiar with the ampersand syntax used here. The `&` simply gets replaced by the nearest parent class name so here `&__icon` becomes `.menu__icon`. PostCSS has got a popular [plugin](https://github.com/postcss/postcss-nested) for this.
@@ -78,27 +78,27 @@ Using tailwind and extending our previous example a bit gives us this:
 
 ```scss
 .menu {
-  @apply w-full h-12 bg-gray-100 flex flex-row items-center;
+	@apply w-full h-12 bg-gray-100 flex flex-row items-center;
 
-  &__icon{
-    @apply h-8 w-8 object-fit;
-    background-image: url('/icon/caret.svg');
-    background-position: center;
-    background-size: 100%;
-    background-repeat: no-repeat;
-  }
+	&__icon {
+		@apply h-8 w-8 object-fit;
+		background-image: url('/icon/caret.svg');
+		background-position: center;
+		background-size: 100%;
+		background-repeat: no-repeat;
+	}
 }
 
 .menu-item {
-  @apply relative txt-sm txt-gray-800 font-bold;
+	@apply relative txt-sm txt-gray-800 font-bold;
 
-  &__status-indicator {
-    @apply absolute h-4 w-4 top-0 right-0 rounded-full bg-gray-800;
-    
-    &--active {
-      @apply bg-green-800;
-    }
-  }
+	&__status-indicator {
+		@apply absolute h-4 w-4 top-0 right-0 rounded-full bg-gray-800;
+
+		&--active {
+			@apply bg-green-800;
+		}
+	}
 }
 ```
 

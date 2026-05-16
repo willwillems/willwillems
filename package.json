@@ -8,8 +8,8 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"check": "astro check",
-		"lint": "eslint . --ext .js,.mjs,.ts,.astro",
-		"lint:fix": "npm run lint -- --fix",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
 		"validate": "npm run check && npm run lint && npm run format:check"
@@ -18,10 +18,10 @@
 		"@astrojs/mdx": "^5.0.0-beta.2",
 		"@astrojs/rss": "^4.0.15-beta.3",
 		"@astrojs/sitemap": "^3.6.1-beta.2",
-		"@tailwindcss/vite": "^4.1.18",
+		"@tailwindcss/vite": "4.1",
 		"astro": "^6.0.0-beta.3",
 		"sharp": "^0.34.3",
-		"tailwindcss": "^4.1.18"
+		"tailwindcss": "4.1"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.6",

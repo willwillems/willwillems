@@ -1,11 +1,12 @@
 ---
-title: "Building a website with VuePress"
+title: 'Building a website with VuePress'
 pubDate: 2019-01-23
-duration: "8 min"
-category: "VuePress"
-heroImage: "https://source.unsplash.com/Wiu3w-99tNg/"
+duration: '8 min'
+category: 'VuePress'
+heroImage: 'https://source.unsplash.com/Wiu3w-99tNg/'
 ---
-VuePress is a simple static site generator initially created to support the docs for large projects. It however it can do many more things as you are about to learn, personally I use it to generate [my website and blog](https://willwillems.com). 
+
+VuePress is a simple static site generator initially created to support the docs for large projects. It however it can do many more things as you are about to learn, personally I use it to generate [my website and blog](https://willwillems.com).
 
 **Why VuePress:**
 
@@ -20,21 +21,21 @@ VuePress is a simple static site generator initially created to support the docs
 ## Who this guide is for
 
 - You want to create a static website powered by Vue  
-  :x: → *Why are you even here?*  
-  :white_check_mark: → *Continue* :arrow_heading_down:
-- Your website is content-centric (e.g. not a web app)    
-  :x: → *Static is going to be tougher for you in general but you might checkout [Nuxt](https://nuxtjs.org)*  
-  :white_check_mark: → *Continue* :arrow_heading_down:
+  :x: → _Why are you even here?_  
+  :white*check_mark: → \_Continue* :arrow_heading_down:
+- Your website is content-centric (e.g. not a web app)  
+  :x: → _Static is going to be tougher for you in general but you might checkout [Nuxt](https://nuxtjs.org)_  
+  :white*check_mark: → \_Continue* :arrow_heading_down:
 - Your content is, or is going to be, in markdown  
-  :x: → *If you are already on any kind of JAMstack [Nuxt](https://nuxtjs.org) might be a better option for now*  
-  :white_check_mark: → *Continue* :arrow_heading_down:
+  :x: → _If you are already on any kind of JAMstack [Nuxt](https://nuxtjs.org) might be a better option for now_  
+  :white*check_mark: → \_Continue* :arrow_heading_down:
 - You want to create something else than docs for your project  
-  :x: → *Creating docs? Continue to the [VuePress docs](https://vuepress.vuejs.org), they are excellent for this.*  
-  :white_check_mark: → *Continue* :arrow_heading_down:
+  :x: → _Creating docs? Continue to the [VuePress docs](https://vuepress.vuejs.org), they are excellent for this._  
+  :white*check_mark: → \_Continue* :arrow_heading_down:
 
 ## How this will work
 
-To very briefly describe how this will end up working: 
+To very briefly describe how this will end up working:
 
 - You'll have a git repo which contains your website content (markdown files) and your VuePress assets (theme, config, images etc.) in a separate folder called `.vuepress`.
 - Every time you'll run `npm run build` the markdown files you have created will be converted into HTML files using the available VuePress layout files in your theme. Additionally defined routes will also be pre-rendered.
@@ -64,14 +65,14 @@ You can also add VuePress globally with `npm install -g vuepress` to be able to 
 
 Next up we'll add the following scripts to our `package.json` file:
 
-``` js
+```js
 "scripts": {
   "dev": "vuepress dev",
   "build": "vuepress build"
 },
 ```
 
-This enables us *and others* to interact with the project in a more general way without any setup or global package requirements with `npm run dev` and `npm run build`.
+This enables us _and others_ to interact with the project in a more general way without any setup or global package requirements with `npm run dev` and `npm run build`.
 
 Ok time to create the project files, we'll start of by creating a `.vuepress` directory in our project folder root and throwing an `config.js` file in there. Our project structure should now look something like this:
 
@@ -83,7 +84,7 @@ my-project
 |--package.json
 ```
 
-The `.vuepress` directory is going to be the backbone of this project containing all the files concerning your website besides the actual content itself, this will be placed in the root of the project folder. 
+The `.vuepress` directory is going to be the backbone of this project containing all the files concerning your website besides the actual content itself, this will be placed in the root of the project folder.
 
 ::: tip Wait what is in that weird folder?
 Basically the `.vuepress` directory will contain anything Vue related:
@@ -102,21 +103,21 @@ For some more info about this folder and what it will contain [check this out](h
 
 As might have guessed this file will contain much of the configuration and options concerning your website including the config for your theme. A minimal config file will look like this:
 
-``` js
+```js
 module.exports = {
-  title: 'My Site',
-  description: 'Welcome to my site.'
-}
+	title: 'My Site',
+	description: 'Welcome to my site.',
+};
 ```
 
 But we'll start off by extending it a bit straight away by specifying the folder where the compiled assets should end up:
 
-``` js
+```js
 module.exports = {
-  title: 'My Site',
-  description: 'Welcome to my site.',
-  dest: "dist"
-}
+	title: 'My Site',
+	description: 'Welcome to my site.',
+	dest: 'dist',
+};
 ```
 
 Now your static assets will end up in the `/dist` folder in your root. By default these will end up inside the `.vuepress/dist` folder which is a bit messy and less generic.
@@ -125,7 +126,7 @@ Now your static assets will end up in the `/dist` folder in your root. By defaul
 
 Since this project is originally geared towards documentation creation its only logical that the source for the `index.html` file will be the `README.md` file in the root of your project. Create the file and put some simple markdown in there like:
 
-``` md
+```md
 # Use a title
 
 And some more content
@@ -138,7 +139,7 @@ Now it's time to reap the fruits of our labor, if you've done everything correct
 
 If everything looks good you can generate your new webpage using `npm run build`.
 
-::: tip Where does my  markdown content end up?
+::: tip Where does my markdown content end up?
 
 The way VuePress routes your compiled markdown files is very straightforward, with the exemption of `[README.md](http://readme.md)` which gets turned into an `index.html` file the rest of the content can be found at their respective position inside the project. For example:
 

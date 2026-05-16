@@ -1,10 +1,11 @@
 ---
-title: "Learn to manage large Vue.js components in 4 min"
+title: 'Learn to manage large Vue.js components in 4 min'
 pubDate: 2018-11-20
-duration: "4 min"
-category: "Vue.js"
-heroImage: "/img/vue-components-thumb.png"
+duration: '4 min'
+category: 'Vue.js'
+heroImage: '/img/vue-components-thumb.png'
 ---
+
 Vue.js is, in my opinion, the nicest JS framework currently available. One of the features I like the most are the `.vue` single-file components. It can get quite hard to manage larger ones tough, especially when you start creating custom sub-components and adding static assets. Here are some things I’ve tried, you might like them too.
 
 _Figure 1: You when handling large components before reading this post._
@@ -13,16 +14,16 @@ _Figure 1: You when handling large components before reading this post._
 
 This might be common knowledge to you but just in case:
 
-* Use PascalCase file naming.  
+- Use PascalCase file naming.  
   _Example:_ `ComponentName.vue`  
   [doc reference](https://vuejs.org/v2/style-guide/#Single-file-component-filename-casing-strongly-recommended)
-* Preface base components with a default word like App, Base or V.  
+- Preface base components with a default word like App, Base or V.  
   _Example:_ `AppTable.vue`  
   [doc reference](https://vuejs.org/v2/style-guide/#Base-component-names-strongly-recommended)
-* Preface components with a max of one active instance with The.  
+- Preface components with a max of one active instance with The.  
   _Example:_ `TheLargeComponent.vue`  
   [doc reference](https://vuejs.org/v2/style-guide/#Single-instance-component-names-strongly-recommended)
-* Always use multi-word names for your components. Prefacing `App` or `The` simplifies this but do this for all components. This is to avoid clashes with standard HTML tags which are always a single word.  
+- Always use multi-word names for your components. Prefacing `App` or `The` simplifies this but do this for all components. This is to avoid clashes with standard HTML tags which are always a single word.  
   _Example:_ `MainModal.vue` _instead of_ `Modal.vue`  
   [doc reference](https://vuejs.org/v2/style-guide/#Multi-word-component-names-essential)
 
@@ -67,9 +68,9 @@ Secondly you could just name it after it’s parent folder and thus keep it `Lar
 
 Pro’s
 
-* All items in the components folder indicate and represent a component.
-* Easy to understand for other dev’s.
-* Sub-components and assets can be imported with clean relative imports: ./assets/img/banner.png
+- All items in the components folder indicate and represent a component.
+- Easy to understand for other dev’s.
+- Sub-components and assets can be imported with clean relative imports: ./assets/img/banner.png
 
 Secondly an approach which looks very much like this one and probably the most straightforward one:
 
@@ -92,20 +93,21 @@ The imports in the file itself do look a bit more complex but are also very clea
 
 Pro’s
 
-* Works in every build system, very straightforward.
-* Easy to understand for other dev’s.
-* Does not change imports when creating folder for component.
+- Works in every build system, very straightforward.
+- Easy to understand for other dev’s.
+- Does not change imports when creating folder for component.
 
 Finally there is a bit more uncommon one I really like if you are using imports without file extension specified:
 
 ## 3. Putting an index.js/package.json in your component folder
 
 Pretty straightforward, you just throw this `index.js`/`package.json ` file in your component folder:
-``` json
+
+```json
 {
-    "name": "MY_COMPONENT_NAME",
-    "private": true,
-    "main": "./MY_COMPONENT_NAME.vue"
+	"name": "MY_COMPONENT_NAME",
+	"private": true,
+	"main": "./MY_COMPONENT_NAME.vue"
 }
 ```
 
@@ -127,9 +129,9 @@ This has all the advantages of the methods above but it is a bit more obscure an
 
 Pro’s
 
-* Does not change imports when creating folder for component.
-* All component data contained in one folder.
-* Relative imports are cleaner.
+- Does not change imports when creating folder for component.
+- All component data contained in one folder.
+- Relative imports are cleaner.
 
 ## Bonus round: Tip for Vue-Router users
 

@@ -53,7 +53,8 @@ const { title, description = '', pubDate, updatedDate } = Astro.props;
 							{
 								updatedDate && (
 									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
+										Last updated on{' '}
+										<FormattedDate date={updatedDate} />
 									</div>
 								)
 							}

@@ -1,10 +1,11 @@
 ---
-title: "A case against CSS frameworks"
+title: 'A case against CSS frameworks'
 pubDate: 2018-12-13
-duration: "5 min"
-category: "Vue.js"
-heroImage: "/img/css-frameworks-thumb.png"
+duration: '5 min'
+category: 'Vue.js'
+heroImage: '/img/css-frameworks-thumb.png'
 ---
+
 I don’t like CSS frameworks. I always design my web apps in Sketch before actually building them, I might think I have a solid idea of how a certain login page is supposed to look but when I head in code first the end result always ends up as a watered down version of the design that I had envisioned. This is since it is partly shaped by me and partly by the default CSS values and restrictions of what is easy to do with HTML and CSS and what is not. That problem is made 10x worse by current CSS frameworks.
 
 Bulma, Bootstrap, Foundation, Pure… I’ve had to build websites with all of them and then some. Some were worse then others but they all have something in common: they bring design philosophies and code into your project that you realistically have no idea about.

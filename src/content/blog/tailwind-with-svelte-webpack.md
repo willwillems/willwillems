@@ -1,9 +1,10 @@
 ---
-title: "Add Tailwind to a Svelte Webpack project"
+title: 'Add Tailwind to a Svelte Webpack project'
 pubDate: 2020-10-27
-duration: "5 min"
-category: "Svelte"
+duration: '5 min'
+category: 'Svelte'
 ---
+
 Wanna use Tailwind with a Svelte Webpack project? It's super easy, takes about 5 minutes and should work without any problems!
 
 ## Install tailwind
@@ -13,16 +14,17 @@ Install Tailwind with `npm i -D tailwindcss` and create a `tailwind.config.js` f
 ```js
 // tailwind.config.js
 module.exports = {
-  future: {},
-  purge: [],
-  theme: {
-    extend: {},
-  },
-  variants: {},
-  plugins: [],
-}
+	future: {},
+	purge: [],
+	theme: {
+		extend: {},
+	},
+	variants: {},
+	plugins: [],
+};
 ```
-*This file is not required but you really should include it, Tailwinds power lies in it's customizability.* 
+
+_This file is not required but you really should include it, Tailwinds power lies in it's customizability._
 
 ## Install postCSS etc
 
@@ -33,14 +35,15 @@ Create a `postcss.config.js` file where you require `tailwindcss`:
 ```js
 //postcss.config.js
 module.exports = {
-  plugins: [
-    require('precss'),
+	plugins: [
+		require('precss'),
 		require('tailwindcss'),
-    require('autoprefixer')
-  ]
-}
+		require('autoprefixer'),
+	],
+};
 ```
-*In this example we're also importing `precss` and `autoprefixer`. These plugins are real no-brainers and you should probably use them unless you have a specific reason not to.*
+
+_In this example we're also importing `precss` and `autoprefixer`. These plugins are real no-brainers and you should probably use them unless you have a specific reason not to._
 
 **Make sure you've set the `emitCss` option of `svelte-loader` in your `webpack.config.js` to `true`.**
 
@@ -64,14 +67,14 @@ Create a `svelte.config.js` file and `npm i --save-dev svelte-preprocess`. Many 
 
 ```js
 // svelte.config.js
-const sveltePreprocess = require('svelte-preprocess')
+const sveltePreprocess = require('svelte-preprocess');
 
 module.exports = {
-  preprocess: sveltePreprocess({
-    postcss: true,
-  }),
-  // ...other svelte options
-}
+	preprocess: sveltePreprocess({
+		postcss: true,
+	}),
+	// ...other svelte options
+};
 ```
 
 Import this config into your Webpack config with: `const svelteConfig = require('./svelte.config')` and include the preprocess config in the options of your `svelte-loader`:

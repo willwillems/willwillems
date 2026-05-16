@@ -1,17 +1,18 @@
 ---
-title: "Using node with Babel 7"
+title: 'Using node with Babel 7'
 pubDate: 2018-09-11
-duration: "4 min"
-category: "Development"
-heroImage: "/img/babel+node-thumb.jpeg"
+duration: '4 min'
+category: 'Development'
+heroImage: '/img/babel+node-thumb.jpeg'
 ---
+
 So you want to use the new babel 7 with node? Our goal here will be to set up a minimal node application that is able to run locally and has a build command for remote deployment. Lets get started!
 
 There are a couple of differences with the babel you might be familiar with and v7.
 
-* Babels packages are now scoped just like many other large organisations Babel has renamed it’s NPM packages. This means `babel-cli` for example has been renamed to `@babel/cli` .
-* No messing around with presets anymore. You can just use `@babel/preset-env` now and optionally define your requirements in the config file.
-* babel-node has been moved from the CLI to it’s own package: `@babel/node`
+- Babels packages are now scoped just like many other large organisations Babel has renamed it’s NPM packages. This means `babel-cli` for example has been renamed to `@babel/cli` .
+- No messing around with presets anymore. You can just use `@babel/preset-env` now and optionally define your requirements in the config file.
+- babel-node has been moved from the CLI to it’s own package: `@babel/node`
 
 Ok so we have the most important things down. You can optionally read more about the changes on babels website but here is what we need to do next:
 Setting up the application structure
@@ -21,6 +22,7 @@ We’ll keep it as simple as possible:
 First you want to run `npm init` to create a `package.json` file inside the directory and depending on if you are using Git you might want to run `git init`
 
 We’ll set up two directories, one to develop in and one to deploy our compiled assets.
+
 ```
   your-project-directory
   |--dist
@@ -29,6 +31,7 @@ We’ll set up two directories, one to develop in and one to deploy our compiled
 ```
 
 For this example we’ll add just a simple file inside the src directory called `server.js`
+
 ```
   your-project-directory
   |--dist
@@ -43,7 +46,7 @@ For easy development we’ll also add the nodemon package using `npm install --s
 
 Finally we just need to tell babel to use the `@babel/preset-env` package by creating a `.babelrc` file in our project root:
 
-``` js
+```js
 // .babelrc
 {
   "presets": ["@babel/preset-env"]
@@ -72,27 +75,26 @@ Now for the final step we’ll add our commands to the package.json file.
 
 Your `package.json` should now probably look something like this:
 
-``` json
-  {
-    "name": "my-app",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/server.js",
-    "scripts": {
-      "start": "nodemon --exec babel-node src/server.js",
-      "build": "babel src --out-dir dist",
-      "serve": "node dist/server.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-    },
-    "devDependencies": {
-      "@babel/cli": "^7.0.0-rc.1",
-      "@babel/core": "^7.0.0-rc.1",
-      "@babel/node": "^7.0.0-rc.1",
-      "@babel/preset-env": "^7.0.0-rc.1",
-      "nodemon": "^1.18.3"
-    }
-  }
+```json
+{
+	"name": "my-app",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/server.js",
+	"scripts": {
+		"start": "nodemon --exec babel-node src/server.js",
+		"build": "babel src --out-dir dist",
+		"serve": "node dist/server.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {},
+	"devDependencies": {
+		"@babel/cli": "^7.0.0-rc.1",
+		"@babel/core": "^7.0.0-rc.1",
+		"@babel/node": "^7.0.0-rc.1",
+		"@babel/preset-env": "^7.0.0-rc.1",
+		"nodemon": "^1.18.3"
+	}
+}
 ```

@@ -1,10 +1,11 @@
 ---
-title: "Write a custom Vuepress theme"
+title: 'Write a custom Vuepress theme'
 pubDate: 2019-01-28
-duration: "12 min"
-category: "VuePress"
-heroImage: "https://source.unsplash.com/mIylM2RC16M/800x800"
+duration: '12 min'
+category: 'VuePress'
+heroImage: 'https://source.unsplash.com/mIylM2RC16M/800x800'
 ---
+
 VuePress offers a very solid system to integrate your own theme into a project and it is a lot easier than you might think.
 
 ::: info
@@ -37,17 +38,17 @@ The VuePress theming system uses certain `.vue` files to determine how to transf
 
 In it's most simple form a layout `.vue` component may look like this:
 
-``` html
+```html
 <template>
-  <div class="theme-container">
-    <Content/>
-  </div>
+	<div class="theme-container">
+		<content />
+	</div>
 </template>
 ```
 
 You can probably already see what is going on here. The Vue single-file component is processed and the processed content from your markdown file is inserted using the `<Content/>` tag.
 
-Assuming you have at least an `[README.md](http://readme.md)` file in your project root with some markdown in it you can now go along and create your first layout file called `Layout.vue`. This is the default layout file VuePress will pick if none is specified inside the Markdown [front matter](https://vuepress.vuejs.org/guide/frontmatter.html#front-matter). 
+Assuming you have at least an `[README.md](http://readme.md)` file in your project root with some markdown in it you can now go along and create your first layout file called `Layout.vue`. This is the default layout file VuePress will pick if none is specified inside the Markdown [front matter](https://vuepress.vuejs.org/guide/frontmatter.html#front-matter).
 
 Your file structure should look something like this:
 
@@ -67,7 +68,6 @@ When running the dev server or build command you should be able to see your `[RE
 
 ## Using multiple layout components
 
-
 ### Defining the desired layout in md
 
 Naturally you are able to create more than one layout file. To keep this example simple let's say you are creating a blog, you'll probable have the default layout file which represents a blog article but you'll also want a separate layout for you landing/home page to display your articles in a list.
@@ -76,10 +76,11 @@ To create an alternate layout file just put another file inside the `layouts` di
 
 In order for VuePress to know that it has to use this layout instead of the default one we'll have to specify it in the markdown file's front matter. This can be used to specify all sorts of options like the language, author and publish date of the article but for now we'll keep it simple and just specify the layout we'll be using:
 
-``` md
+```md
 ---
 layout: Home
 ---
+
 # Home page layout
 
 This is my homepage
@@ -93,7 +94,7 @@ In order to populate multiple sections with content data VuePress uses content s
 
 As we have seen in the earlier section of this article you can use the `<Content/>` tag to inject the markdown in your `.vue` file, we'll use the same mechanism here but we'll specify a slot as a property of the content tag like so:
 
-``` html
+```html
 <div class="home">
   <div id="articles">
     <Content slot-key="articles" />
@@ -106,18 +107,20 @@ As we have seen in the earlier section of this article you can use the `<Content
 
 The Markdown needed to fill these slots is very straightforward:
 
-``` md
+```md
 # This will still be the title
 
 And this content will still be available through the general `<Content/> tag.
 
 ::: slot articles
+
 ## What I Write
 
 But this will only be available in the 'articles' slot
 :::
 
 ::: slot about
+
 ## Who am I
 
 And this in the 'about' slot
@@ -130,13 +133,13 @@ This way you can be much more flexible with how your content is displayed on you
 
 If you want to use some pre-processors like SCSS or Pug to make creating your Vue components a bit easier you can, no need to configure anything except to specify the language in your template and style tags and to add the required dependencies to the project using NPM.
 
-### The default 404 page 
+### The default 404 page
 
 Besides the `layouts/Layout.vue` file there is one more layout file that has a predefined function which is the `layouts/404.vue` file. As you might guess this file will be served on a 404 if you create it.
 
 ## EnhanceApp file, creating custom routes and importing custom styles
 
-There are several ways to modify the more *under-the-hood* behaviour of your vuepress app. We can do this by modifying the `EnhanceApp.js` file which is located at the root of the theme folder.
+There are several ways to modify the more _under-the-hood_ behaviour of your vuepress app. We can do this by modifying the `EnhanceApp.js` file which is located at the root of the theme folder.
 
 ### Importing custom styles
 
@@ -155,16 +158,18 @@ I think it's pretty straightforward what these stylesheets contain. I use the `i
 
 The way I do this is as follows:
 
-``` js
-export default ({
-  // Vue, // the version of Vue being used in the VuePress app
-  // options, // the options for the root Vue instance
-  // router // the router instance for the app
-  // siteData // site metadata
-}) => {
-  // import styles
-  require('./styles/index.scss')
-}
+```js
+export default (
+	{
+		// Vue, // the version of Vue being used in the VuePress app
+		// options, // the options for the root Vue instance
+		// router // the router instance for the app
+		// siteData // site metadata
+	},
+) => {
+	// import styles
+	require('./styles/index.scss');
+};
 ```
 
 You'll still have to import the `vars.scss` manually into a Vue component when you want to use them but otherwise this works very well.
@@ -173,16 +178,18 @@ You'll still have to import the `vars.scss` manually into a Vue component when y
 
 As you might have already noticed in the previous section the EnhanceApp file can be used to define additional routes using the router instance that is provided by VuePress:
 
-``` js
+```js
 export default ({
-  // Vue, // the version of Vue being used in the VuePress app
-  // options, // the options for the root Vue instance
-  router // the router instance for the app
-  // siteData // site metadata
+	// Vue, // the version of Vue being used in the VuePress app
+	// options, // the options for the root Vue instance
+	router, // the router instance for the app
+	// siteData // site metadata
 }) => {
-  // add routes
-  router.addRoutes([{ path: '/example-vue-page', component: ExampleVuePage }])
-}
+	// add routes
+	router.addRoutes([
+		{ path: '/example-vue-page', component: ExampleVuePage },
+	]);
+};
 ```
 
 You can read more about the `addRoutes` method [here in the Vue Router docs](https://router.vuejs.org/api/#router-addroutes).
@@ -191,35 +198,36 @@ You can read more about the `addRoutes` method [here in the Vue Router docs](htt
 
 Finally you'll also have access to the Vue instance itself inside the EnhanceApp file enabling you do do many things such as registering a plugin:
 
-``` js
-import VeeValidate from 'vee-validate'
+```js
+import VeeValidate from 'vee-validate';
 
 export default ({
-  Vue, // the version of Vue being used in the VuePress app
-  // options, // the options for the root Vue instance
-  // router // the router instance for the app
-  // siteData // site metadata
+	Vue, // the version of Vue being used in the VuePress app
+	// options, // the options for the root Vue instance
+	// router // the router instance for the app
+	// siteData // site metadata
 }) => {
-  // Register VeeValidate
-  Vue.use(VeeValidate)
-}
+	// Register VeeValidate
+	Vue.use(VeeValidate);
+};
 ```
 
 ## Using variables inside your layouts
 
 ### Global variables using config.js
 
-For global variables for your theme you can use the `themeConfig` field in your `options.js` file, these variables will subsequently be available in your layouts on the  `$site.themeConfig` object.
+For global variables for your theme you can use the `themeConfig` field in your `options.js` file, these variables will subsequently be available in your layouts on the `$site.themeConfig` object.
 
 ### Page specific variables using front matter
 
 Most of your variable will belong to a specific page though, for this you can use the Markdown front matter we discussed earlier, for example:
 
-``` md
+```md
 ---
 varOne: hello
 varTwo: VuePress
 ---
+
 # Home page layout
 
 This is my homepage
@@ -237,27 +245,28 @@ There is much more data available on these two objects, the VuePress docs are ve
 
 Create an `index.js` file in your root that just exports an empty object like:
 
-``` js
-module.exports = {}
+```js
+module.exports = {};
 ```
 
 This is not required for themes that will not be published as NPM modules but it stops VuePress from logging errors during the build process.
 
-### Style your code blocks and content containers in order to display them properly 
+### Style your code blocks and content containers in order to display them properly
 
 In order for code highlighting and [custom containers](https://vuepress.vuejs.org/guide/markdown.html#custom-containers) to work you need to import the proper styles, for code highlighting you can either pick/create your own prism.js theme or you can import one from the package itself like the default VuePress theme does by placing this line at the bottom of your layout file.
 
-``` html
-<style src="prismjs/themes/prism-tomorrow.css"></style> 
+```html
+<style src="prismjs/themes/prism-tomorrow.css"></style>
 ```
 
 You'll need a separate fix to highlight inline-code, I'm just using a very simple bit of global CSS:
 
-``` css
-p > code, li > code {
-  background-color: rgba(103, 149, 201, 0.12);
-  padding: .25rem .5rem;
-  border-radius: 3px;
+```css
+p > code,
+li > code {
+	background-color: rgba(103, 149, 201, 0.12);
+	padding: 0.25rem 0.5rem;
+	border-radius: 3px;
 }
 ```
 
@@ -267,9 +276,10 @@ In order for custom containers to display properly you can either write your own
 
 This is probably going to be available as a config option in the future but currently you can hide them by using this CSS snippet:
 
-``` css
-svg.icon.outbound, .header-anchor {
-  display: none;
+```css
+svg.icon.outbound,
+.header-anchor {
+	display: none;
 }
 ```
 
@@ -277,13 +287,13 @@ svg.icon.outbound, .header-anchor {
 
 To style the nested HTML in your layout pages (when using scoped style) you can use `/deep/` or `>>>` like so:
 
-``` css
+```css
 .parent /deep/ .child {
-  color: red;
+	color: red;
 }
 /* or */
 .parent >>> .child {
-  color: red;
+	color: red;
 }
 ```
 
