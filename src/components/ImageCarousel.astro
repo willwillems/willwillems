@@ -14,7 +14,7 @@ const { images } = Astro.props;
 		images.map((image, i) => (
 			<div
 				class:list={[
-					'h-100 shrink-0 overflow-hidden rounded',
+					'h-100 shrink-0 overflow-hidden',
 					i % 2 === 0 ? 'w-xs' : 'w-2xl',
 				]}
 			>
