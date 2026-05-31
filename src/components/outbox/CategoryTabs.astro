@@ -1,0 +1,36 @@
+---
+interface Props {
+	categories: string[];
+}
+
+const { categories } = Astro.props;
+
+const tabs = [
+	{ label: 'All', dataCategory: '' },
+	...categories.map((label) => ({ label, dataCategory: label })),
+];
+---
+
+<nav
+	class="flex flex-wrap items-center gap-5 text-sm"
+	aria-label="Outbox category filter"
+	data-outbox-tabs
+>
+	{
+		tabs.map((tab, i) => (
+			<button
+				type="button"
+				class:list={[
+					'cursor-pointer border-none bg-transparent p-0 font-medium transition-colors duration-150',
+					i === 0
+						? 'text-text'
+						: 'text-text-inactive hover:text-text-secondary',
+				]}
+				data-category={tab.dataCategory}
+				data-active={i === 0 ? 'true' : 'false'}
+			>
+				{tab.label}
+			</button>
+		))
+	}
+</nav>

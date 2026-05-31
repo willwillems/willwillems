@@ -3,47 +3,15 @@ import BaseHead from '../../components/BaseHead.astro';
 import FilterTabs from '../../components/projects/FilterTabs.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
 import ProjectsGrid from '../../components/projects/ProjectsGrid.astro';
+import { projects } from '../../data/projects';
 
 import { SITE_TITLE } from '../../consts';
 
 const filterTabs = [
 	{ label: 'All', href: '/projects', active: true },
-	{ label: 'Publication', href: '/projects?filter=publication' },
-];
-
-const projects = [
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-		verified: true,
-	},
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-		verified: true,
-	},
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-	},
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-	},
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-	},
-	{
-		name: 'Devsync',
-		description: 'Sink your ass to your browser. ',
-		href: '#',
-	},
+	{ label: 'Active', href: '/projects?filter=active' },
+	{ label: 'Experimental', href: '/projects?filter=experimental' },
+	{ label: 'Dead', href: '/projects?filter=dead' },
 ];
 ---
 
@@ -62,7 +30,15 @@ const projects = [
 				<FilterTabs tabs={filterTabs} />
 			</div>
 			<ProjectsGrid>
-				{projects.map((project) => <ProjectCard {...project} />)}
+				{
+					projects.map((project) => (
+						<ProjectCard
+							name={project.name}
+							description={project.description}
+							href={project.link}
+						/>
+					))
+				}
 			</ProjectsGrid>
 		</main>
 	</body>

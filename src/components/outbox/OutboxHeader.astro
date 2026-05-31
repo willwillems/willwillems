@@ -1,0 +1,43 @@
+---
+import CategoryTabs from './CategoryTabs.astro';
+
+interface Props {
+	categories: string[];
+}
+
+const { categories } = Astro.props;
+---
+
+<div
+	class="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm"
+>
+	<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+		<h2 class="m-0 text-sm font-medium text-text">Outbox</h2>
+		<CategoryTabs categories={categories} />
+	</div>
+	<button
+		type="button"
+		class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-sm font-medium text-text-inactive transition-colors duration-150 hover:text-text-secondary"
+		data-outbox-sort
+		data-direction="desc"
+		aria-label="Toggle sort direction"
+	>
+		<span>Sort</span>
+		<svg
+			width="12"
+			height="12"
+			viewBox="0 0 12 12"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+			data-outbox-sort-icon
+		>
+			<path
+				d="M3 4.5L6 7.5L9 4.5"
+				stroke="currentColor"
+				stroke-width="1.2"
+				stroke-linecap="round"
+				stroke-linejoin="round"></path>
+		</svg>
+	</button>
+</div>

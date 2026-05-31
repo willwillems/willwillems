@@ -1,0 +1,89 @@
+---
+import type { HeatmapBucket } from './outbox';
+
+interface Props {
+	buckets: HeatmapBucket[];
+	categoryColors: Record<string, string>;
+}
+
+const { buckets, categoryColors } = Astro.props;
+
+// Layout: rows are days of the week, columns are weeks. Pad the leading slot
+// so the very first bucket lines up with its weekday row. The grid uses
+// row-major filling via grid-row/grid-column assignments per cell.
+const CELL_PX = 12;
+const GAP_PX = 4;
+
+const firstDay = buckets[0]?.date ?? new Date();
+const leadingPad = firstDay.getUTCDay(); // 0 = Sun
+const totalCells = leadingPad + buckets.length;
+const columnCount = Math.ceil(totalCells / 7);
+
+// Month labels: walk the buckets in column order and capture the first day
+// of each new month. Render a label in that column.
+const monthLabels: { col: number; label: string }[] = [];
+let lastMonth = -1;
+for (let col = 0; col < columnCount; col++) {
+	const cellIndex = col * 7 - leadingPad; // top-of-column bucket index
+	if (cellIndex < 0 || cellIndex >= buckets.length) continue;
+	const date = buckets[cellIndex].date;
+	const month = date.getUTCMonth();
+	if (month !== lastMonth) {
+		lastMonth = month;
+		monthLabels.push({
+			col,
+			label: date.toLocaleDateString('en-us', {
+				month: 'short',
+				timeZone: 'UTC',
+			}),
+		});
+	}
+}
+
+const gridTemplateColumns = `repeat(${columnCount}, ${CELL_PX}px)`;
+const cellsGridTemplateRows = `repeat(7, ${CELL_PX}px)`;
+---
+
+<div class="overflow-x-auto pb-1" data-outbox-heatmap>
+	<div class="inline-block min-w-full">
+		<div
+			class="grid"
+			style={`grid-template-columns: ${gridTemplateColumns}; grid-template-rows: ${cellsGridTemplateRows}; gap: ${GAP_PX}px;`}
+			role="img"
+			aria-label={`Publishing activity over the last ${buckets.length} days`}
+		>
+			{
+				buckets.map((bucket, i) => {
+					const slot = leadingPad + i;
+					const col = Math.floor(slot / 7) + 1;
+					const row = (slot % 7) + 1;
+					const color =
+						bucket.dominantCategory &&
+						categoryColors[bucket.dominantCategory];
+					return (
+						<div
+							class="rounded-[1px]"
+							style={`grid-column: ${col}; grid-row: ${row}; background-color: ${color ?? '#1c1c1c'};`}
+							aria-hidden="true"
+						/>
+					);
+				})
+			}
+		</div>
+		<div
+			class="mt-2 grid text-[11px] text-text-inactive"
+			style={`grid-template-columns: ${gridTemplateColumns}; column-gap: ${GAP_PX}px;`}
+		>
+			{
+				monthLabels.map((m) => (
+					<div
+						class="whitespace-nowrap"
+						style={`grid-column: ${m.col + 1};`}
+					>
+						{m.label}
+					</div>
+				))
+			}
+		</div>
+	</div>
+</div>

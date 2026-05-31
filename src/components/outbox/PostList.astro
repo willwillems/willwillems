@@ -1,0 +1,20 @@
+---
+import PostRow from './PostRow.astro';
+import type { Post } from '../../data/posts';
+
+interface Props {
+	posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div data-outbox-list>
+	{posts.map((post) => <PostRow post={post} />)}
+	<p
+		class="m-0 hidden py-12 text-center text-sm text-text-inactive"
+		data-outbox-empty
+	>
+		No posts in this category yet.
+	</p>
+</div>
