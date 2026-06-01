@@ -9,19 +9,38 @@ interface Props {
 const { buckets, categoryColors } = Astro.props;
 
 // Layout: rows are days of the week, columns are weeks. Pad the leading slot
-// so the very first bucket lines up with its weekday row. The grid uses
-// row-major filling via grid-row/grid-column assignments per cell.
+// so the very first bucket lines up with its weekday row. Cells are anchored
+// from the RIGHT via negative grid lines so the newest week always sits on the
+// right edge — a client-side ResizeObserver then renders only as many columns
+// as fit the container width (oldest weeks drop off the left, no scrolling).
 const CELL_PX = 12;
 const GAP_PX = 4;
+const STEP_PX = CELL_PX + GAP_PX;
+
+// Server can't measure the container, so we pre-render for the widest the
+// content column ever gets: max-w-5xl (1024px) minus px-8 padding => ~960px.
+// The client ResizeObserver refines this to the real width on load, so the
+// common desktop/MacBook case paints correctly with no trailing gap.
+const SSR_CONTENT_PX = 960;
 
 const firstDay = buckets[0]?.date ?? new Date();
 const leadingPad = firstDay.getUTCDay(); // 0 = Sun
 const totalCells = leadingPad + buckets.length;
 const columnCount = Math.ceil(totalCells / 7);
 
+const ssrCols = Math.max(
+	1,
+	Math.min(columnCount, Math.floor((SSR_CONTENT_PX + GAP_PX) / STEP_PX)),
+);
+
+// Negative grid line for the K-th column counted from the right (K=1 is the
+// rightmost column). Independent of how many columns are actually rendered, so
+// the script can shrink the grid without re-placing cells.
+const gridColumnFromRight = (k: number) => `${-(k + 1)} / span 1`;
+
 // Month labels: walk the buckets in column order and capture the first day
-// of each new month. Render a label in that column.
-const monthLabels: { col: number; label: string }[] = [];
+// of each new month. Each label is anchored by the same right-counted K.
+const monthLabels: { k: number; label: string }[] = [];
 let lastMonth = -1;
 for (let col = 0; col < columnCount; col++) {
 	const cellIndex = col * 7 - leadingPad; // top-of-column bucket index
@@ -31,7 +50,7 @@ for (let col = 0; col < columnCount; col++) {
 	if (month !== lastMonth) {
 		lastMonth = month;
 		monthLabels.push({
-			col,
+			k: columnCount - col,
 			label: date.toLocaleDateString('en-us', {
 				month: 'short',
 				timeZone: 'UTC',
@@ -40,50 +59,110 @@ for (let col = 0; col < columnCount; col++) {
 	}
 }
 
-const gridTemplateColumns = `repeat(${columnCount}, ${CELL_PX}px)`;
+const initialTemplate = `repeat(${ssrCols}, ${CELL_PX}px)`;
 const cellsGridTemplateRows = `repeat(7, ${CELL_PX}px)`;
 ---
 
-<div class="overflow-x-auto pb-1" data-outbox-heatmap>
-	<div class="inline-block min-w-full">
-		<div
-			class="grid"
-			style={`grid-template-columns: ${gridTemplateColumns}; grid-template-rows: ${cellsGridTemplateRows}; gap: ${GAP_PX}px;`}
-			role="img"
-			aria-label={`Publishing activity over the last ${buckets.length} days`}
-		>
-			{
-				buckets.map((bucket, i) => {
-					const slot = leadingPad + i;
-					const col = Math.floor(slot / 7) + 1;
-					const row = (slot % 7) + 1;
-					const color =
-						bucket.dominantCategory &&
-						categoryColors[bucket.dominantCategory];
-					return (
-						<div
-							class="rounded-[1px]"
-							style={`grid-column: ${col}; grid-row: ${row}; background-color: ${color ?? '#1c1c1c'};`}
-							aria-hidden="true"
-						/>
-					);
-				})
-			}
-		</div>
-		<div
-			class="mt-2 grid text-[11px] text-text-inactive"
-			style={`grid-template-columns: ${gridTemplateColumns}; column-gap: ${GAP_PX}px;`}
-		>
-			{
-				monthLabels.map((m) => (
+<div
+	class="overflow-hidden"
+	data-outbox-heatmap
+	data-total-cols={columnCount}
+	data-cell={CELL_PX}
+	data-gap={GAP_PX}
+>
+	<div
+		class="grid"
+		style={`grid-template-columns: ${initialTemplate}; grid-template-rows: ${cellsGridTemplateRows}; gap: ${GAP_PX}px;`}
+		role="img"
+		aria-label={`Publishing activity over the last ${buckets.length} days`}
+		data-heatmap-grid
+	>
+		{
+			buckets.map((bucket, i) => {
+				const slot = leadingPad + i;
+				const col = Math.floor(slot / 7) + 1;
+				const row = (slot % 7) + 1;
+				const k = columnCount - col + 1;
+				const color =
+					bucket.dominantCategory &&
+					categoryColors[bucket.dominantCategory];
+				return (
 					<div
-						class="whitespace-nowrap"
-						style={`grid-column: ${m.col + 1};`}
-					>
-						{m.label}
-					</div>
-				))
-			}
-		</div>
+						class="rounded-[1px]"
+						style={`grid-column: ${gridColumnFromRight(k)}; grid-row: ${row}; background-color: ${color ?? '#1c1c1c'};`}
+						data-k={k}
+						hidden={k > ssrCols}
+						aria-hidden="true"
+					/>
+				);
+			})
+		}
+	</div>
+	<div
+		class="mt-2 grid text-xs text-text-inactive"
+		style={`grid-template-columns: ${initialTemplate}; column-gap: ${GAP_PX}px;`}
+		data-heatmap-labels
+	>
+		{
+			monthLabels.map((m) => (
+				<div
+					class="whitespace-nowrap"
+					style={`grid-column: ${gridColumnFromRight(m.k)};`}
+					data-k={m.k}
+					hidden={m.k > ssrCols}
+				>
+					{m.label}
+				</div>
+			))
+		}
 	</div>
 </div>
+
+<script>
+	const sizeHeatmap = (container: HTMLElement) => {
+		const grid = container.querySelector<HTMLElement>(
+			'[data-heatmap-grid]',
+		);
+		const labels = container.querySelector<HTMLElement>(
+			'[data-heatmap-labels]',
+		);
+		if (!grid || !labels) return;
+
+		const total = Number(container.dataset.totalCols ?? '0');
+		const cell = Number(container.dataset.cell ?? '12');
+		const gap = Number(container.dataset.gap ?? '4');
+		const step = cell + gap;
+
+		const cells = Array.from(
+			grid.querySelectorAll<HTMLElement>('[data-k]'),
+		);
+		const labelEls = Array.from(
+			labels.querySelectorAll<HTMLElement>('[data-k]'),
+		);
+
+		const apply = () => {
+			const width = container.clientWidth;
+			if (width === 0) return;
+			const fit = Math.floor((width + gap) / step);
+			const cols = Math.max(1, Math.min(total, fit));
+			const template = `repeat(${cols}, ${cell}px)`;
+			grid.style.gridTemplateColumns = template;
+			labels.style.gridTemplateColumns = template;
+			for (const el of cells) {
+				el.hidden = Number(el.dataset.k) > cols;
+			}
+			for (const el of labelEls) {
+				el.hidden = Number(el.dataset.k) > cols;
+			}
+		};
+
+		new ResizeObserver(apply).observe(container);
+		apply();
+	};
+
+	for (const el of document.querySelectorAll<HTMLElement>(
+		'[data-outbox-heatmap]',
+	)) {
+		sizeHeatmap(el);
+	}
+</script>

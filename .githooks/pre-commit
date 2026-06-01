@@ -1,0 +1,14 @@
+#!/bin/sh
+# Auto-fix staged JS/TS/Astro files with ESLint before committing.
+# Enabled via the "prepare" npm script (git config core.hooksPath .githooks).
+
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' '*.mjs' '*.ts' '*.tsx' '*.astro')
+
+[ -z "$files" ] && exit 0
+
+echo "$files" | xargs npx eslint --fix || exit 1
+
+# Re-stage any fixes ESLint applied.
+echo "$files" | xargs git add
+
+exit 0

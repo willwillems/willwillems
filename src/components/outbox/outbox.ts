@@ -79,14 +79,23 @@ export interface HeatmapBucket {
 }
 
 /**
- * Build a 365-day rolling window of heatmap buckets ending on `asOf`. For each
- * day, computes the number of posts published that day and the dominant
+ * Default heatmap window: ~2 years of history. The grid only ever displays as
+ * many columns as fit its container, so generating a generous window means the
+ * heatmap always fills the available width (older empty weeks render blank,
+ * GitHub-style) without coupling the data layer to the layout's exact width.
+ */
+export const HEATMAP_WINDOW_DAYS = 2 * 52 * 7; // 104 weeks
+
+/**
+ * Build a rolling window of heatmap buckets ending on `asOf` (default ~2 years).
+ * For each day, computes the number of posts published that day and the dominant
  * category (most posts of that category that day; ties broken by `categoryOrder`).
  */
 export function buildHeatmapBuckets(
 	posts: Post[],
 	categoryOrder: string[],
 	asOf: Date = new Date(),
+	windowDays: number = HEATMAP_WINDOW_DAYS,
 ): HeatmapBucket[] {
 	const dayMs = 24 * 60 * 60 * 1000;
 
@@ -112,7 +121,7 @@ export function buildHeatmapBuckets(
 	}
 
 	const buckets: HeatmapBucket[] = [];
-	for (let i = 364; i >= 0; i--) {
+	for (let i = windowDays - 1; i >= 0; i--) {
 		const date = new Date(endDay.getTime() - i * dayMs);
 		const key = isoDayKey(date);
 		const dayPosts = byDate.get(key) ?? [];

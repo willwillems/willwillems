@@ -9,15 +9,15 @@ const { categories } = Astro.props;
 ---
 
 <div
-	class="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm"
+	class="flex flex-wrap items-center justify-between gap-8 gap-y-4 type-title"
 >
-	<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-		<h2 class="m-0 text-sm font-medium text-text">Outbox</h2>
+	<div class="flex flex-wrap items-center gap-10">
+		<h2 class="text-text-primary">Outbox</h2>
 		<CategoryTabs categories={categories} />
 	</div>
 	<button
 		type="button"
-		class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-sm font-medium text-text-inactive transition-colors duration-150 hover:text-text-secondary"
+		class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third"
 		data-outbox-sort
 		data-direction="desc"
 		aria-label="Toggle sort direction"

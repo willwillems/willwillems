@@ -45,7 +45,7 @@ The Outbox section header SHALL display, on a single horizontal line at wide vie
 
 - GIVEN the tabs are rendered
 - WHEN no user interaction has occurred
-- THEN the `All` tab has the active text colour (`text-text`)
+- THEN the `All` tab has the active text colour (`text-text-primary`)
 - AND every other tab has the inactive text colour (`text-text-inactive`)
 
 #### Scenario: Filter button is absent

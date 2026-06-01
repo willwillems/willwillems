@@ -12,7 +12,8 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
-		"validate": "npm run check && npm run lint && npm run format:check"
+		"validate": "npm run check && npm run lint && npm run format:check",
+		"prepare": "git config core.hooksPath .githooks"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^5.0.0-beta.2",

@@ -9,6 +9,7 @@ const navItems = [
 	{ label: 'Articles', href: '/articles' },
 	{ label: 'Projects', href: '/projects' },
 	{ label: 'Posts', href: '/posts' },
+	{ label: 'About', href: '/about' },
 ];
 
 const pathname = Astro.url.pathname;
@@ -37,8 +38,8 @@ const currentPage =
 					class:list={[
 						'no-underline',
 						item.label === currentPage
-							? 'text-text'
-							: 'text-text-secondary',
+							? 'text-text-primary'
+							: 'text-text-third',
 					]}
 				>
 					{item.label}
@@ -71,8 +72,8 @@ const currentPage =
 					class:list={[
 						'block px-5 py-2 no-underline',
 						item.label === currentPage
-							? 'text-text'
-							: 'text-text-secondary',
+							? 'text-text-primary'
+							: 'text-text-third',
 					]}
 				>
 					{item.label}
@@ -80,9 +81,8 @@ const currentPage =
 			))
 		}
 		<hr class="mx-5 my-1 border-t border-border" />
-		<a
-			href="/contact"
-			class="block px-5 py-2 text-text-secondary no-underline">Contact</a
+		<a href="/contact" class="block px-5 py-2 text-text-third no-underline"
+			>Contact</a
 		>
 	</nav>
 </div>

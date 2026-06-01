@@ -1,0 +1,157 @@
+---
+// About section with a length slider.
+// Drag the slider to swap between five increasingly detailed descriptions.
+// Copy below is drafted from the Figma "medium long" text — edit freely.
+// Default = "Medium" (the middle variant), as requested.
+
+import Slider from './Slider.astro';
+
+interface Variant {
+	label: string;
+	paragraphs: string[];
+}
+
+const variants: Variant[] = [
+	{
+		label: 'Super short',
+		paragraphs: [
+			"I'm Will — a product engineer who loves digital design, creative hardware, and staying curious.",
+		],
+	},
+	{
+		label: 'Short',
+		paragraphs: [
+			'I am passionate about digital design and development, it plays a big role in my life.',
+			'I travel long-term, kitesurf and run, tinker with IOT hardware, and occasionally make some funky tech tunes.',
+			'Strong opinions, held loosely — I love doubt.',
+		],
+	},
+	{
+		label: 'Medium',
+		paragraphs: [
+			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
+			'I like traveling, long-term. I am rarely a tourist.',
+			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
+			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
+			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
+			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
+			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
+			'I love a challenge, I try to steer towards discomfort.',
+			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
+			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
+		],
+	},
+	{
+		label: 'Long',
+		paragraphs: [
+			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
+			"Most days you'll find me somewhere between a code editor and a soldering iron. I build for the web for a living, but the things that pull me in hardest tend to live at the edges — interfaces you can touch, instruments you can play, software that behaves a little more like the physical world.",
+			'I like traveling, long-term. I am rarely a tourist. Living somewhere is very different from visiting it, and that slower pace is where the interesting stuff tends to happen.',
+			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
+			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
+			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
+			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
+			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
+			'I love a challenge, I try to steer towards discomfort.',
+			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
+			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
+		],
+	},
+	{
+		label: 'Extra long',
+		paragraphs: [
+			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
+			"Most days you'll find me somewhere between a code editor and a soldering iron. I build for the web for a living, but the things that pull me in hardest tend to live at the edges — interfaces you can touch, instruments you can play, software that behaves a little more like the physical world.",
+			'I like traveling, long-term. I am rarely a tourist. Travelling this way reshaped how I think about almost everything: work, relationships, comfort. Living somewhere is very different from visiting it, and that slower pace is where the interesting stuff happens.',
+			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
+			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
+			'I think a lot about how we make decisions, why we believe what we believe, and how rarely either holds up under scrutiny. That is probably why doubt feels like a feature to me rather than a bug.',
+			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
+			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
+			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
+			'I love a challenge, I try to steer towards discomfort.',
+			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
+			"If any of this resonates — the design, the hardware, the music, the questions — I'd genuinely love to talk. Some of my favourite projects started as a single curious message.",
+			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
+		],
+	},
+];
+
+// Default to the middle variant.
+const defaultIndex = Math.floor(variants.length / 2);
+---
+
+<section data-about-section class="flex flex-col py-16 gap-8">
+	<div class="flex items-center justify-between gap-8 type-title">
+		<h2>About</h2>
+		<div class="flex shrink-0 flex-row items-end gap-6">
+			<span
+				data-about-label
+				class="type-title text-text-secondary whitespace-nowrap"
+			>
+				{variants[defaultIndex].label}
+			</span>
+			<Slider
+				value={50}
+				class="w-48"
+				aria-label="About description length"
+				aria-valuetext={variants[defaultIndex].label}
+				data-about-slider
+			/>
+		</div>
+	</div>
+
+	<div data-about-content>
+		{
+			variants.map((variant, index) => (
+				<div
+					data-variant
+					data-label={variant.label}
+					class:list={[
+						'gap-x-12 sm:columns-2',
+						index !== defaultIndex && 'hidden',
+					]}
+				>
+					{variant.paragraphs.map((paragraph) => (
+						<p class="mb-6 break-inside-avoid leading-[30px] text-text-secondary last:mb-0">
+							{paragraph}
+						</p>
+					))}
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	const sections = document.querySelectorAll<HTMLElement>(
+		'[data-about-section]',
+	);
+
+	sections.forEach((section) => {
+		const slider = section.querySelector<HTMLInputElement>(
+			'[data-about-slider]',
+		);
+		const label = section.querySelector<HTMLElement>('[data-about-label]');
+		const variants = Array.from(
+			section.querySelectorAll<HTMLElement>('[data-variant]'),
+		);
+
+		if (!slider || !label || variants.length === 0) return;
+
+		const update = () => {
+			const value = Number(slider.value);
+			const index = Math.round((value / 100) * (variants.length - 1));
+			const labelText = variants[index]?.dataset.label ?? '';
+
+			variants.forEach((el, i) =>
+				el.classList.toggle('hidden', i !== index),
+			);
+			label.textContent = labelText;
+			slider.setAttribute('aria-valuetext', labelText);
+		};
+
+		slider.addEventListener('input', update);
+		update();
+	});
+</script>

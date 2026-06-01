@@ -1,0 +1,25 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AboutSection from '../components/AboutSection.astro';
+
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`About — ${SITE_TITLE}`}
+			description="A little about me — drag the slider to read more, or less."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="mx-auto max-w-5xl px-8">
+			<AboutSection />
+		</main>
+		<Footer />
+	</body>
+</html>

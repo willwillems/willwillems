@@ -26,7 +26,7 @@ The site has two distinct content streams:
 - **Indentation**: tabs.
 - **Quotes**: single quotes in TS/JS.
 - **Components**: Astro (`.astro`) only.
-- **Styling**: Tailwind utility classes; design tokens defined in `src/styles/global.css` (`--color-bg`, `--color-text`, `--color-text-secondary`, `--color-text-inactive`, `--color-surface`, `--color-border`, `--font-sans`, `--font-accent`).
+- **Styling**: Tailwind utility classes; design tokens defined in `src/styles/global.css` (`--color-bg`, `--color-text`, `--color-text-third`, `--color-text-inactive`, `--color-surface`, `--color-border`, `--font-sans`, `--font-accent`).
 - **Validation gate**: `npm run validate` (typecheck + lint + format-check) must pass before any change is considered complete.
 
 ## Capabilities

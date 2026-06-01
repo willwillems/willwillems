@@ -25,10 +25,8 @@ const heroImages = [
 		<main class="mx-auto max-w-5xl px-8">
 			<section class="flex flex-col gap-8 py-8">
 				<ImageCarousel images={heroImages} />
-				<p class="text-lg leading-[1.7]">
-					Hi there, I'm <span class="font-accent text-[1.35em]"
-						>Will</span
-					>
+				<p class="type-body-large">
+					Hi there, I'm <span class="type-accent">Will</span>
 					<br />
 					<br />
 					I work at <strong class="font-semibold">Deducta</strong> as a
@@ -37,8 +35,8 @@ const heroImages = [
 					>. In addition to engineering on the web, I've always been
 					obsessed with <em class="not-italic font-medium"
 						>creative hardware interfaces</em
-					> with a specific focus on <span
-						class="font-accent text-[1.35em]">audio</span
+					> with a specific focus on <span class="type-accent"
+						>audio</span
 					>.
 				</p>
 			</section>
@@ -46,51 +44,49 @@ const heroImages = [
 			<section class="flex flex-col gap-8 py-16">
 				<div class="flex flex-col gap-8">
 					<div class="flex items-start justify-between">
-						<h2 class="text-base font-medium">Say hello</h2>
+						<h2 class="type-title">Say hello</h2>
 						<a
 							href="#"
-							class="flex items-center gap-2.5 text-text-secondary hover:text-text transition-colors"
+							class="flex items-center gap-2.5 text-text-third hover:text-text-primary transition-colors"
 						>
-							<span class="text-base font-medium">Send</span>
+							<span class="type-title">Send</span>
 							<ArrowRight />
 						</a>
 					</div>
 
 					<div class="flex flex-wrap gap-8">
 						<div class="flex w-48 shrink-0 flex-col gap-4">
-							<label
-								class="text-sm font-medium"
-								for="contact-email">Email</label
+							<label class="type-label" for="contact-email"
+								>Email</label
 							>
 							<input
 								id="contact-email"
 								type="email"
 								placeholder="john@hd.com"
-								class="bg-transparent text-sm text-text-secondary placeholder:text-text-secondary outline-none"
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none"
 							/>
 						</div>
 						<div class="flex min-w-64 flex-1 flex-col gap-4">
-							<label
-								class="text-sm font-medium"
-								for="contact-message">Message</label
+							<label class="type-label" for="contact-message"
+								>Message</label
 							>
 							<textarea
 								id="contact-message"
 								rows="3"
 								placeholder="Write your message here..."
-								class="bg-transparent text-sm leading-[1.7] text-text-secondary placeholder:text-text-secondary outline-none resize-none"
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none resize-none"
 							></textarea>
 						</div>
 					</div>
 				</div>
 
 				<div class="flex flex-col gap-6">
-					<p class="text-base font-medium">Or</p>
+					<p class="type-title">Or</p>
 					<a
 						href="https://github.com/nicepkg"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex items-center gap-3 text-sm font-medium hover:text-text-secondary transition-colors"
+						class="flex items-center gap-3 type-label hover:text-text-third transition-colors"
 					>
 						<GitHub />
 						Ping me on GH

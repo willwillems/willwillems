@@ -12,7 +12,7 @@ const { posts } = Astro.props;
 <div data-outbox-list>
 	{posts.map((post) => <PostRow post={post} />)}
 	<p
-		class="m-0 hidden py-12 text-center text-sm text-text-inactive"
+		class="m-0 hidden py-12 text-center type-body-small text-text-inactive"
 		data-outbox-empty
 	>
 		No posts in this category yet.

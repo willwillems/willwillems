@@ -12,15 +12,15 @@ interface Props {
 const { tabs } = Astro.props;
 ---
 
-<nav class="flex items-center gap-5" aria-label="Project filters">
+<nav class="flex items-center gap-6" aria-label="Project filters">
 	{
 		tabs.map((tab) => (
 			<a
 				class:list={[
-					'text-sm font-medium no-underline transition-colors duration-150',
+					'type-label no-underline transition-colors duration-150',
 					tab.active
-						? 'text-text hover:text-text'
-						: 'text-text-inactive hover:text-text-secondary',
+						? 'text-text-primary hover:text-text-primary'
+						: 'text-text-inactive hover:text-text-third',
 				]}
 				href={tab.href}
 			>

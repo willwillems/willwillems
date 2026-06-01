@@ -8,10 +8,15 @@
 	src: url('/fonts/gochi-hand.ttf') format('truetype');
 }
 
+:root {
+	--monospace-font-family: 'JetBrains Mono', monospace;
+}
+
 @theme {
 	--color-bg: #020202;
-	--color-text: #ffffff;
-	--color-text-secondary: #a2a2a2;
+	--color-text-primary: #ffffff;
+	--color-text-secondary: #ebebeb;
+	--color-text-third: #a2a2a2;
 	--color-text-inactive: #757575;
 	--color-surface: #333333;
 	--color-border: #3f3f3f;
@@ -27,5 +32,64 @@ body {
 			rgba(0, 0, 0, 0.2)
 		)
 		var(--color-bg);
-	color: var(--color-text);
+	color: var(--color-text-primary);
+}
+
+@utility type-heading-1 {
+	font-size: var(--text-2xl);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+@utility type-heading-2 {
+	font-size: var(--text-xl);
+	font-weight: 500;
+	line-height: 1.5;
+}
+
+@utility type-heading-3 {
+	font-size: var(--text-lg);
+	font-weight: 500;
+	line-height: 1.6;
+}
+
+@utility type-body {
+	font-size: var(--text-base);
+	line-height: 1.7;
+}
+
+@utility type-body-small {
+	font-size: var(--text-sm);
+	line-height: 1.7;
+}
+
+@utility type-body-large {
+	font-size: var(--text-lg);
+	line-height: 1.7;
+}
+
+@utility type-label {
+	font-size: var(--text-sm);
+	line-height: 1.4;
+	font-weight: 450;
+}
+
+@utility type-title {
+	font-size: var(--text-base);
+	font-weight: 400;
+	line-height: 1.2;
+}
+
+@utility type-monospaced {
+	font-family: var(--monospace-font-family, monospace);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+@utility type-accent {
+	font-family: var(--font-accent, cursive);
+	font-size: 1.35em;
+	font-weight: 500;
+	line-height: 1.7;
 }

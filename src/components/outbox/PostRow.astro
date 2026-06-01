@@ -14,31 +14,25 @@ const iso = post.publishedAt.toISOString().slice(0, 10);
 ---
 
 <article
-	class="outbox-row grid gap-y-2 py-6 max-md:grid-cols-1 md:grid-cols-[1fr_3fr] md:gap-x-8"
+	class="grid gap-2 py-6 max-md:grid-cols-1 md:grid-cols-[1fr_3fr] md:gap-x-8 [[data-outbox-row]+&]:border-t [[data-outbox-row]+&]:border-border"
 	data-outbox-row
 	data-categories={post.categories.join(',')}
 	data-date={iso}
 >
-	<div class="flex flex-col gap-1 text-sm">
-		<span class="font-medium text-text">{primaryCategory}</span>
-		<span class="text-text-inactive">
+	<div class="flex flex-col gap-4 text-sm">
+		<span class="text-sm text-text-primary">{primaryCategory}</span>
+		<span class="text-text-inactive type-body-small">
 			<FormattedDate date={post.publishedAt} />
 		</span>
 	</div>
-	<div class="flex flex-col gap-2">
-		<h3 class="m-0 text-base font-medium text-text">{post.title}</h3>
+	<div class="flex flex-col gap-4">
+		<h3 class="type-title text-text-primary">
+			{post.title}
+		</h3>
 		{
 			description && (
-				<p class="m-0 text-sm leading-relaxed text-text-secondary">
-					{description}
-				</p>
+				<p class="type-body-small text-text-third">{description}</p>
 			)
 		}
 	</div>
 </article>
-
-<style>
-	.outbox-row + .outbox-row {
-		border-top: 1px solid var(--color-border);
-	}
-</style>

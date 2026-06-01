@@ -14,16 +14,16 @@ const { name, description, href, verified = false } = Astro.props;
 
 <article class="flex items-center gap-6">
 	<div
-		class="size-14 shrink-0 rounded-[11px] border border-border bg-surface"
+		class="size-14 shrink-0 rounded-xl border border-border bg-surface"
 		aria-hidden="true"
 	>
 	</div>
 	<div class="flex min-w-0 flex-1 flex-col gap-1">
 		<div class="flex items-center gap-3">
-			<p class="text-base font-medium text-text">{name}</p>
+			<p class="type-label text-text-primary">{name}</p>
 			{verified && <VerifiedBadge class="shrink-0" />}
 		</div>
-		<p class="text-base font-medium text-text-secondary">{description}</p>
+		<p class="type-body text-text-third">{description}</p>
 	</div>
 	{
 		href && (

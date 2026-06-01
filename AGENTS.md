@@ -46,5 +46,6 @@ public/         Static assets (fonts, images)
 - **Linting**: ESLint with `strictTypeChecked` for TS/JS files. Fix all lint errors, don't suppress with `eslint-disable` unless there is no viable alternative.
 - **Components**: Astro components (`.astro`). No client-side framework (React/Vue/Svelte) unless explicitly requested.
 - **Styling**: Tailwind utility classes. Avoid custom CSS unless Tailwind cannot express it.
+- **Typography**: Use the `type-*` utility classes from `src/styles/global.css` for all text styling instead of ad-hoc font-size/weight/line-height utilities. Available: `type-heading-1`, `type-heading-2`, `type-heading-3`, `type-title`, `type-body`, `type-body-small`, `type-label`, `type-monospaced`.
 - **Content**: Blog posts are Markdown files in `src/content/blog/` with frontmatter: `title` (required), `description`, `pubDate` (required), `updatedDate`, `duration`, `category`, `heroImage`.
 - **Node**: v24 (see `.node-version`). ESM only (`"type": "module"`).

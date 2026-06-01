@@ -24,9 +24,11 @@ const categoryColors = buildCategoryColorMap(categories);
 const buckets = buildHeatmapBuckets(posts, categories);
 ---
 
-<section class="flex flex-col gap-6" data-outbox-section>
-	<OutboxHeader categories={categories} />
-	<ActivityHeatmap buckets={buckets} categoryColors={categoryColors} />
+<section class="flex flex-col gap-10" data-outbox-section>
+	<div class="flex flex-col gap-8">
+		<OutboxHeader categories={categories} />
+		<ActivityHeatmap buckets={buckets} categoryColors={categoryColors} />
+	</div>
 	<PostList posts={orderedPosts} />
 </section>
 
@@ -98,9 +100,9 @@ const buckets = buildHeatmapBuckets(posts, categories);
 			for (const tab of allTabs) {
 				const isActive = tab === target;
 				tab.dataset.active = isActive ? 'true' : 'false';
-				tab.classList.toggle('text-text', isActive);
+				tab.classList.toggle('text-text-primary', isActive);
 				tab.classList.toggle('text-text-inactive', !isActive);
-				tab.classList.toggle('hover:text-text-secondary', !isActive);
+				tab.classList.toggle('hover:text-text-third', !isActive);
 			}
 
 			updateVisibility();
