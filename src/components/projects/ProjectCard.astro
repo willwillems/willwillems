@@ -1,15 +1,18 @@
 ---
 import VerifiedBadge from '../icons/VerifiedBadge.astro';
 import ExternalLink from '../icons/ExternalLink.astro';
+import LabExperiment from '../icons/LabExperiment.astro';
+import type { ProjectStatus } from '../../data/projects';
 
 interface Props {
 	name: string;
 	description: string;
 	href?: string;
 	verified?: boolean;
+	status?: ProjectStatus;
 }
 
-const { name, description, href, verified = false } = Astro.props;
+const { name, description, href, verified = false, status } = Astro.props;
 ---
 
 <article class="flex items-center gap-6">
@@ -22,6 +25,7 @@ const { name, description, href, verified = false } = Astro.props;
 		<div class="flex items-center gap-3">
 			<p class="type-label text-text-primary">{name}</p>
 			{verified && <VerifiedBadge class="shrink-0" />}
+			{status === 'experiment' && <LabExperiment class="shrink-0" />}
 		</div>
 		<p class="type-body text-text-third">{description}</p>
 	</div>

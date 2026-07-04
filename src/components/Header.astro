@@ -6,7 +6,6 @@ import AtSign from './icons/AtSign.astro';
 
 const navItems = [
 	{ label: 'Home', href: '/' },
-	{ label: 'Articles', href: '/articles' },
 	{ label: 'Projects', href: '/projects' },
 	{ label: 'Posts', href: '/posts' },
 	{ label: 'About', href: '/about' },
@@ -57,7 +56,7 @@ const currentPage =
 		</button>
 	</div>
 	<div class="hidden min-w-12 items-center justify-end sm:flex">
-		<a href="#" aria-label="Social">
+		<a href="/#contact" aria-label="Contact">
 			<AtSign class="text-white" />
 		</a>
 	</div>
@@ -80,8 +79,8 @@ const currentPage =
 				</a>
 			))
 		}
-		<hr class="mx-5 my-1 border-t border-border" />
-		<a href="/contact" class="block px-5 py-2 text-text-third no-underline"
+		<hr class="mx-5 my-1 border-t border-border-secondary" />
+		<a href="/#contact" class="block px-5 py-2 text-text-third no-underline"
 			>Contact</a
 		>
 	</nav>
@@ -103,8 +102,8 @@ const currentPage =
 		right: 2rem;
 		left: auto;
 		margin: 0;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
+		background: var(--color-surface-secondary);
+		border: 1px solid var(--color-border-secondary);
 		border-radius: 11px;
 		padding: 0.5rem 0;
 		min-width: 10rem;

@@ -1,5 +1,6 @@
 ---
 import type { HeatmapBucket } from './outbox';
+import { EMPTY_CELL_COLOR } from './outbox';
 
 interface Props {
 	buckets: HeatmapBucket[];
@@ -59,44 +60,64 @@ for (let col = 0; col < columnCount; col++) {
 	}
 }
 
+// ISO day key shared with PostRow's data-date, so the snake game can map an
+// eaten heatmap cell back to the post rows published that day.
+const isoDay = (date: Date) => date.toISOString().slice(0, 10);
+
 const initialTemplate = `repeat(${ssrCols}, ${CELL_PX}px)`;
 const cellsGridTemplateRows = `repeat(7, ${CELL_PX}px)`;
+
+const controlClass =
+	'flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third';
 ---
 
 <div
-	class="overflow-hidden"
+	class="group overflow-hidden"
 	data-outbox-heatmap
+	data-snake-state="idle"
 	data-total-cols={columnCount}
 	data-cell={CELL_PX}
 	data-gap={GAP_PX}
 >
-	<div
-		class="grid"
-		style={`grid-template-columns: ${initialTemplate}; grid-template-rows: ${cellsGridTemplateRows}; gap: ${GAP_PX}px;`}
-		role="img"
-		aria-label={`Publishing activity over the last ${buckets.length} days`}
-		data-heatmap-grid
-	>
-		{
-			buckets.map((bucket, i) => {
-				const slot = leadingPad + i;
-				const col = Math.floor(slot / 7) + 1;
-				const row = (slot % 7) + 1;
-				const k = columnCount - col + 1;
-				const color =
-					bucket.dominantCategory &&
-					categoryColors[bucket.dominantCategory];
-				return (
-					<div
-						class="rounded-[1px]"
-						style={`grid-column: ${gridColumnFromRight(k)}; grid-row: ${row}; background-color: ${color ?? '#1c1c1c'};`}
-						data-k={k}
-						hidden={k > ssrCols}
-						aria-hidden="true"
-					/>
-				);
-			})
-		}
+	<div class="relative">
+		<div
+			class="grid"
+			style={`grid-template-columns: ${initialTemplate}; grid-template-rows: ${cellsGridTemplateRows}; gap: ${GAP_PX}px;`}
+			role="img"
+			aria-label={`Publishing activity over the last ${buckets.length} days`}
+			data-heatmap-grid
+		>
+			{
+				buckets.map((bucket, i) => {
+					const slot = leadingPad + i;
+					const col = Math.floor(slot / 7) + 1;
+					const row = (slot % 7) + 1;
+					const k = columnCount - col + 1;
+					const color =
+						bucket.dominantCategory &&
+						categoryColors[bucket.dominantCategory];
+					return (
+						<div
+							class="rounded-[1px] transition-colors duration-500"
+							style={`grid-column: ${gridColumnFromRight(k)}; grid-row: ${row}; background-color: ${color ?? EMPTY_CELL_COLOR};`}
+							data-k={k}
+							data-row={row}
+							data-date={color ? isoDay(bucket.date) : undefined}
+							data-count={color ? bucket.postCount : undefined}
+							data-href={
+								color ? (bucket.href ?? undefined) : undefined
+							}
+							hidden={k > ssrCols}
+							aria-hidden="true"
+						/>
+					);
+				})
+			}
+		</div>
+		<canvas
+			class="pointer-events-none absolute top-0 left-0 transition-opacity duration-500 motion-reduce:transition-none"
+			data-snake-canvas
+			aria-hidden="true"></canvas>
 	</div>
 	<div
 		class="mt-2 grid text-xs text-text-inactive"
@@ -116,22 +137,165 @@ const cellsGridTemplateRows = `repeat(7, ${CELL_PX}px)`;
 			))
 		}
 	</div>
+	<div
+		class="mt-3 flex min-h-5 items-center justify-between gap-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100 group-data-[snake-state=playing]:opacity-100 group-data-[snake-state=over]:opacity-100"
+		data-snake-hud
+	>
+		<p
+			class="m-0 type-label text-text-inactive"
+			aria-live="polite"
+			data-snake-status
+		>
+		</p>
+		<button type="button" class={controlClass} data-snake-restore hidden>
+			Restore posts
+		</button>
+	</div>
 </div>
 
+<style define:vars={{ 'empty-cell': EMPTY_CELL_COLOR }}>
+	/* The grid doubles as the snake board; invite the click that starts it. */
+	[data-snake-state='idle'] [data-heatmap-grid],
+	[data-snake-state='over'] [data-heatmap-grid] {
+		cursor: pointer;
+	}
+
+	/* !important beats the cell's server-rendered inline color. */
+	[data-eaten] {
+		background-color: var(--empty-cell) !important;
+	}
+
+	[data-snake-state='playing'] [data-date]:not([data-eaten]) {
+		animation: outbox-food-pulse 1.8s ease-in-out infinite;
+	}
+
+	/* A crash gets two hard arcade blinks before the fade takes it away.
+	   While this runs it overrides the canvas's inline opacity; `forwards`
+	   holds the final 0, matching the inline value underneath. */
+	[data-crashed] {
+		animation: outbox-snake-death 2s forwards;
+	}
+
+	@keyframes outbox-snake-death {
+		0%,
+		24%,
+		48% {
+			opacity: 1;
+			animation-timing-function: steps(1, end);
+		}
+		12%,
+		36% {
+			opacity: 0;
+			animation-timing-function: steps(1, end);
+		}
+		60% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes outbox-food-pulse {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.7;
+			transform: scale(0.85);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-snake-state='playing'] [data-date]:not([data-eaten]),
+		[data-crashed] {
+			animation: none;
+		}
+	}
+</style>
+
 <script>
-	const sizeHeatmap = (container: HTMLElement) => {
+	import {
+		cellKey,
+		createGame,
+		snakePolyline,
+		step,
+		turn,
+		type Direction,
+		type Point,
+		type SnakeState,
+	} from './snake';
+
+	const ROWS = 7;
+	const START_TICK_MS = 140;
+	const MIN_TICK_MS = 90;
+	const TICK_DECREMENT_MS = 4;
+	const SWIPE_PX = 18;
+
+	const BODY_COLOR = '#d9d9d9';
+	const HEAD_COLOR = '#ffffff';
+	const EYE_COLOR = '#0a0a0a';
+
+	const KEY_DIRECTIONS: Record<string, Direction> = {
+		ArrowUp: 'up',
+		KeyW: 'up',
+		ArrowDown: 'down',
+		KeyS: 'down',
+		ArrowLeft: 'left',
+		KeyA: 'left',
+		ArrowRight: 'right',
+		KeyD: 'right',
+	};
+
+	type SnakeUiState = 'idle' | 'playing' | 'over';
+
+	const plural = (n: number) => (n === 1 ? 'post' : 'posts');
+
+	function initHeatmap(container: HTMLElement) {
 		const grid = container.querySelector<HTMLElement>(
 			'[data-heatmap-grid]',
 		);
 		const labels = container.querySelector<HTMLElement>(
 			'[data-heatmap-labels]',
 		);
-		if (!grid || !labels) return;
+		const canvas = container.querySelector<HTMLCanvasElement>(
+			'[data-snake-canvas]',
+		);
+		const statusEl = container.querySelector<HTMLElement>(
+			'[data-snake-status]',
+		);
+		// The toggle lives in the section header, outside this container.
+		const scope =
+			container.closest<HTMLElement>('[data-outbox-section]') ??
+			container;
+		const toggleButton = scope.querySelector<HTMLButtonElement>(
+			'[data-snake-toggle]',
+		);
+		const toggleLabel = scope.querySelector<HTMLElement>(
+			'[data-snake-toggle-label]',
+		);
+		const restoreButton = container.querySelector<HTMLButtonElement>(
+			'[data-snake-restore]',
+		);
+		const ctx = canvas?.getContext('2d');
+		if (
+			!grid ||
+			!labels ||
+			!canvas ||
+			!ctx ||
+			!statusEl ||
+			!toggleButton ||
+			!toggleLabel ||
+			!restoreButton
+		)
+			return;
 
 		const total = Number(container.dataset.totalCols ?? '0');
 		const cell = Number(container.dataset.cell ?? '12');
 		const gap = Number(container.dataset.gap ?? '4');
-		const step = cell + gap;
+		const stepPx = cell + gap;
 
 		const cells = Array.from(
 			grid.querySelectorAll<HTMLElement>('[data-k]'),
@@ -140,29 +304,367 @@ const cellsGridTemplateRows = `repeat(7, ${CELL_PX}px)`;
 			labels.querySelectorAll<HTMLElement>('[data-k]'),
 		);
 
-		const apply = () => {
+		const reducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)',
+		);
+		const coarsePointer = window.matchMedia('(pointer: coarse)');
+
+		let cols = 0;
+
+		// --- Snake state ---------------------------------------------------
+		// The game engine lives in snake.ts; everything here adapts it to the
+		// heatmap DOM: board geometry, canvas rendering, input, and the
+		// "eating a cell filters its posts" rule, announced via a bubbling
+		// `outbox:eaten-changed` event that OutboxSection listens for.
+
+		let state: SnakeUiState = 'idle';
+		let game: SnakeState | null = null;
+		let outcome: 'crashed' | 'won' | null = null;
+		let raf = 0;
+		let lastFrame = 0;
+		let accumulator = 0;
+		let tickMs = START_TICK_MS;
+		let runScore = 0;
+		let touchAnchor: Point | null = null;
+		const boardCells = new Map<string, HTMLElement>();
+
+		const centerPx = (v: number) => v * stepPx + cell / 2;
+
+		// --- Responsive sizing (columns are anchored to the right edge) -----
+
+		const applySize = () => {
 			const width = container.clientWidth;
 			if (width === 0) return;
-			const fit = Math.floor((width + gap) / step);
-			const cols = Math.max(1, Math.min(total, fit));
+			const next = Math.max(
+				1,
+				Math.min(total, Math.floor((width + gap) / stepPx)),
+			);
+			if (next === cols) return;
+			cols = next;
+
 			const template = `repeat(${cols}, ${cell}px)`;
 			grid.style.gridTemplateColumns = template;
 			labels.style.gridTemplateColumns = template;
+			for (const el of [...cells, ...labelEls])
+				el.hidden = Number(el.dataset.k) > cols;
+
+			const dpr = window.devicePixelRatio || 1;
+			const boardWidth = cols * stepPx - gap;
+			const boardHeight = ROWS * stepPx - gap;
+			canvas.width = Math.round(boardWidth * dpr);
+			canvas.height = Math.round(boardHeight * dpr);
+			canvas.style.width = `${boardWidth}px`;
+			canvas.style.height = `${boardHeight}px`;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+			// The board just changed shape under the snake; end the run.
+			if (state === 'playing') endRun();
+		};
+
+		/** Index visible cells by board coordinates (x grows rightwards). */
+		const buildBoard = () => {
+			boardCells.clear();
 			for (const el of cells) {
-				el.hidden = Number(el.dataset.k) > cols;
-			}
-			for (const el of labelEls) {
-				el.hidden = Number(el.dataset.k) > cols;
+				const k = Number(el.dataset.k);
+				if (k > cols) continue;
+				boardCells.set(
+					cellKey(cols - k, Number(el.dataset.row) - 1),
+					el,
+				);
 			}
 		};
 
-		new ResizeObserver(apply).observe(container);
-		apply();
-	};
+		const foodKeys = (): string[] =>
+			[...boardCells]
+				.filter(([, el]) => el.dataset.date && !('eaten' in el.dataset))
+				.map(([key]) => key);
+
+		// --- HUD & post-list integration ------------------------------------
+		// `data-eaten` on a cell is the single source of truth for eaten
+		// state: CSS paints the cell empty, and the HUD counts, the event
+		// payload, and restore all derive from a DOM query.
+
+		const eatenCells = (): HTMLElement[] =>
+			Array.from(grid.querySelectorAll<HTMLElement>('[data-eaten]'));
+
+		const postCount = (els: HTMLElement[]): number =>
+			els.reduce((sum, el) => sum + Number(el.dataset.count ?? '1'), 0);
+
+		const syncHud = () => {
+			const eaten = postCount(eatenCells());
+			container.dataset.snakeState = state;
+			restoreButton.hidden = state === 'playing' || eaten === 0;
+			if (state === 'playing') {
+				toggleLabel.textContent = 'End game';
+				statusEl.textContent =
+					runScore === 0
+						? coarsePointer.matches
+							? 'Swipe to steer'
+							: 'Arrow keys or WASD to steer, Esc to exit'
+						: `${runScore} ${plural(runScore)} eaten`;
+			} else if (state === 'over') {
+				toggleLabel.textContent = 'Play again';
+				statusEl.textContent =
+					outcome === 'won'
+						? `All ${runScore} ${plural(runScore)} eaten — flawless`
+						: `Crashed — ${runScore} ${plural(runScore)} eaten`;
+			} else {
+				toggleLabel.textContent = 'Play snake';
+				statusEl.textContent =
+					eaten > 0 ? `${eaten} ${plural(eaten)} eaten` : '';
+			}
+		};
+
+		const announceEaten = () => {
+			container.dispatchEvent(
+				new CustomEvent('outbox:eaten-changed', {
+					bubbles: true,
+					detail: {
+						dates: eatenCells().flatMap(
+							(el) => el.dataset.date ?? [],
+						),
+					},
+				}),
+			);
+		};
+
+		const restorePosts = () => {
+			for (const el of eatenCells()) delete el.dataset.eaten;
+			announceEaten();
+			if (state === 'over') state = 'idle';
+			syncHud();
+		};
+
+		// --- Run lifecycle ---------------------------------------------------
+
+		const startRun = () => {
+			// A container that has never been measured has no board yet.
+			if (cols === 0) return;
+			buildBoard();
+			// "Play again" after a clean sweep implies bringing the food back.
+			if (foodKeys().length === 0 && eatenCells().length > 0)
+				restorePosts();
+			game = createGame(cols, ROWS, foodKeys());
+			state = 'playing';
+			outcome = null;
+			runScore = 0;
+			tickMs = START_TICK_MS;
+			accumulator = 0;
+			lastFrame = performance.now();
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			canvas.style.opacity = '1';
+			canvas.removeAttribute('data-crashed');
+			container.style.touchAction = 'none';
+			window.addEventListener('keydown', onKeyDown);
+			syncHud();
+			cancelAnimationFrame(raf);
+			raf = requestAnimationFrame(frame);
+		};
+
+		const stopInput = () => {
+			window.removeEventListener('keydown', onKeyDown);
+			container.style.touchAction = '';
+			touchAnchor = null;
+		};
+
+		/**
+		 * Stop the run. A crash or clean sweep passes its result; quitting
+		 * (Escape, the End button, or a board resize) passes none.
+		 */
+		const endRun = (result?: 'crashed' | 'won') => {
+			stopInput();
+			cancelAnimationFrame(raf);
+			raf = 0;
+			game = null;
+			// Leave the last frame painted; CSS fades the canvas out in
+			// place — with arcade blinks first if this was a crash.
+			// startRun clears it and brings the opacity back.
+			canvas.style.opacity = '0';
+			canvas.toggleAttribute('data-crashed', result === 'crashed');
+			outcome = result ?? null;
+			state = result ? 'over' : 'idle';
+			syncHud();
+		};
+
+		const onAte = (key: string) => {
+			const el = boardCells.get(key);
+			if (!el?.dataset.date) return;
+			el.dataset.eaten = '';
+			runScore += Number(el.dataset.count ?? '1');
+			tickMs = Math.max(MIN_TICK_MS, tickMs - TICK_DECREMENT_MS);
+			announceEaten();
+			syncHud();
+		};
+
+		// --- Game loop: fixed-timestep logic, interpolated rendering ---------
+
+		const frame = (now: number) => {
+			raf = requestAnimationFrame(frame);
+			// Clamping to one tick doubles as an auto-pause when the tab was
+			// hidden — no wall of catch-up steps on return.
+			accumulator += Math.min(now - lastFrame, tickMs);
+			lastFrame = now;
+
+			while (game && accumulator >= tickMs) {
+				accumulator -= tickMs;
+				const result = step(game);
+				if (result.ate) onAte(result.ate);
+				if (result.status !== 'playing') {
+					endRun(result.status);
+					return;
+				}
+			}
+
+			render();
+		};
+
+		const render = () => {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			if (!game) return;
+			const alpha = reducedMotion.matches
+				? 1
+				: Math.min(1, accumulator / tickMs);
+			drawSnake(snakePolyline(game, alpha));
+		};
+
+		const drawSnake = (points: Point[]) => {
+			if (points.length === 0) return;
+			// The polyline is unwrapped (it may run past the board edges), so
+			// draw translated copies to cover both sides of each torus seam.
+			const offsets: Point[] = [];
+			for (const x of [-cols * stepPx, 0, cols * stepPx]) {
+				for (const y of [-ROWS * stepPx, 0, ROWS * stepPx]) {
+					offsets.push({ x, y });
+				}
+			}
+			ctx.lineWidth = cell - 1;
+			ctx.lineCap = 'round';
+			ctx.lineJoin = 'round';
+			ctx.strokeStyle = BODY_COLOR;
+			for (const offset of offsets) {
+				ctx.beginPath();
+				points.forEach((p, i) => {
+					const x = centerPx(p.x) + offset.x;
+					const y = centerPx(p.y) + offset.y;
+					if (i === 0) ctx.moveTo(x, y);
+					else ctx.lineTo(x, y);
+				});
+				ctx.stroke();
+			}
+			for (const offset of offsets) drawHead(points, offset);
+		};
+
+		const drawHead = (points: Point[], offset: Point) => {
+			const head = points[0];
+			const neck = points[1] ?? { x: head.x - 1, y: head.y };
+			const hx = centerPx(head.x) + offset.x;
+			const hy = centerPx(head.y) + offset.y;
+			ctx.fillStyle = HEAD_COLOR;
+			ctx.beginPath();
+			ctx.arc(hx, hy, (cell - 1) / 2, 0, Math.PI * 2);
+			ctx.fill();
+
+			// Eyes sit just ahead of centre, perpendicular to travel.
+			const length = Math.hypot(head.x - neck.x, head.y - neck.y) || 1;
+			const dx = (head.x - neck.x) / length;
+			const dy = (head.y - neck.y) / length;
+			ctx.fillStyle = EYE_COLOR;
+			for (const side of [-1, 1]) {
+				ctx.beginPath();
+				ctx.arc(
+					hx + dx * 1.6 - dy * side * 2.2,
+					hy + dy * 1.6 + dx * side * 2.2,
+					1.2,
+					0,
+					Math.PI * 2,
+				);
+				ctx.fill();
+			}
+		};
+
+		// --- Input -----------------------------------------------------------
+
+		const onKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				endRun();
+				return;
+			}
+			const direction = KEY_DIRECTIONS[event.code];
+			if (!direction || event.metaKey || event.ctrlKey || event.altKey)
+				return;
+			const target = event.target as HTMLElement | null;
+			if (
+				target &&
+				(target.isContentEditable ||
+					/^(input|textarea|select)$/i.test(target.tagName))
+			)
+				return;
+			event.preventDefault();
+			if (game) turn(game, direction);
+		};
+
+		container.addEventListener(
+			'touchstart',
+			(event) => {
+				if (state !== 'playing') return;
+				const touch = event.touches[0];
+				touchAnchor = { x: touch.clientX, y: touch.clientY };
+			},
+			{ passive: true },
+		);
+
+		container.addEventListener(
+			'touchmove',
+			(event) => {
+				if (state !== 'playing' || !touchAnchor || !game) return;
+				event.preventDefault();
+				const touch = event.touches[0];
+				const dx = touch.clientX - touchAnchor.x;
+				const dy = touch.clientY - touchAnchor.y;
+				if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_PX) return;
+				turn(
+					game,
+					Math.abs(dx) > Math.abs(dy)
+						? dx > 0
+							? 'right'
+							: 'left'
+						: dy > 0
+							? 'down'
+							: 'up',
+				);
+				// Re-anchor so a single drag can chain several turns.
+				touchAnchor = { x: touch.clientX, y: touch.clientY };
+			},
+			{ passive: false },
+		);
+
+		toggleButton.addEventListener('click', () => {
+			if (state === 'playing') endRun();
+			else startRun();
+		});
+		restoreButton.addEventListener('click', restorePosts);
+		grid.addEventListener('click', (event) => {
+			if (state === 'playing') return;
+			// A cell with a post navigates to it; anything else (empty
+			// cells, eaten cells, the gaps) starts the snake instead.
+			const link = (event.target as HTMLElement).closest<HTMLElement>(
+				'[data-href]',
+			);
+			if (link?.dataset.href && !('eaten' in link.dataset)) {
+				window.location.assign(link.dataset.href);
+				return;
+			}
+			startRun();
+		});
+
+		new ResizeObserver(applySize).observe(container);
+		applySize();
+		syncHud();
+	}
 
 	for (const el of document.querySelectorAll<HTMLElement>(
 		'[data-outbox-heatmap]',
 	)) {
-		sizeHeatmap(el);
+		initHeatmap(el);
 	}
 </script>

@@ -3,8 +3,10 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import OutboxSection from '../../components/outbox/OutboxSection.astro';
-import { posts } from '../../data/posts';
+import { getOutboxPosts } from '../../data/posts';
 import { SITE_TITLE } from '../../consts';
+
+const posts = await getOutboxPosts();
 ---
 
 <!doctype html>

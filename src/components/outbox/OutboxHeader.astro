@@ -15,29 +15,52 @@ const { categories } = Astro.props;
 		<h2 class="text-text-primary">Outbox</h2>
 		<CategoryTabs categories={categories} />
 	</div>
-	<button
-		type="button"
-		class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third"
-		data-outbox-sort
-		data-direction="desc"
-		aria-label="Toggle sort direction"
-	>
-		<span>Sort</span>
-		<svg
-			width="12"
-			height="12"
-			viewBox="0 0 12 12"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			aria-hidden="true"
-			data-outbox-sort-icon
+	<div class="flex items-center gap-8">
+		<button
+			type="button"
+			class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third"
+			data-snake-toggle
 		>
-			<path
-				d="M3 4.5L6 7.5L9 4.5"
-				stroke="currentColor"
-				stroke-width="1.2"
-				stroke-linecap="round"
-				stroke-linejoin="round"></path>
-		</svg>
-	</button>
+			<svg
+				width="12"
+				height="12"
+				viewBox="0 0 12 12"
+				fill="currentColor"
+				xmlns="http://www.w3.org/2000/svg"
+				aria-hidden="true"
+			>
+				<rect x="0" y="7" width="2.5" height="2.5" rx="0.6"></rect>
+				<rect x="3" y="7" width="2.5" height="2.5" rx="0.6"></rect>
+				<rect x="6" y="7" width="2.5" height="2.5" rx="0.6"></rect>
+				<rect x="6" y="4" width="2.5" height="2.5" rx="0.6"></rect>
+				<rect x="9" y="4" width="2.5" height="2.5" rx="0.6"></rect>
+			</svg>
+			<span data-snake-toggle-label>Play snake</span>
+		</button>
+		<button
+			type="button"
+			class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third"
+			data-outbox-sort
+			data-direction="desc"
+			aria-label="Toggle sort direction"
+		>
+			<span>Sort</span>
+			<svg
+				width="12"
+				height="12"
+				viewBox="0 0 12 12"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				aria-hidden="true"
+				data-outbox-sort-icon
+			>
+				<path
+					d="M3 4.5L6 7.5L9 4.5"
+					stroke="currentColor"
+					stroke-width="1.2"
+					stroke-linecap="round"
+					stroke-linejoin="round"></path>
+			</svg>
+		</button>
+	</div>
 </div>

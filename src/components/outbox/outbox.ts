@@ -1,5 +1,8 @@
 import type { Post } from '../../data/posts';
 
+/** Background for heatmap cells without posts (and cells the snake ate). */
+export const EMPTY_CELL_COLOR = '#1c1c1c';
+
 /**
  * Distinct colours for category-driven heatmap cells. Tuned to sit on top of
  * the dark theme background. Amber leads to match the design's headline tone.
@@ -76,6 +79,8 @@ export interface HeatmapBucket {
 	date: Date;
 	postCount: number;
 	dominantCategory: string | null;
+	/** Link target for the day's post (first in source order when several). */
+	href: string | null;
 }
 
 /**
@@ -111,9 +116,10 @@ export function buildHeatmapBuckets(
 		return `${y}-${m}-${day}`;
 	};
 
-	// Group posts by ISO date key.
+	// Group posts by ISO date key. Undated posts don't appear in the heatmap.
 	const byDate = new Map<string, Post[]>();
 	for (const post of posts) {
+		if (!post.publishedAt) continue;
 		const key = isoDayKey(post.publishedAt);
 		const list = byDate.get(key);
 		if (list) list.push(post);
@@ -154,6 +160,7 @@ export function buildHeatmapBuckets(
 			date,
 			postCount: dayPosts.length,
 			dominantCategory,
+			href: dayPosts[0]?.href ?? null,
 		});
 	}
 

@@ -15,8 +15,9 @@ interface Props {
 
 const { posts } = Astro.props;
 
+// Undated posts sort to the end of the default (newest-first) order.
 const orderedPosts = [...posts].sort(
-	(a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf(),
+	(a, b) => (b.publishedAt?.valueOf() ?? 0) - (a.publishedAt?.valueOf() ?? 0),
 );
 
 const categories = deriveCategories(posts);
@@ -59,21 +60,25 @@ const buckets = buildHeatmapBuckets(posts, categories);
 		let activeCategory = '';
 		let direction: 'asc' | 'desc' = 'desc';
 
-		function updateVisibility() {
-			let visibleCount = 0;
-			for (const row of rows) {
-				const cats = (row.dataset.categories ?? '').split(',');
-				const match =
-					activeCategory === '' || cats.includes(activeCategory);
-				row.hidden = !match;
-				if (match) visibleCount++;
-			}
-			if (emptyState) {
-				emptyState.hidden = visibleCount > 0;
-			}
-		}
+		// Dates whose posts the heatmap snake has eaten. The heatmap announces
+		// every change via a bubbling `outbox:eaten-changed` event; rows whose
+		// publish date is in the set are removed from the list regardless of
+		// category.
+		let eatenDates = new Set<string>();
+		const defaultEmptyText = emptyState?.textContent?.trim() ?? '';
+		const reducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)',
+		);
 
-		function applyOrder() {
+		// Sync the DOM to the rows that should currently be shown, in sort
+		// order. Eaten/filtered-out rows are detached entirely (not just
+		// hidden) so the `[data-outbox-row] + &` divider rule only ever sees
+		// visible siblings — the first visible row keeps its clean top edge.
+		// Every row carries a stable `view-transition-name`, so wrapping the
+		// mutation in a view transition fades removed rows out and slides the
+		// survivors up for free. `rows` retains references to detached nodes,
+		// so filtering a category back on (or a game restart) re-inserts them.
+		function reconcile(animate = false) {
 			const sorted = [...rows].sort((a, b) => {
 				const da = a.dataset.date ?? '';
 				const db = b.dataset.date ?? '';
@@ -81,11 +86,42 @@ const buckets = buildHeatmapBuckets(posts, categories);
 					? da.localeCompare(db)
 					: db.localeCompare(da);
 			});
+
+			const visible: RowEl[] = [];
+			let categoryCount = 0;
 			for (const row of sorted) {
-				list.appendChild(row);
+				const cats = (row.dataset.categories ?? '').split(',');
+				const inCategory =
+					activeCategory === '' || cats.includes(activeCategory);
+				if (inCategory) categoryCount++;
+				if (inCategory && !eatenDates.has(row.dataset.date ?? '')) {
+					visible.push(row);
+				}
 			}
-			// Keep the empty state at the end of the container.
-			if (emptyState) list.appendChild(emptyState);
+			const visibleSet = new Set(visible);
+
+			const swap = () => {
+				for (const row of rows) {
+					if (!visibleSet.has(row)) row.remove();
+				}
+				// appendChild moves already-attached nodes, so iterating the
+				// visible rows leaves the list in exact sort order.
+				for (const row of visible) list.appendChild(row);
+				if (emptyState) {
+					list.appendChild(emptyState);
+					emptyState.hidden = visible.length > 0;
+					emptyState.textContent =
+						visible.length === 0 && categoryCount > 0
+							? 'The snake ate every post here.'
+							: defaultEmptyText;
+				}
+			};
+
+			if (animate && document.startViewTransition && !reducedMotion.matches) {
+				document.startViewTransition(swap);
+			} else {
+				swap();
+			}
 		}
 
 		tabsContainer.addEventListener('click', (event) => {
@@ -105,7 +141,14 @@ const buckets = buildHeatmapBuckets(posts, categories);
 				tab.classList.toggle('hover:text-text-third', !isActive);
 			}
 
-			updateVisibility();
+			reconcile(true);
+		});
+
+		section.addEventListener('outbox:eaten-changed', (event) => {
+			const { dates } = (event as CustomEvent<{ dates: string[] }>)
+				.detail;
+			eatenDates = new Set(dates);
+			reconcile(true);
 		});
 
 		sortButton.addEventListener('click', () => {
@@ -115,11 +158,11 @@ const buckets = buildHeatmapBuckets(posts, categories);
 				sortIcon.style.transform =
 					direction === 'asc' ? 'rotate(180deg)' : '';
 			}
-			applyOrder();
+			reconcile(true);
 		});
 
 		// Initial empty-state sync (in case the list is empty on first paint).
-		updateVisibility();
+		reconcile();
 	}
 
 	for (const el of document.querySelectorAll<HTMLElement>(

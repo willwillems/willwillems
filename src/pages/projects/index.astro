@@ -1,17 +1,24 @@
 ---
 import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
 import FilterTabs from '../../components/projects/FilterTabs.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
 import ProjectsGrid from '../../components/projects/ProjectsGrid.astro';
-import { projects } from '../../data/projects';
+import { getProjects } from '../../data/projects';
 
 import { SITE_TITLE } from '../../consts';
 
+const projects = await getProjects();
+
 const filterTabs = [
-	{ label: 'All', href: '/projects', active: true },
-	{ label: 'Active', href: '/projects?filter=active' },
-	{ label: 'Experimental', href: '/projects?filter=experimental' },
-	{ label: 'Dead', href: '/projects?filter=dead' },
+	{ label: 'All', href: '/projects', filter: '', active: true },
+	{ label: 'Active', href: '/projects?filter=active', filter: 'active' },
+	{
+		label: 'Archived',
+		href: '/projects?filter=archived',
+		filter: 'archived',
+	},
 ];
 ---
 
@@ -24,6 +31,7 @@ const filterTabs = [
 		/>
 	</head>
 	<body>
+		<Header />
 		<main class="mx-auto max-w-5xl px-8 pt-4">
 			<div class="mb-12 flex items-baseline justify-between">
 				<h1 class="type-title text-text-primary">Projects</h1>
@@ -32,14 +40,40 @@ const filterTabs = [
 			<ProjectsGrid>
 				{
 					projects.map((project) => (
-						<ProjectCard
-							name={project.name}
-							description={project.description}
-							href={project.link}
-						/>
+						<div data-project data-status={project.status}>
+							<ProjectCard
+								name={project.name}
+								description={project.description}
+								href={project.link}
+								status={project.status}
+							/>
+						</div>
 					))
 				}
 			</ProjectsGrid>
 		</main>
+		<Footer />
+
+		<script>
+			// The page is static; the ?filter= query drives visibility here.
+			const filter =
+				new URLSearchParams(location.search).get('filter') ?? '';
+
+			for (const card of document.querySelectorAll<HTMLElement>(
+				'[data-project]',
+			)) {
+				card.hidden = filter !== '' && card.dataset.status !== filter;
+			}
+
+			for (const tab of document.querySelectorAll<HTMLElement>(
+				'[data-filter-tab]',
+			)) {
+				const isActive = (tab.dataset.filterTab ?? '') === filter;
+				tab.classList.toggle('text-text-primary', isActive);
+				tab.classList.toggle('hover:text-text-primary', isActive);
+				tab.classList.toggle('text-text-inactive', !isActive);
+				tab.classList.toggle('hover:text-text-third', !isActive);
+			}
+		</script>
 	</body>
 </html>

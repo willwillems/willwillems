@@ -2,6 +2,8 @@
 interface Tab {
 	label: string;
 	href: string;
+	/** Value matched against the page's ?filter= query by client scripts. */
+	filter?: string;
 	active?: boolean;
 }
 
@@ -23,6 +25,7 @@ const { tabs } = Astro.props;
 						: 'text-text-inactive hover:text-text-third',
 				]}
 				href={tab.href}
+				data-filter-tab={tab.filter}
 			>
 				{tab.label}
 			</a>

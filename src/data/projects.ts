@@ -1,56 +1,46 @@
-export type ProjectStatus = 'active' | 'experimental' | 'dead';
+import { fetchBase, frontmatterString } from './api';
+
+export type ProjectStatus = 'active' | 'archived' | 'experiment';
 
 export interface Project {
 	name: string;
 	description: string;
-	categories: ProjectStatus[];
+	status: ProjectStatus;
 	link?: string;
 }
 
-export const projects: Project[] = [
-	{
-		name: 'Deducta',
-		description: 'Automated bookkeeping for freelancers.',
-		categories: ['active'],
-		link: 'https://deducta.ai',
-	},
-	{
-		name: 'Devsync',
-		description: 'Keep your dev environment in sync.',
-		categories: ['experimental'],
-		link: 'https://github.com/willwillems/devsync',
-	},
-	{
-		name: 'Obsidian Blog',
-		description: 'Sync script from Obsidian vault to Astro',
-		categories: ['active'],
-		link: 'https://github.com/willwillems/obsidian-astro-sync',
-	},
-	{
-		name: 'Generic MIDI controller',
-		description: 'RP2040-based MIDI controller',
-		categories: ['active'],
-	},
-	{
-		name: 'Invoice tracker',
-		description: 'Paste a client email, track whether it.',
-		categories: ['experimental'],
-	},
-	{
-		name: 'CSS Specificity visualiser',
-		description: 'Paste a stylesheet and see conflicts inline.',
-		categories: ['dead'],
-		link: 'https://github.com/willwillems/specificity-vis',
-	},
-	{
-		name: 'VuePress custom theme',
-		description: 'Minimal dark theme for VuePress 1.x sites.',
-		categories: ['dead'],
-		link: 'https://github.com/willwillems/vuepress-theme-minimal',
-	},
-	{
-		name: 'Dishes by city',
-		description: 'Crowdsourced map of must-eat dishes.',
-		categories: ['dead'],
-	},
-];
+/**
+ * Trim an API excerpt down to its first sentence so project cards keep their
+ * one-liner descriptions.
+ */
+function firstSentence(text: string): string {
+	const match = text.match(/^.*?[.!?](?=\s|$)/);
+	return match ? match[0] : text;
+}
+
+/**
+ * Products from the Obsidian API. Notes without a recognised `status`
+ * (e.g. templates) are skipped.
+ */
+export async function getProjects(): Promise<Project[]> {
+	const items = await fetchBase('products');
+	const projects: Project[] = [];
+	for (const item of items) {
+		const status = frontmatterString(item.frontmatter, 'status');
+		if (
+			status !== 'active' &&
+			status !== 'archived' &&
+			status !== 'experiment'
+		)
+			continue;
+		projects.push({
+			name: item.title,
+			description:
+				frontmatterString(item.frontmatter, 'description') ??
+				firstSentence(item.excerpt),
+			status,
+			link: frontmatterString(item.frontmatter, 'url'),
+		});
+	}
+	return projects;
+}

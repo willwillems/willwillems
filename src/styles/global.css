@@ -19,7 +19,9 @@
 	--color-text-third: #a2a2a2;
 	--color-text-inactive: #757575;
 	--color-surface: #333333;
+	--color-surface-secondary: #141414;
 	--color-border: #3f3f3f;
+	--color-border-secondary: #292929;
 
 	--font-sans: 'Inter', sans-serif;
 	--font-accent: 'Gochi Hand', cursive;
@@ -92,4 +94,77 @@ body {
 	font-size: 1.35em;
 	font-weight: 500;
 	line-height: 1.7;
+}
+
+/* Minimal typography for rendered markdown (notes and articles). */
+.prose {
+	font-size: var(--text-sm);
+	line-height: 1.7;
+
+	:where(p, ul, ol, pre, blockquote, table) {
+		margin-block: 1.25em;
+	}
+
+	/* Embeds often share a paragraph with text, so space the image itself. */
+	:where(img) {
+		margin: 1em 0;
+	}
+
+	:where(h1, h2, h3, h4) {
+		margin-block: 2em 0.75em;
+		font-weight: 500;
+		color: var(--color-text-secondary);
+	}
+
+	:where(h1, h2) {
+		font-size: var(--text-lg);
+	}
+
+	:where(h3, h4) {
+		font-size: var(--text-base);
+	}
+
+	:where(a) {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-color: var(--color-text-inactive);
+	}
+
+	:where(ul) {
+		list-style: disc;
+		padding-inline-start: 1.5em;
+	}
+
+	:where(ol) {
+		list-style: decimal;
+		padding-inline-start: 1.5em;
+	}
+
+	:where(code) {
+		font-family: var(--monospace-font-family, monospace);
+		font-size: 0.9em;
+	}
+
+	:where(:not(pre) > code) {
+		background: var(--color-surface-secondary);
+		border-radius: 4px;
+		padding: 0.15em 0.35em;
+	}
+
+	:where(pre) {
+		border-radius: 8px;
+		padding: 1rem 1.25rem;
+		overflow-x: auto;
+	}
+
+	:where(blockquote) {
+		border-inline-start: 2px solid var(--color-border-secondary);
+		padding-inline-start: 1em;
+		color: var(--color-text-third);
+	}
+
+	:where(hr) {
+		margin-block: 2em;
+		border-color: var(--color-border-secondary);
+	}
 }

@@ -101,7 +101,7 @@ const defaultIndex = Math.floor(variants.length / 2);
 		</div>
 	</div>
 
-	<div data-about-content>
+	<div data-about-content style="view-transition-name: about-content">
 		{
 			variants.map((variant, index) => (
 				<div
@@ -139,16 +139,35 @@ const defaultIndex = Math.floor(variants.length / 2);
 
 		if (!slider || !label || variants.length === 0) return;
 
+		const reducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)',
+		);
+		let current = -1;
+
 		const update = () => {
 			const value = Number(slider.value);
 			const index = Math.round((value / 100) * (variants.length - 1));
-			const labelText = variants[index]?.dataset.label ?? '';
+			if (index === current) return;
+			current = index;
 
-			variants.forEach((el, i) =>
-				el.classList.toggle('hidden', i !== index),
-			);
+			// Update the label before the transition starts so it swaps
+			// instantly instead of joining the crossfade.
+			const labelText = variants[index]?.dataset.label ?? '';
 			label.textContent = labelText;
 			slider.setAttribute('aria-valuetext', labelText);
+
+			const swap = () =>
+				variants.forEach((el, i) =>
+					el.classList.toggle('hidden', i !== index),
+				);
+
+			// Crossfade the content block between lengths; browsers without
+			// view transitions (or with reduced motion) swap instantly.
+			if (document.startViewTransition && !reducedMotion.matches) {
+				document.startViewTransition(swap);
+			} else {
+				swap();
+			}
 		};
 
 		slider.addEventListener('input', update);
