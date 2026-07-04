@@ -105,7 +105,7 @@ const EMBED_RE = /!\[\[([^\]|]+?)(?:\|([^\]]*))?\]\]/g;
 const downloaded = new Map<string, Promise<string>>();
 
 /** Download a vault asset once per process; returns its public URL path. */
-function downloadAsset(name: string, apiPath: string): Promise<string> {
+export function downloadAsset(name: string, apiPath: string): Promise<string> {
 	const existing = downloaded.get(name);
 	if (existing) return existing;
 	const promise = (async () => {

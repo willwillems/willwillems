@@ -117,7 +117,11 @@ const buckets = buildHeatmapBuckets(posts, categories);
 				}
 			};
 
-			if (animate && document.startViewTransition && !reducedMotion.matches) {
+			if (
+				animate &&
+				document.startViewTransition &&
+				!reducedMotion.matches
+			) {
 				document.startViewTransition(swap);
 			} else {
 				swap();
