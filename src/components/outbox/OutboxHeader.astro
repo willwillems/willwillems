@@ -15,15 +15,16 @@ const { categories } = Astro.props;
 		<h2 class="text-text-primary">Outbox</h2>
 		<CategoryTabs categories={categories} />
 	</div>
-	<div class="flex items-center gap-8">
+	<div class="flex items-center gap-4">
 		<button
 			type="button"
 			class="flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third"
 			data-snake-toggle
+			aria-label="Play snake"
 		>
 			<svg
-				width="12"
-				height="12"
+				width="16"
+				height="16"
 				viewBox="0 0 12 12"
 				fill="currentColor"
 				xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +36,6 @@ const { categories } = Astro.props;
 				<rect x="6" y="4" width="2.5" height="2.5" rx="0.6"></rect>
 				<rect x="9" y="4" width="2.5" height="2.5" rx="0.6"></rect>
 			</svg>
-			<span data-snake-toggle-label>Play snake</span>
 		</button>
 		<button
 			type="button"

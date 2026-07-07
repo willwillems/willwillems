@@ -273,9 +273,6 @@ const controlClass =
 		const toggleButton = scope.querySelector<HTMLButtonElement>(
 			'[data-snake-toggle]',
 		);
-		const toggleLabel = scope.querySelector<HTMLElement>(
-			'[data-snake-toggle-label]',
-		);
 		const restoreButton = container.querySelector<HTMLButtonElement>(
 			'[data-snake-restore]',
 		);
@@ -287,7 +284,6 @@ const controlClass =
 			!ctx ||
 			!statusEl ||
 			!toggleButton ||
-			!toggleLabel ||
 			!restoreButton
 		)
 			return;
@@ -395,7 +391,7 @@ const controlClass =
 			container.dataset.snakeState = state;
 			restoreButton.hidden = state === 'playing' || eaten === 0;
 			if (state === 'playing') {
-				toggleLabel.textContent = 'End game';
+				toggleButton.setAttribute('aria-label', 'End game');
 				statusEl.textContent =
 					runScore === 0
 						? coarsePointer.matches
@@ -403,13 +399,13 @@ const controlClass =
 							: 'Arrow keys or WASD to steer, Esc to exit'
 						: `${runScore} ${plural(runScore)} eaten`;
 			} else if (state === 'over') {
-				toggleLabel.textContent = 'Play again';
+				toggleButton.setAttribute('aria-label', 'Play again');
 				statusEl.textContent =
 					outcome === 'won'
 						? `All ${runScore} ${plural(runScore)} eaten — flawless`
 						: `Crashed — ${runScore} ${plural(runScore)} eaten`;
 			} else {
-				toggleLabel.textContent = 'Play snake';
+				toggleButton.setAttribute('aria-label', 'Play snake');
 				statusEl.textContent =
 					eaten > 0 ? `${eaten} ${plural(eaten)} eaten` : '';
 			}
