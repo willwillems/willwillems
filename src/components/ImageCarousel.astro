@@ -9,12 +9,12 @@ interface Props {
 const { images } = Astro.props;
 ---
 
-<div class="flex w-full gap-6 overflow-hidden">
+<div class="no-scrollbar flex w-full gap-6 snap-x snap-mandatory overflow-x-auto">
 	{
 		images.map((image, i) => (
 			<div
 				class:list={[
-					'h-100 shrink-0 overflow-hidden',
+					'h-100 shrink-0 snap-start overflow-hidden',
 					i % 2 === 0 ? 'w-xs' : 'w-2xl',
 				]}
 			>
