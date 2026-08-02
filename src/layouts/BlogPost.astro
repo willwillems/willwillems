@@ -22,8 +22,8 @@ const { title, description = '', pubDate, updatedDate, category } = Astro.props;
 
 	<body>
 		<Header />
-		<main class="mx-auto max-w-5xl px-8">
-			<article class="max-w-2xl py-10 pb-16">
+		<main class="mx-auto max-w-5xl px-6 sm:px-8">
+			<article class="max-w-2xl py-6 sm:py-8 pb-16">
 				<div class="type-body-small mb-2 text-text-third">
 					{category}
 					{pubDate && <FormattedDate date={pubDate} />}
