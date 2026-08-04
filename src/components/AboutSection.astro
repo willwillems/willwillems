@@ -1,8 +1,7 @@
 ---
 // About section with a length slider.
-// Drag the slider to swap between five increasingly detailed descriptions.
-// Copy below is drafted from the Figma "medium long" text — edit freely.
-// Default = "Medium" (the middle variant), as requested.
+// Drag the slider to swap between increasingly detailed descriptions.
+// Default = "Medium" (currently the longest variant).
 
 import Slider from './Slider.astro';
 
@@ -15,70 +14,45 @@ const variants: Variant[] = [
 	{
 		label: 'Super short',
 		paragraphs: [
-			"I'm Will — a product engineer who loves digital design, creative hardware, and staying curious.",
+			"I'm a Product Engineer at Deducta.",
+			'I love running, snowboarding, and pour over coffee.',
+			'One of my biggest passions is electrical engineering, with a focus on audio.',
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			'Hit me up, send me a message!',
 		],
 	},
 	{
 		label: 'Short',
 		paragraphs: [
-			'I am passionate about digital design and development, it plays a big role in my life.',
-			'I travel long-term, kitesurf and run, tinker with IOT hardware, and occasionally make some funky tech tunes.',
-			'Strong opinions, held loosely — I love doubt.',
+			"I'm a Product Engineer at Deducta. We like to create an environment where talented people can independently contribute through hyper transparency and shared context.",
+			'Some of my favourite people in this area are: Joe Hudson, Brené Brown, Sam Harris, David Deutsch, Aella.',
+			'I love running and snowboarding more than any other sport. I am currently obsessed with pour over coffee.',
+			'One of my biggest passions is electrical engineering, with a focus on audio.',
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			"Hit me up, send me a message, I'd love to hear from you.",
 		],
 	},
 	{
 		label: 'Medium',
 		paragraphs: [
-			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
-			'I like traveling, long-term. I am rarely a tourist.',
-			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
-			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
-			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
-			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
-			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
-			'I love a challenge, I try to steer towards discomfort.',
-			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
-			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
-		],
-	},
-	{
-		label: 'Long',
-		paragraphs: [
-			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
-			"Most days you'll find me somewhere between a code editor and a soldering iron. I build for the web for a living, but the things that pull me in hardest tend to live at the edges — interfaces you can touch, instruments you can play, software that behaves a little more like the physical world.",
-			'I like traveling, long-term. I am rarely a tourist. Living somewhere is very different from visiting it, and that slower pace is where the interesting stuff tends to happen.',
-			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
-			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
-			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
-			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
-			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
-			'I love a challenge, I try to steer towards discomfort.',
-			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
-			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
-		],
-	},
-	{
-		label: 'Extra long',
-		paragraphs: [
-			'I am many things, I am passionate about digital design and development, which plays a big role in my life.',
-			"Most days you'll find me somewhere between a code editor and a soldering iron. I build for the web for a living, but the things that pull me in hardest tend to live at the edges — interfaces you can touch, instruments you can play, software that behaves a little more like the physical world.",
-			'I like traveling, long-term. I am rarely a tourist. Travelling this way reshaped how I think about almost everything: work, relationships, comfort. Living somewhere is very different from visiting it, and that slower pace is where the interesting stuff happens.',
-			'I am an avid kitesurfer and runner, I also like squash but to be honest even calling me an amateur would probably be gracious.',
-			'I am a big fan of meditation, mindfulness and stoicism. A few of my favourite authors: Tim Urban, Seneca the Younger, Sam Harris, Jesse Frederik & Tim Ferriss.',
-			'I think a lot about how we make decisions, why we believe what we believe, and how rarely either holds up under scrutiny. That is probably why doubt feels like a feature to me rather than a bug.',
-			'Finally I am an amateur hobbyist IOT electrical engineer/tinkerer and I occasionally produce some futuristic funky tech tunes.',
-			'I am not sure, I love doubt, most people are too sure about things. Strong opinions held loosely, I love that.',
-			"I am a work in progress, I love to take on ambitious projects that venture into areas I'm unfamiliar with. I'm really interested in the intersection of web technologies with other fields such as sociology/anthropology and music.",
-			'I love a challenge, I try to steer towards discomfort.',
-			"It's not about what pleasures you want in your life, it's about what kind of struggles you want.",
-			"If any of this resonates — the design, the hardware, the music, the questions — I'd genuinely love to talk. Some of my favourite projects started as a single curious message.",
-			"I am also curious about who you are, feel free to contact me, I'd love to hear from you...",
+			"I'm a Product Engineer at Deducta. I love the intersection between product, engineering and design. I feel like something particularly productive happens when these disciplines are combined. We like to create an environment where talented people can independently contribute through hyper transparency and shared context.",
+			"I am still a bit obsessed with self-improvement, fresh out of the post-rationalism pipeline. The mind is amazing but most of my problems these days aren't thinking problems. I am maybe a little bit too obsessed with risk and decision/game theory and I love talking about incentives.",
+			'Some of my favourite people in this area are: Joe Hudson, Brené Brown, Tim Urban, Seneca, Sam Harris, Jesse Frederik, David Deutsch, Aella, Scott Alexander.',
+			'I love running and am always down for some hiking or climbing. I love snowboarding more than any other sport, I like kitesurfing but I hate traveling to the beach. I am currently obsessed with pour over coffee.',
+			"One of my biggest passions is electrical engineering, with a focus on audio. I'm mostly working on digital circuits but love analog as well. The amount of high quality production methods you have access to these days as an amateur is unbelievable, and I feel extremely lucky to have access to them.",
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			"If you've read this and it resonates, I am curious who you are! Hit me up, send me a message, I'd love to hear from you.",
 		],
 	},
 ];
 
-// Default to the middle variant.
-const defaultIndex = Math.floor(variants.length / 2);
+// Default to the "Medium" variant.
+const defaultIndex = Math.max(
+	variants.findIndex((variant) => variant.label === 'Medium'),
+	0,
+);
+const defaultSliderValue =
+	variants.length > 1 ? (defaultIndex / (variants.length - 1)) * 100 : 0;
 ---
 
 <section data-about-section class="flex flex-col py-6 sm:py-8 gap-8">
@@ -92,7 +66,7 @@ const defaultIndex = Math.floor(variants.length / 2);
 				{variants[defaultIndex].label}
 			</span>
 			<Slider
-				value={50}
+				value={defaultSliderValue}
 				class="w-48"
 				aria-label="About description length"
 				aria-valuetext={variants[defaultIndex].label}
