@@ -1,0 +1,150 @@
+---
+// About section with a length slider.
+// Drag the slider to swap between increasingly detailed descriptions.
+// Default = "Medium" (currently the longest variant).
+
+import Slider from './Slider.astro';
+
+interface Variant {
+	label: string;
+	paragraphs: string[];
+}
+
+const variants: Variant[] = [
+	{
+		label: 'Super short',
+		paragraphs: [
+			"I'm a Product Engineer at Deducta.",
+			'I love running, snowboarding, and pour over coffee.',
+			'One of my biggest passions is electrical engineering, with a focus on audio.',
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			'Hit me up, send me a message!',
+		],
+	},
+	{
+		label: 'Short',
+		paragraphs: [
+			"I'm a Product Engineer at Deducta. We like to create an environment where talented people can independently contribute through hyper transparency and shared context.",
+			'Some of my favourite people in this area are: Joe Hudson, Brené Brown, Sam Harris, David Deutsch, Aella.',
+			'I love running and snowboarding more than any other sport. I am currently obsessed with pour over coffee.',
+			'One of my biggest passions is electrical engineering, with a focus on audio.',
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			"Hit me up, send me a message, I'd love to hear from you.",
+		],
+	},
+	{
+		label: 'Medium',
+		paragraphs: [
+			"I'm a Product Engineer at Deducta. I love the intersection between product, engineering and design. I feel like something particularly productive happens when these disciplines are combined. We like to create an environment where talented people can independently contribute through hyper transparency and shared context.",
+			"I am still a bit obsessed with self-improvement, fresh out of the post-rationalism pipeline. The mind is amazing but most of my problems these days aren't thinking problems. I am maybe a little bit too obsessed with risk and decision/game theory and I love talking about incentives.",
+			'Some of my favourite people in this area are: Joe Hudson, Brené Brown, Tim Urban, Seneca, Sam Harris, Jesse Frederik, David Deutsch, Aella, Scott Alexander.',
+			'I love running and am always down for some hiking or climbing. I love snowboarding more than any other sport, I like kitesurfing but I hate traveling to the beach. I am currently obsessed with pour over coffee.',
+			"One of my biggest passions is electrical engineering, with a focus on audio. I'm mostly working on digital circuits but love analog as well. The amount of high quality production methods you have access to these days as an amateur is unbelievable, and I feel extremely lucky to have access to them.",
+			"Occasionally, I play some tunes on all of the gear I've collected. Mainly Jungle, UK Garage, Techno and Breakbeat.",
+			"If you've read this and it resonates, I am curious who you are! Hit me up, send me a message, I'd love to hear from you.",
+		],
+	},
+];
+
+// Default to the "Medium" variant.
+const defaultIndex = Math.max(
+	variants.findIndex((variant) => variant.label === 'Medium'),
+	0,
+);
+const defaultSliderValue =
+	variants.length > 1 ? (defaultIndex / (variants.length - 1)) * 100 : 0;
+---
+
+<section data-about-section class="flex flex-col py-6 sm:py-8 gap-8">
+	<div class="flex items-center justify-between gap-8 type-title">
+		<h2>About</h2>
+		<div class="flex shrink-0 flex-row items-end gap-6">
+			<span
+				data-about-label
+				class="type-title text-text-secondary whitespace-nowrap"
+			>
+				{variants[defaultIndex].label}
+			</span>
+			<Slider
+				value={defaultSliderValue}
+				class="w-48"
+				aria-label="About description length"
+				aria-valuetext={variants[defaultIndex].label}
+				data-about-slider
+			/>
+		</div>
+	</div>
+
+	<div data-about-content style="view-transition-name: about-content">
+		{
+			variants.map((variant, index) => (
+				<div
+					data-variant
+					data-label={variant.label}
+					class:list={[
+						'gap-x-12 sm:columns-2',
+						index !== defaultIndex && 'hidden',
+					]}
+				>
+					{variant.paragraphs.map((paragraph) => (
+						<p class="mb-6 break-inside-avoid leading-[30px] text-text-secondary last:mb-0">
+							{paragraph}
+						</p>
+					))}
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	const sections = document.querySelectorAll<HTMLElement>(
+		'[data-about-section]',
+	);
+
+	sections.forEach((section) => {
+		const slider = section.querySelector<HTMLInputElement>(
+			'[data-about-slider]',
+		);
+		const label = section.querySelector<HTMLElement>('[data-about-label]');
+		const variants = Array.from(
+			section.querySelectorAll<HTMLElement>('[data-variant]'),
+		);
+
+		if (!slider || !label || variants.length === 0) return;
+
+		const reducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)',
+		);
+		let current = -1;
+
+		const update = () => {
+			const value = Number(slider.value);
+			const index = Math.round((value / 100) * (variants.length - 1));
+			if (index === current) return;
+			current = index;
+
+			// Update the label before the transition starts so it swaps
+			// instantly instead of joining the crossfade.
+			const labelText = variants[index]?.dataset.label ?? '';
+			label.textContent = labelText;
+			slider.setAttribute('aria-valuetext', labelText);
+
+			const swap = () =>
+				variants.forEach((el, i) =>
+					el.classList.toggle('hidden', i !== index),
+				);
+
+			// Crossfade the content block between lengths; browsers without
+			// view transitions (or with reduced motion) swap instantly.
+			if (document.startViewTransition && !reducedMotion.matches) {
+				document.startViewTransition(swap);
+			} else {
+				swap();
+			}
+		};
+
+		slider.addEventListener('input', update);
+		update();
+	});
+</script>

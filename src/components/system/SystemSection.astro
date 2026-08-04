@@ -1,0 +1,25 @@
+---
+// A chapter of the /system page. Reuses the site's own two-column reading
+// grid (see PostRow) so the reference looks like the thing it documents.
+
+interface Props {
+	id: string;
+	title: string;
+	summary: string;
+}
+
+const { id, title, summary } = Astro.props;
+---
+
+<section
+	id={id}
+	class="grid scroll-mt-8 gap-8 border-t border-border-secondary py-12 md:grid-cols-[1fr_3fr] md:gap-x-8"
+>
+	<div class="flex flex-col gap-3 md:sticky md:top-8 md:self-start">
+		<h2 class="type-title text-text-primary">{title}</h2>
+		<p class="type-body-small text-text-third">{summary}</p>
+	</div>
+	<div class="flex min-w-0 flex-col gap-12">
+		<slot />
+	</div>
+</section>

@@ -1,0 +1,34 @@
+---
+interface Tab {
+	label: string;
+	href: string;
+	/** Value matched against the page's ?filter= query by client scripts. */
+	filter?: string;
+	active?: boolean;
+}
+
+interface Props {
+	tabs: Tab[];
+}
+
+const { tabs } = Astro.props;
+---
+
+<nav class="flex items-center gap-6" aria-label="Project filters">
+	{
+		tabs.map((tab) => (
+			<a
+				class:list={[
+					'type-label no-underline transition-colors duration-150',
+					tab.active
+						? 'text-text-primary hover:text-text-primary'
+						: 'text-text-inactive hover:text-text-third',
+				]}
+				href={tab.href}
+				data-filter-tab={tab.filter}
+			>
+				{tab.label}
+			</a>
+		))
+	}
+</nav>

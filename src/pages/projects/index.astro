@@ -1,0 +1,80 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import FilterTabs from '../../components/projects/FilterTabs.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import ProjectsGrid from '../../components/projects/ProjectsGrid.astro';
+import { getProjects } from '../../data/projects';
+
+import { SITE_TITLE } from '../../consts';
+
+const projects = await getProjects();
+
+const filterTabs = [
+	{ label: 'All', href: '/projects', filter: '', active: true },
+	{ label: 'Active', href: '/projects?filter=active', filter: 'active' },
+	{
+		label: 'Archived',
+		href: '/projects?filter=archived',
+		filter: 'archived',
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Projects - ${SITE_TITLE}`}
+			description="Projects and work"
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="mx-auto max-w-5xl px-6 sm:px-8 py-6 sm:py-8">
+			<div class="mb-10 flex items-baseline justify-between">
+				<h1 class="type-title text-text-primary">Projects</h1>
+				<FilterTabs tabs={filterTabs} />
+			</div>
+			<ProjectsGrid>
+				{
+					projects.map((project) => (
+						<div data-project data-status={project.status}>
+							<ProjectCard
+								name={project.name}
+								description={project.description}
+								href={project.link}
+								status={project.status}
+								icon={project.icon}
+							/>
+						</div>
+					))
+				}
+			</ProjectsGrid>
+		</main>
+		<Footer />
+
+		<script>
+			// The page is static; the ?filter= query drives visibility here.
+			const filter =
+				new URLSearchParams(location.search).get('filter') ?? '';
+
+			for (const card of document.querySelectorAll<HTMLElement>(
+				'[data-project]',
+			)) {
+				card.hidden = filter !== '' && card.dataset.status !== filter;
+			}
+
+			for (const tab of document.querySelectorAll<HTMLElement>(
+				'[data-filter-tab]',
+			)) {
+				const isActive = (tab.dataset.filterTab ?? '') === filter;
+				tab.classList.toggle('text-text-primary', isActive);
+				tab.classList.toggle('hover:text-text-primary', isActive);
+				tab.classList.toggle('text-text-inactive', !isActive);
+				tab.classList.toggle('hover:text-text-third', !isActive);
+			}
+		</script>
+	</body>
+</html>

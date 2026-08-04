@@ -1,0 +1,164 @@
+---
+import ChevronDown from '../icons/ChevronDown.astro';
+
+interface Props {
+	categories: string[];
+	/** category → palette colour, shared with the activity heatmap. */
+	categoryColors: Record<string, string>;
+	/** category → number of posts carrying it. */
+	counts: Record<string, number>;
+	/** Total number of posts, shown against the "All" option. */
+	total: number;
+}
+
+const { categories, categoryColors, counts, total } = Astro.props;
+
+const options = [
+	{ label: 'All', category: '', color: null, count: total },
+	...categories.map((label) => ({
+		label,
+		category: label,
+		color: categoryColors[label] ?? null,
+		count: counts[label] ?? 0,
+	})),
+];
+---
+
+<div class="md:hidden" data-outbox-filter>
+	<button
+		type="button"
+		class="flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 type-label text-text-third transition-colors duration-150 hover:text-text-primary"
+		popovertarget="outbox-filter-menu"
+		data-outbox-filter-trigger
+	>
+		<span class="sr-only">Filter by category:</span>
+		<span class="filter-dot" data-outbox-filter-dot></span>
+		<span data-outbox-filter-label>All</span>
+		<ChevronDown size={11} class="filter-chevron" />
+	</button>
+</div>
+
+<div id="outbox-filter-menu" popover class="filter-menu">
+	<div class="flex flex-col p-1.5" data-outbox-filter-options>
+		{
+			options.map((option, i) => (
+				<Fragment>
+					{i === 1 && (
+						<hr class="mx-2.5 my-1.5 border-t border-border-secondary" />
+					)}
+					<button
+						type="button"
+						class="flex cursor-pointer items-center gap-2.5 rounded-lg border-none bg-transparent px-2.5 py-2 text-left type-label text-text-third transition-colors duration-150 hover:bg-white/5 hover:text-text-secondary data-[active=true]:text-text-primary"
+						data-category={option.category}
+						data-color={option.color}
+						data-active={i === 0 ? 'true' : 'false'}
+					>
+						<span
+							class="filter-dot"
+							style={
+								option.color
+									? `background: ${option.color};`
+									: undefined
+							}
+						/>
+						<span>{option.label}</span>
+						<span class="ml-auto pl-6 type-monospaced tabular-nums text-text-inactive">
+							{option.count}
+						</span>
+					</button>
+				</Fragment>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	/* A 6px marker: neutral grey for "All", filled with the category's heatmap
+	   colour for everything else. */
+	.filter-dot {
+		flex: none;
+		width: 6px;
+		height: 6px;
+		background: var(--color-text-inactive);
+		border-radius: 2px;
+	}
+
+	.filter-chevron {
+		transition: transform 0.2s ease;
+	}
+
+	[data-outbox-filter-trigger][data-open='true'] {
+		color: var(--color-text-primary);
+
+		& .filter-chevron {
+			transform: rotate(180deg);
+		}
+	}
+
+	/* Popover needs non-utility styles for anchor positioning, :popover-open,
+	   ::backdrop and @starting-style. Mirrors the header's mobile nav. */
+	.filter-menu {
+		position: fixed;
+		position-anchor: --outbox-filter-trigger;
+		position-area: bottom span-right;
+		margin: 0.625rem 0 0;
+		min-width: 11rem;
+		max-height: 60vh;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		background: var(--color-surface-secondary);
+		border: 1px solid var(--color-border-secondary);
+		border-radius: 11px;
+		padding: 0;
+		color: inherit;
+		transform-origin: top left;
+		opacity: 0;
+		scale: 0.95;
+		transition:
+			opacity 0.15s ease,
+			scale 0.15s ease,
+			overlay 0.15s allow-discrete,
+			display 0.15s allow-discrete;
+
+		&:popover-open {
+			opacity: 1;
+			scale: 1;
+
+			@starting-style {
+				opacity: 0;
+				scale: 0.95;
+			}
+		}
+
+		&::backdrop {
+			background: rgb(0 0 0 / 0.5);
+			backdrop-filter: blur(4px);
+			opacity: 0;
+			transition:
+				opacity 0.15s ease,
+				overlay 0.15s allow-discrete,
+				display 0.15s allow-discrete;
+		}
+
+		&:popover-open::backdrop {
+			opacity: 1;
+
+			@starting-style {
+				opacity: 0;
+			}
+		}
+	}
+
+	[data-outbox-filter-trigger] {
+		anchor-name: --outbox-filter-trigger;
+	}
+
+	/* Without anchor positioning the menu can't track the trigger, so dock it
+	   to the bottom of the viewport instead of floating somewhere arbitrary. */
+	@supports not (anchor-name: --probe) {
+		.filter-menu {
+			inset: auto 1.5rem 1.5rem;
+			transform-origin: bottom center;
+		}
+	}
+</style>

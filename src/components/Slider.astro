@@ -1,0 +1,130 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Presentational range slider. Styles the native <input type="range"> to fit
+// the dark theme and keeps a "fill" up to the thumb in sync via --progress.
+// It carries no domain logic — listen to its `input` event from the consumer.
+
+interface Props extends Omit<HTMLAttributes<'input'>, 'type'> {
+	min?: number;
+	max?: number;
+	value?: number;
+	step?: number;
+}
+
+const {
+	min = 0,
+	max = 100,
+	value = 50,
+	step = 1,
+	class: className,
+	...rest
+} = Astro.props;
+
+// Initial fill so the track renders correctly before JS runs (no flash).
+const progress = ((value - min) / (max - min)) * 100;
+---
+
+<input
+	type="range"
+	min={min}
+	max={max}
+	value={value}
+	step={step}
+	style={`--progress: ${progress}%`}
+	class:list={[
+		'h-4 cursor-pointer appearance-none bg-transparent focus:outline-none',
+		className,
+	]}
+	data-slider
+	{...rest}
+/>
+
+<script>
+	const sliders =
+		document.querySelectorAll<HTMLInputElement>('[data-slider]');
+
+	sliders.forEach((slider) => {
+		const min = Number(slider.min) || 0;
+		const max = Number(slider.max) || 100;
+
+		const setFill = () => {
+			const pct = ((Number(slider.value) - min) / (max - min)) * 100;
+			slider.style.setProperty('--progress', `${pct}%`);
+		};
+
+		slider.addEventListener('input', setFill);
+		setFill();
+	});
+</script>
+
+<style>
+	/*
+	 * Native range-input pseudo-elements (track + thumb) can't be expressed
+	 * with Tailwind utilities, so they live here. Astro scopes these to this
+	 * component, so no globally-unique class name is needed.
+	 */
+
+	/* Track */
+	[data-slider]::-webkit-slider-runnable-track {
+		height: 4px;
+		border-radius: 9999px;
+		background: linear-gradient(
+			to right,
+			var(--color-text-third) var(--progress, 50%),
+			#545454 var(--progress, 50%)
+		);
+	}
+
+	[data-slider]::-moz-range-track {
+		height: 4px;
+		border-radius: 9999px;
+		background: #545454;
+	}
+
+	[data-slider]::-moz-range-progress {
+		height: 4px;
+		border-radius: 9999px;
+		background: var(--color-text-third);
+	}
+
+	/* Thumb */
+	[data-slider]::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 16px;
+		height: 16px;
+		margin-top: -6px;
+		border-radius: 9999px;
+		background: var(--color-bg);
+		border: 2px solid var(--color-text-primary);
+		box-shadow: 0 0 0 4px var(--color-bg);
+		transition: transform 0.12s ease;
+	}
+
+	[data-slider]::-moz-range-thumb {
+		width: 16px;
+		height: 16px;
+		border-radius: 9999px;
+		background: var(--color-bg);
+		border: 2px solid var(--color-text-primary);
+		box-shadow: 0 0 0 4px var(--color-bg);
+		transition: transform 0.12s ease;
+	}
+
+	[data-slider]:hover::-webkit-slider-thumb {
+		transform: scale(1.12);
+	}
+
+	[data-slider]:hover::-moz-range-thumb {
+		transform: scale(1.12);
+	}
+
+	[data-slider]:focus-visible::-webkit-slider-thumb {
+		box-shadow: 0 0 0 2px var(--color-text-primary);
+	}
+
+	[data-slider]:focus-visible::-moz-range-thumb {
+		box-shadow: 0 0 0 2px var(--color-text-primary);
+	}
+</style>

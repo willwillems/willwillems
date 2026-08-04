@@ -1,0 +1,24 @@
+---
+// A colour chip with its identifier. `color` is passed through to an inline
+// style so gradients and raw hex values both render as authored.
+
+interface Props {
+	color: string;
+	label: string;
+	meta?: string;
+}
+
+const { color, label, meta } = Astro.props;
+---
+
+<div class="flex min-w-0 items-center gap-3">
+	<span
+		class="size-10 shrink-0 rounded-lg border border-border-secondary"
+		style={`background: ${color}`}
+		aria-hidden="true"></span>
+	<span class="flex min-w-0 flex-col gap-1.5">
+		<code class="type-monospaced truncate text-text-secondary">{label}</code
+		>
+		{meta && <span class="type-monospaced text-text-inactive">{meta}</span>}
+	</span>
+</div>

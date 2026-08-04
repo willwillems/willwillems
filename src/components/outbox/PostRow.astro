@@ -1,0 +1,44 @@
+---
+import FormattedDate from '../FormattedDate.astro';
+import type { Post } from '../../data/posts';
+
+interface Props {
+	post: Post;
+	index: number;
+}
+
+const { post, index } = Astro.props;
+const primaryCategory = post.categories[0] ?? '';
+const iso = post.publishedAt?.toISOString().slice(0, 10) ?? '';
+---
+
+<article
+	class="grid gap-2 py-6 max-md:grid-cols-1 md:grid-cols-[1fr_3fr] md:gap-x-8 [[data-outbox-row]+&]:border-t [[data-outbox-row]+&]:border-border"
+	style={`view-transition-name: outbox-row-${String(index)}`}
+	data-outbox-row
+	data-categories={post.categories.join(',')}
+	data-date={iso}
+>
+	<div class="flex flex-col gap-4 text-sm">
+		<span class="text-sm text-text-primary">{primaryCategory}</span>
+		{
+			post.publishedAt && (
+				<span class="text-text-inactive type-body-small">
+					<FormattedDate date={post.publishedAt} />
+				</span>
+			)
+		}
+	</div>
+	<div class="flex flex-col gap-4">
+		<h3 class="type-title text-text-primary">
+			<a class="no-underline hover:underline" href={post.href}>
+				{post.title}
+			</a>
+		</h3>
+		{
+			post.excerpt && (
+				<p class="type-body-small text-text-third">{post.excerpt}</p>
+			)
+		}
+	</div>
+</article>

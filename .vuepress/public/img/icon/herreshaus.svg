@@ -1,6 +1,0 @@
-<svg width="240px" height="240px" viewBox="0 0 240 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="none" stroke-width="1" fill-rule="evenodd" fill="#f9f3ea">
-        <path d="M120,0 C186.27417,0 240,53.72583 240,120 C240,186.27417 186.27417,240 120,240 C53.72583,240 0,186.27417 0,120 C0,53.72583 53.72583,0 120,0 Z M120,38 C74.7126505,38 38,74.7126505 38,120 C38,165.287349 74.7126505,202 120,202 C165.287349,202 202,165.287349 202,120 C202,74.7126505 165.287349,38 120,38 Z" id="Combined-Shape"></path>
-        <circle id="Oval" cx="120" cy="120" r="38"></circle>
-    </g>
-</svg>

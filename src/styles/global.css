@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+
+@font-face {
+	font-family: 'Gochi Hand';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/gochi-hand.ttf') format('truetype');
+}
+
+:root {
+	--monospace-font-family: 'JetBrains Mono', monospace;
+}
+
+@theme {
+	--color-bg: #020202;
+	--color-text-primary: #ffffff;
+	--color-text-secondary: #ebebeb;
+	--color-text-third: #a2a2a2;
+	--color-text-inactive: #757575;
+	--color-surface: #333333;
+	--color-surface-secondary: #141414;
+	--color-border: #232323;
+	--color-border-secondary: #292929;
+
+	--font-sans: 'Inter', sans-serif;
+	--font-accent: 'Gochi Hand', cursive;
+}
+
+html {
+	scrollbar-gutter: stable;
+}
+
+body {
+	background: radial-gradient(
+			50.46% 119.63% at 17.86% 2.9%,
+			rgba(96, 54, 16, 0.08),
+			rgba(0, 0, 0, 0.2)
+		)
+		var(--color-bg);
+	color: var(--color-text-primary);
+}
+
+@utility type-heading-1 {
+	font-size: var(--text-2xl);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+@utility type-heading-2 {
+	font-size: var(--text-xl);
+	font-weight: 500;
+	line-height: 1.5;
+}
+
+@utility type-heading-3 {
+	font-size: var(--text-lg);
+	font-weight: 500;
+	line-height: 1.6;
+}
+
+@utility type-body {
+	font-size: var(--text-base);
+	line-height: 1.7;
+}
+
+@utility type-body-small {
+	font-size: var(--text-sm);
+	line-height: 1.7;
+}
+
+@utility type-body-large {
+	font-size: var(--text-lg);
+	line-height: 1.7;
+}
+
+@utility type-label {
+	font-size: var(--text-sm);
+	line-height: 1.4;
+	font-weight: 450;
+}
+
+@utility type-title {
+	font-size: var(--text-base);
+	font-weight: 400;
+	line-height: 1.2;
+}
+
+@utility type-monospaced {
+	font-family: var(--monospace-font-family, monospace);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+@utility type-accent {
+	font-family: var(--font-accent, cursive);
+	font-size: 1.35em;
+	font-weight: 500;
+	line-height: 1.7;
+}
+
+@utility no-scrollbar {
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/* Minimal typography for rendered markdown (notes and articles). */
+.prose {
+	font-size: var(--text-sm);
+	line-height: 1.7;
+
+	:where(p, ul, ol, pre, blockquote, table) {
+		margin-block: 1.25em;
+	}
+
+	/* Embeds often share a paragraph with text, so space the image itself. */
+	:where(img) {
+		margin: 1em 0;
+	}
+
+	:where(h1, h2, h3, h4) {
+		margin-block: 2em 0.75em;
+		font-weight: 500;
+		color: var(--color-text-secondary);
+	}
+
+	:where(h1, h2) {
+		font-size: var(--text-lg);
+	}
+
+	:where(h3, h4) {
+		font-size: var(--text-base);
+	}
+
+	:where(a) {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-color: var(--color-text-inactive);
+	}
+
+	:where(ul) {
+		list-style: disc;
+		padding-inline-start: 1.5em;
+	}
+
+	:where(ol) {
+		list-style: decimal;
+		padding-inline-start: 1.5em;
+	}
+
+	:where(code) {
+		font-family: var(--monospace-font-family, monospace);
+		font-size: 0.9em;
+	}
+
+	:where(:not(pre) > code) {
+		background: var(--color-surface-secondary);
+		border-radius: 4px;
+		padding: 0.15em 0.35em;
+	}
+
+	:where(pre) {
+		border-radius: 8px;
+		padding: 1rem 1.25rem;
+		overflow-x: auto;
+	}
+
+	:where(blockquote) {
+		border-inline-start: 2px solid var(--color-border-secondary);
+		padding-inline-start: 1em;
+		color: var(--color-text-third);
+	}
+
+	:where(hr) {
+		margin-block: 2em;
+		border-color: var(--color-border-secondary);
+	}
+}

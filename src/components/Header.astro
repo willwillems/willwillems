@@ -1,0 +1,146 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLogo from './HeaderLogo.astro';
+import ChevronDown from './icons/ChevronDown.astro';
+import AtSign from './icons/AtSign.astro';
+
+const navItems = [
+	{ label: 'Home', href: '/' },
+	{ label: 'Projects', href: '/projects' },
+	{ label: 'Posts', href: '/posts' },
+	{ label: 'About', href: '/about' },
+];
+
+const pathname = Astro.url.pathname;
+const currentPage =
+	navItems.find(
+		(item) =>
+			item.href === pathname ||
+			(item.href !== '/' && pathname.startsWith(item.href)),
+	)?.label ?? 'Menu';
+---
+
+<header
+	class="mx-auto grid max-w-5xl grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-8 px-6 sm:px-8 py-4 sm:py-6 text-sm"
+>
+	<div class="flex min-w-12 items-center justify-start">
+		<HeaderLogo />
+	</div>
+	<nav
+		class="hidden items-center justify-center gap-12 sm:flex"
+		aria-label={`${SITE_TITLE} primary navigation`}
+	>
+		{
+			navItems.map((item) => (
+				<a
+					href={item.href}
+					class:list={[
+						'no-underline',
+						item.label === currentPage
+							? 'text-text-primary'
+							: 'text-text-third',
+					]}
+				>
+					{item.label}
+				</a>
+			))
+		}
+	</nav>
+	<div class="flex min-w-12 items-center justify-end sm:hidden">
+		<button
+			class="flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-white"
+			popovertarget="mobile-nav"
+		>
+			<span>{currentPage}</span>
+			<ChevronDown />
+		</button>
+	</div>
+	<div class="hidden min-w-12 items-center justify-end sm:flex">
+		<a href="/#contact" aria-label="Contact">
+			<AtSign class="text-white" />
+		</a>
+	</div>
+</header>
+
+<div id="mobile-nav" popover class="mobile-nav">
+	<nav class="flex flex-col" aria-label={`${SITE_TITLE} mobile navigation`}>
+		{
+			navItems.map((item) => (
+				<a
+					href={item.href}
+					class:list={[
+						'block px-5 py-2 no-underline',
+						item.label === currentPage
+							? 'text-text-primary'
+							: 'text-text-third',
+					]}
+				>
+					{item.label}
+				</a>
+			))
+		}
+		<hr class="mx-5 my-1 border-t border-border-secondary" />
+		<a href="/#contact" class="block px-5 py-2 text-text-third no-underline"
+			>Contact</a
+		>
+	</nav>
+</div>
+
+<script>
+	document.getElementById('mobile-nav')?.addEventListener('click', (e) => {
+		if ((e.target as HTMLElement).closest('a')) {
+			document.getElementById('mobile-nav')?.hidePopover();
+		}
+	});
+</script>
+
+<style>
+	/* Popover requires non-utility styles for :popover-open, ::backdrop, and @starting-style */
+	.mobile-nav {
+		position: fixed;
+		top: 3.5rem;
+		right: 2rem;
+		left: auto;
+		margin: 0;
+		background: var(--color-surface-secondary);
+		border: 1px solid var(--color-border-secondary);
+		border-radius: 11px;
+		padding: 0.5rem 0;
+		min-width: 10rem;
+		opacity: 0;
+		scale: 0.95;
+		transition:
+			opacity 0.15s ease,
+			scale 0.15s ease,
+			overlay 0.15s allow-discrete,
+			display 0.15s allow-discrete;
+
+		&:popover-open {
+			opacity: 1;
+			scale: 1;
+
+			@starting-style {
+				opacity: 0;
+				scale: 0.95;
+			}
+		}
+
+		&::backdrop {
+			background: rgb(0 0 0 / 0.5);
+			backdrop-filter: blur(4px);
+			opacity: 0;
+			transition:
+				opacity 0.15s ease,
+				overlay 0.15s allow-discrete,
+				display 0.15s allow-discrete;
+		}
+
+		&:popover-open::backdrop {
+			opacity: 1;
+
+			@starting-style {
+				opacity: 0;
+			}
+		}
+	}
+</style>

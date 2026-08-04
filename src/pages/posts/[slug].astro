@@ -1,0 +1,50 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export async function getStaticPaths() {
+	const [notes, blog] = await Promise.all([
+		getCollection('notes'),
+		getCollection('blog'),
+	]);
+	return [
+		...notes.map((note) => ({
+			params: { slug: note.id },
+			props: { note },
+		})),
+		...blog.map((post) => ({
+			params: { slug: post.id },
+			props: { post },
+		})),
+	];
+}
+
+interface Props {
+	note?: CollectionEntry<'notes'>;
+	post?: CollectionEntry<'blog'>;
+}
+
+const { note, post } = Astro.props;
+const entry = note ?? post;
+if (!entry) throw new Error(`No entry for /posts/${Astro.params.slug}`);
+const { Content } = await render(entry);
+---
+
+{
+	post ? (
+		<BlogPost {...post.data}>
+			<Content />
+		</BlogPost>
+	) : (
+		note && (
+			<BlogPost
+				title={note.data.title}
+				description={note.data.excerpt}
+				category={note.data.category}
+				pubDate={note.data.created}
+			>
+				<Content />
+			</BlogPost>
+		)
+	)
+}

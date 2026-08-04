@@ -1,0 +1,105 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ImageCarousel from '../components/ImageCarousel.astro';
+import ArrowRight from '../components/icons/ArrowRight.astro';
+import GitHub from '../components/icons/GitHub.astro';
+
+import bar from '../assets/hero/bar.jpg';
+import skiRidge from '../assets/hero/ski-ridge.jpg';
+import gondola from '../assets/hero/gondola.jpg';
+import ledge from '../assets/hero/ledge.jpg';
+
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const heroImages = [
+	{ src: bar, alt: 'Will reading a menu at a bar' },
+	{ src: ledge, alt: 'Will leaning on a concrete ledge' },
+	{ src: gondola, alt: 'Will in a ski gondola' },
+	{ src: skiRidge, alt: 'Friends standing on a snowy mountain ridge' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main class="mx-auto max-w-5xl px-6 sm:px-8">
+			<section class="flex flex-col gap-8 py-4">
+				<ImageCarousel images={heroImages} />
+				<p class="type-body-large">
+					Hi there, I'm <span class="type-accent">Will</span>
+					<br />
+					<br />
+					I work at <strong class="font-semibold">Deducta</strong> as a
+					product engineer. Previously I worked on <strong
+						class="font-semibold">Devsync</strong
+					>. In addition to engineering on the web, I've always been
+					obsessed with <em class="not-italic font-medium"
+						>creative hardware interfaces</em
+					> with a specific focus on <span class="type-accent"
+						>audio</span
+					>.
+				</p>
+			</section>
+
+			<section id="contact" class="flex flex-col gap-8 py-16">
+				<div class="flex flex-col gap-8">
+					<div class="flex items-start justify-between">
+						<h2 class="type-title">Say hello</h2>
+						<a
+							href="#"
+							class="flex items-center gap-2.5 text-text-third hover:text-text-primary transition-colors"
+						>
+							<span class="type-title">Send</span>
+							<ArrowRight />
+						</a>
+					</div>
+
+					<div class="flex flex-wrap gap-8">
+						<div class="flex w-48 shrink-0 flex-col gap-4">
+							<label class="type-label" for="contact-email"
+								>Email</label
+							>
+							<input
+								id="contact-email"
+								type="email"
+								placeholder="john@hd.com"
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none"
+							/>
+						</div>
+						<div class="flex min-w-64 flex-1 flex-col gap-4">
+							<label class="type-label" for="contact-message"
+								>Message</label
+							>
+							<textarea
+								id="contact-message"
+								rows="3"
+								placeholder="Write your message here..."
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none resize-none"
+							></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="flex flex-col gap-6">
+					<p class="type-title">Or</p>
+					<a
+						href="https://github.com/nicepkg"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex items-center gap-3 type-label hover:text-text-third transition-colors"
+					>
+						<GitHub />
+						Ping me on GH
+					</a>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
