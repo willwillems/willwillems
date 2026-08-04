@@ -6,6 +6,7 @@ import type { Post } from '../../data/posts';
 import {
 	buildCategoryColorMap,
 	buildHeatmapBuckets,
+	countByCategory,
 	deriveCategories,
 } from './outbox';
 
@@ -23,11 +24,17 @@ const orderedPosts = [...posts].sort(
 const categories = deriveCategories(posts);
 const categoryColors = buildCategoryColorMap(categories);
 const buckets = buildHeatmapBuckets(posts, categories);
+const counts = countByCategory(posts);
 ---
 
 <section class="flex flex-col gap-10" data-outbox-section>
 	<div class="flex flex-col gap-8">
-		<OutboxHeader categories={categories} />
+		<OutboxHeader
+			categories={categories}
+			categoryColors={categoryColors}
+			counts={counts}
+			total={posts.length}
+		/>
 		<ActivityHeatmap buckets={buckets} categoryColors={categoryColors} />
 	</div>
 	<PostList posts={orderedPosts} />
@@ -39,6 +46,19 @@ const buckets = buildHeatmapBuckets(posts, categories);
 	function init(section: HTMLElement) {
 		const tabsContainer =
 			section.querySelector<HTMLElement>('[data-outbox-tabs]');
+		const menu = section.querySelector<HTMLElement>('#outbox-filter-menu');
+		const filterMenu = menu?.querySelector<HTMLElement>(
+			'[data-outbox-filter-options]',
+		);
+		const filterTrigger = section.querySelector<HTMLElement>(
+			'[data-outbox-filter-trigger]',
+		);
+		const filterLabel = section.querySelector<HTMLElement>(
+			'[data-outbox-filter-label]',
+		);
+		const filterDot = section.querySelector<HTMLElement>(
+			'[data-outbox-filter-dot]',
+		);
 		const sortButton =
 			section.querySelector<HTMLButtonElement>('[data-outbox-sort]');
 		const sortIcon = section.querySelector<SVGElement>(
@@ -128,24 +148,51 @@ const buckets = buildHeatmapBuckets(posts, categories);
 			}
 		}
 
-		tabsContainer.addEventListener('click', (event) => {
-			const target = (event.target as HTMLElement).closest<HTMLElement>(
-				'[data-category]',
-			);
-			if (!target) return;
-			activeCategory = target.dataset.category ?? '';
+		// The desktop tabs and the mobile dropdown are two views of the same
+		// filter, so selection is handled once for every `[data-category]`
+		// control in the section and mirrored across both.
+		function selectCategory(category: string) {
+			activeCategory = category;
 
-			const allTabs =
-				tabsContainer.querySelectorAll<HTMLElement>('[data-category]');
-			for (const tab of allTabs) {
-				const isActive = tab === target;
-				tab.dataset.active = isActive ? 'true' : 'false';
-				tab.classList.toggle('text-text-primary', isActive);
-				tab.classList.toggle('text-text-inactive', !isActive);
-				tab.classList.toggle('hover:text-text-third', !isActive);
+			for (const control of section.querySelectorAll<HTMLElement>(
+				'[data-category]',
+			)) {
+				control.dataset.active =
+					(control.dataset.category ?? '') === category
+						? 'true'
+						: 'false';
+			}
+
+			const selected = filterMenu?.querySelector<HTMLElement>(
+				`[data-category="${CSS.escape(category)}"]`,
+			);
+			if (filterLabel) filterLabel.textContent = category || 'All';
+			// Clearing the inline value falls back to the neutral grey in CSS.
+			if (filterDot) {
+				filterDot.style.background = selected?.dataset.color ?? '';
 			}
 
 			reconcile(true);
+		}
+
+		for (const container of [tabsContainer, filterMenu]) {
+			container?.addEventListener('click', (event) => {
+				const target = (
+					event.target as HTMLElement
+				).closest<HTMLElement>('[data-category]');
+				if (!target) return;
+				selectCategory(target.dataset.category ?? '');
+				menu?.hidePopover();
+			});
+		}
+
+		// The trigger has no native open state to style against, so mirror the
+		// popover's onto it for the chevron flip.
+		menu?.addEventListener('toggle', (event) => {
+			filterTrigger?.setAttribute(
+				'data-open',
+				(event as ToggleEvent).newState === 'open' ? 'true' : 'false',
+			);
 		});
 
 		section.addEventListener('outbox:eaten-changed', (event) => {

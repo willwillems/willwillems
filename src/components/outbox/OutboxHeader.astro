@@ -1,18 +1,28 @@
 ---
+import CategoryDropdown from './CategoryDropdown.astro';
 import CategoryTabs from './CategoryTabs.astro';
 
 interface Props {
 	categories: string[];
+	categoryColors: Record<string, string>;
+	counts: Record<string, number>;
+	total: number;
 }
 
-const { categories } = Astro.props;
+const { categories, categoryColors, counts, total } = Astro.props;
 ---
 
 <div
 	class="flex flex-wrap items-center justify-between gap-8 gap-y-4 type-title"
 >
-	<div class="flex flex-wrap items-center gap-10">
+	<div class="flex flex-wrap items-center gap-4 md:gap-10">
 		<h2 class="text-text-primary">Outbox</h2>
+		<CategoryDropdown
+			categories={categories}
+			categoryColors={categoryColors}
+			counts={counts}
+			total={total}
+		/>
 		<CategoryTabs categories={categories} />
 	</div>
 	<div class="flex items-center gap-4">

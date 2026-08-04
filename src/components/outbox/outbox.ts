@@ -52,6 +52,20 @@ export function buildCategoryColorMap(
 }
 
 /**
+ * Count how many posts carry each category. Posts with several categories
+ * count once per category, matching the tab/dropdown filter semantics.
+ */
+export function countByCategory(posts: Post[]): Record<string, number> {
+	const counts: Record<string, number> = {};
+	for (const post of posts) {
+		for (const category of post.categories) {
+			counts[category] = (counts[category] ?? 0) + 1;
+		}
+	}
+	return counts;
+}
+
+/**
  * Strip a minimal set of markdown tokens from a string and return a plain
  * excerpt, truncated on a word boundary at `length` chars with an ellipsis.
  */
