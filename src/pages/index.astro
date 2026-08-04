@@ -6,12 +6,18 @@ import ImageCarousel from '../components/ImageCarousel.astro';
 import ArrowRight from '../components/icons/ArrowRight.astro';
 import GitHub from '../components/icons/GitHub.astro';
 
+import bar from '../assets/hero/bar.jpg';
+import skiRidge from '../assets/hero/ski-ridge.jpg';
+import gondola from '../assets/hero/gondola.jpg';
+import ledge from '../assets/hero/ledge.jpg';
+
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 const heroImages = [
-	{ src: '/img/hero-carousel-1.jpg', alt: 'Will at a table' },
-	{ src: '/img/hero-carousel-2.jpg', alt: 'Mountain landscape with friends' },
-	{ src: '/img/hero-image.jpg', alt: 'Will reading at a bar' },
+	{ src: bar, alt: 'Will reading a menu at a bar' },
+	{ src: ledge, alt: 'Will leaning on a concrete ledge' },
+	{ src: gondola, alt: 'Will in a ski gondola' },
+	{ src: skiRidge, alt: 'Friends standing on a snowy mountain ridge' },
 ];
 ---
 
