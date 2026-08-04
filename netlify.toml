@@ -1,0 +1,39 @@
+## redirect to twitter account
+[[redirects]]
+  from = "/twitter"
+  to = "https://twitter.com/wll3mx"
+  force = true # COMMENT: ensure that we always redirect
+[[redirects]]
+  from = "/t"
+  to = "https://twitter.com/wll3mx"
+  force = true # COMMENT: ensure that we always redirect
+
+## Project detail pages from the VuePress era. The 2026 redesign replaced them
+## with a single /projects index that links straight to each live project, so
+## point the old URLs there until we decide whether to reinstate detail pages.
+## Deliberately 302 (not 301): 301s are cached aggressively by browsers and are
+## painful to undo if these slugs come back.
+[[redirects]]
+  from = "/projects/devsync"
+  to = "/projects"
+  status = 302
+[[redirects]]
+  from = "/projects/feedlivery"
+  to = "/projects"
+  status = 302
+[[redirects]]
+  from = "/projects/herres-haus"
+  to = "/projects"
+  status = 302
+[[redirects]]
+  from = "/projects/s1"
+  to = "/projects"
+  status = 302
+[[redirects]]
+  from = "/projects/sketch-airtabledata-plugin"
+  to = "/projects"
+  status = 302
+[[redirects]]
+  from = "/projects/whoishiringme"
+  to = "/projects"
+  status = 302
