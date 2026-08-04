@@ -1,0 +1,645 @@
+---
+import { Code } from 'astro:components';
+
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import Slider from '../components/Slider.astro';
+
+import ArrowRight from '../components/icons/ArrowRight.astro';
+import AtSign from '../components/icons/AtSign.astro';
+import ChevronDown from '../components/icons/ChevronDown.astro';
+import ExternalLink from '../components/icons/ExternalLink.astro';
+import GitHub from '../components/icons/GitHub.astro';
+import LabExperiment from '../components/icons/LabExperiment.astro';
+import VerifiedBadge from '../components/icons/VerifiedBadge.astro';
+
+import PostRow from '../components/outbox/PostRow.astro';
+import {
+	CATEGORY_PALETTE,
+	EMPTY_CELL_COLOR,
+} from '../components/outbox/outbox';
+import FilterTabs from '../components/projects/FilterTabs.astro';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import ProjectsGrid from '../components/projects/ProjectsGrid.astro';
+
+import Specimen from '../components/system/Specimen.astro';
+import Swatch from '../components/system/Swatch.astro';
+import SystemSection from '../components/system/SystemSection.astro';
+
+import { SITE_TITLE } from '../consts';
+import {
+	bodyBackground,
+	colorGroups,
+	fontTokens,
+	typeUtilities,
+} from '../data/design-system';
+import type { Post } from '../data/posts';
+
+const sections = [
+	{ id: 'color', label: 'Color' },
+	{ id: 'typography', label: 'Typography' },
+	{ id: 'prose', label: 'Prose' },
+	{ id: 'icons', label: 'Icons' },
+	{ id: 'components', label: 'Components' },
+	{ id: 'patterns', label: 'Patterns' },
+];
+
+/** Which utility family each colour group is normally consumed through. */
+const COLOR_UTILITY: Record<string, string | undefined> = {
+	Surfaces: 'bg-*',
+	Text: 'text-*',
+	Borders: 'border-*',
+};
+
+/**
+ * Sample copy and caveats per type utility. The keys double as a Tailwind
+ * safelist — the scanner reads raw source text, so naming every class here
+ * guarantees it is generated even for utilities the site doesn't use yet.
+ */
+const TYPE_SPECIMENS: Record<
+	string,
+	{ sample: string; note?: string } | undefined
+> = {
+	'type-heading-1': {
+		sample: 'The "Generic MIDI controller"',
+		note: 'Article titles. Its only call site pulls the weight back down with font-normal.',
+	},
+	'type-heading-2': {
+		sample: 'Learn to manage large Vue.js components',
+		note: 'Defined, but nothing uses it yet.',
+	},
+	'type-heading-3': {
+		sample: 'Using scoped BEM with Tailwind',
+		note: 'Defined, but nothing uses it yet.',
+	},
+	'type-title': {
+		sample: 'Outbox',
+		note: 'The workhorse. Section headings, page titles and card names all use this rather than type-heading-*.',
+	},
+	'type-body-large': { sample: 'Hi there, I’m Will' },
+	'type-body': {
+		sample: 'Product engineer at Deducta, previously Devsync.',
+	},
+	'type-body-small': { sample: 'Short notes, reports, and resources.' },
+	'type-label': {
+		sample: 'Email',
+		note: 'Form labels, tabs and controls. Weight 450 needs a variable Inter; only static 400/500/600 are fetched, so it resolves to the nearest available weight.',
+	},
+	'type-monospaced': {
+		sample: 'npm run validate',
+		note: 'JetBrains Mono is named in :root but never loaded, so this falls back to the system monospace.',
+	},
+	'type-accent': {
+		sample: 'Will',
+		note: 'Sized in em, so it scales with whatever it sits in. Built to be dropped inline into body copy.',
+	},
+};
+
+const undocumented = typeUtilities.filter(
+	(utility) => !(utility.name in TYPE_SPECIMENS),
+);
+if (undocumented.length > 0) {
+	throw new Error(
+		`/system: undocumented type utilities — ${undocumented
+			.map((utility) => utility.name)
+			.join(', ')}`,
+	);
+}
+
+const typeSpecimens = typeUtilities.map((utility) => ({
+	name: utility.name,
+	spec: [utility.family, utility.size, utility.weight, utility.lineHeight]
+		.filter((part) => part !== null)
+		.join(' · '),
+	sample: TYPE_SPECIMENS[utility.name]?.sample ?? 'The quick brown fox',
+	note: TYPE_SPECIMENS[utility.name]?.note,
+}));
+
+const icons = [
+	{ name: 'ArrowRight', Icon: ArrowRight },
+	{ name: 'AtSign', Icon: AtSign },
+	{ name: 'ChevronDown', Icon: ChevronDown },
+	{ name: 'ExternalLink', Icon: ExternalLink },
+	{ name: 'GitHub', Icon: GitHub },
+	{ name: 'LabExperiment', Icon: LabExperiment },
+	{ name: 'VerifiedBadge', Icon: VerifiedBadge },
+];
+
+const demoTabs = [
+	{ label: 'All', href: '#components', active: true },
+	{ label: 'Active', href: '#components' },
+	{ label: 'Archived', href: '#components' },
+];
+
+const samplePosts: Post[] = [
+	{
+		slug: 'sample-a',
+		title: 'The "Generic MIDI controller"',
+		publishedAt: new Date('2015-07-20'),
+		excerpt:
+			'A build log for a hardware MIDI controller with no fixed purpose.',
+		categories: ['Hardware'],
+		href: '#patterns',
+	},
+	{
+		slug: 'sample-b',
+		title: 'Using scoped BEM with Tailwind',
+		publishedAt: new Date('2019-03-11'),
+		excerpt: 'Naming things when the utilities have already named them.',
+		categories: ['Blog'],
+		href: '#patterns',
+	},
+];
+
+/** The site's single button recipe, copied verbatim from the outbox controls. */
+const controlClass =
+	'flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 type-label text-text-inactive transition-colors duration-150 hover:text-text-third';
+
+const snippetClass =
+	'overflow-x-auto rounded-lg border border-border-secondary bg-surface-secondary p-4 type-monospaced text-text-third';
+
+/** The rungs of Tailwind's scale this site actually leans on, at true size. */
+const spacingRhythm = [
+	{ name: 'gap-3', px: 12, use: 'An icon beside its label' },
+	{ name: 'gap-4', px: 16, use: 'A label above its field' },
+	{ name: 'gap-6', px: 24, use: 'Card internals, tab rows' },
+	{ name: 'gap-8', px: 32, use: 'Between items in a section' },
+	{ name: 'gap-10', px: 40, use: 'Between sections' },
+	{ name: 'gap-12', px: 48, use: 'Between documented examples' },
+];
+
+const proseCode = `export function excerpt(content: string, length = 160): string {
+	const stripped = content.replace(/\\s+/g, ' ').trim();
+	return stripped.length <= length ? stripped : stripped.slice(0, length) + '…';
+}`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`System — ${SITE_TITLE}`}
+			description="The tokens, type scale, components and patterns this site is built from."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="mx-auto max-w-5xl px-6 sm:px-8 pb-24">
+			<div class="flex flex-col gap-6 py-6 sm:py-8">
+				<div
+					class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-4"
+				>
+					<h1 class="type-title text-text-primary">System</h1>
+					<nav
+						class="flex flex-wrap items-center gap-6"
+						aria-label="Design system sections"
+					>
+						{
+							sections.map((section) => (
+								<a
+									class="type-label text-text-inactive no-underline transition-colors duration-150 hover:text-text-third"
+									href={`#${section.id}`}
+								>
+									{section.label}
+								</a>
+							))
+						}
+					</nav>
+				</div>
+				<p class="max-w-2xl type-body-small text-text-third">
+					Everything this site is assembled from. Colour tokens and
+					type specs are read out of <code
+						class="type-monospaced text-text-secondary"
+						>src/styles/global.css</code
+					> at build time, so this page cannot drift from the stylesheet
+					— if a utility is added there and left undocumented here, the
+					build fails.
+				</p>
+			</div>
+
+			<SystemSection
+				id="color"
+				title="Color"
+				summary="Declared once in @theme, from which Tailwind derives bg-*, text-* and border-* utilities. The site is dark-only: there is no light theme and no dark: variant anywhere."
+			>
+				{
+					colorGroups.map((group) => (
+						<Specimen
+							name={group.name}
+							meta={COLOR_UTILITY[group.name]}
+							note={group.description}
+						>
+							<div class="grid gap-6 sm:grid-cols-2">
+								{group.colors.map((color) => (
+									<Swatch
+										color={color.value}
+										label={color.variable}
+										meta={color.value}
+									/>
+								))}
+							</div>
+						</Specimen>
+					))
+				}
+
+				<Specimen
+					name="Page background"
+					meta="radial-gradient · --color-bg"
+					note="A warm brown glow at 8% opacity, anchored near the top-left and layered over --color-bg. It is painted once on the document body, so it spans the viewport rather than repeating per section."
+				>
+					<div
+						class="h-32 rounded-xl border border-border-secondary"
+						style={`background: ${bodyBackground}`}
+					>
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="CATEGORY_PALETTE"
+					meta="components/outbox/outbox.ts"
+					note="Handed to outbox categories in first-seen order, wrapping modulo the palette length. These live outside @theme because they are data, not theme."
+				>
+					<div class="grid grid-cols-2 gap-6 sm:grid-cols-3">
+						{
+							CATEGORY_PALETTE.map((color) => (
+								<Swatch color={color} label={color} />
+							))
+						}
+						<Swatch
+							color={EMPTY_CELL_COLOR}
+							label={EMPTY_CELL_COLOR}
+							meta="empty cell"
+						/>
+					</div>
+				</Specimen>
+			</SystemSection>
+
+			<SystemSection
+				id="typography"
+				title="Typography"
+				summary="Inter for everything, Gochi Hand for accents. Style text with a type-* utility rather than ad-hoc size and weight classes. Specs below read family · size · weight · line-height."
+			>
+				<Specimen name="Families" meta="@theme · :root">
+					<div class="flex flex-col gap-8">
+						{
+							fontTokens.map((font) => (
+								<div class="flex flex-col gap-3">
+									<p
+										class="text-2xl text-text-secondary"
+										style={`font-family: ${font.value}`}
+									>
+										The quick brown fox jumps over the lazy
+										dog
+									</p>
+									<div class="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+										<code class="type-monospaced text-text-inactive">
+											{font.variable}
+										</code>
+										<span class="type-monospaced text-text-inactive">
+											{font.utility ?? 'no utility'}
+										</span>
+									</div>
+								</div>
+							))
+						}
+					</div>
+				</Specimen>
+
+				{
+					typeSpecimens.map((specimen) => (
+						<Specimen
+							name={specimen.name}
+							meta={specimen.spec}
+							note={specimen.note}
+						>
+							{specimen.name === 'type-accent' ? (
+								<p class="type-body-large text-text-secondary">
+									Hi there, I’m{' '}
+									<span class="type-accent">
+										{specimen.sample}
+									</span>
+								</p>
+							) : (
+								<p
+									class={`${specimen.name} text-text-secondary`}
+								>
+									{specimen.sample}
+								</p>
+							)}
+						</Specimen>
+					))
+				}
+			</SystemSection>
+
+			<SystemSection
+				id="prose"
+				title="Prose"
+				summary="One .prose class styles every piece of rendered markdown — blog posts and Obsidian notes alike. It reaches descendants through :where(), so any utility you add always wins over it."
+			>
+				<Specimen
+					name=".prose"
+					meta="14px · 1.7"
+					note="Code blocks are highlighted by Shiki with the min-dark theme, which brings its own background — .prose only contributes radius, padding and overflow."
+				>
+					<div class="prose max-w-2xl text-text-secondary">
+						<h2>Rendered markdown</h2>
+						<p>
+							Body copy sits at 14px on a 1.7 line-height. Inline <a
+								href="#prose">links</a
+							> pick up an underline offset by 3px, and inline <code
+								>code</code
+							> gets a chip in the secondary surface colour.
+						</p>
+						<ul>
+							<li>Unordered lists use discs</li>
+							<li>indented by 1.5em</li>
+						</ul>
+						<blockquote>
+							<p>
+								Blockquotes take a 2px leading rule and drop to
+								the tertiary text colour.
+							</p>
+						</blockquote>
+						<Code code={proseCode} lang="ts" theme="min-dark" />
+						<hr />
+						<h3>Third-level heading</h3>
+						<p>
+							Headings shift to the secondary text colour at
+							weight 500, with generous space above and tight
+							space below.
+						</p>
+					</div>
+				</Specimen>
+			</SystemSection>
+
+			<SystemSection
+				id="icons"
+				title="Icons"
+				summary="Inline SVG components sharing one signature: { class?: string; size?: number }. They paint with currentColor, so colour them from the parent — the two badges are the exception and carry a fixed blue."
+			>
+				<Specimen name="components/icons" meta="7 icons · currentColor">
+					<div class="grid grid-cols-2 gap-6 sm:grid-cols-3">
+						{
+							icons.map(({ name, Icon }) => (
+								<div class="flex items-center gap-3">
+									<Icon />
+									<code class="type-monospaced text-text-inactive">
+										{name}
+									</code>
+								</div>
+							))
+						}
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="size"
+					meta="default 16 · ChevronDown 13"
+					note="Height follows the intrinsic ratio, so non-square icons stay undistorted."
+				>
+					<div class="flex items-end gap-6 text-text-secondary">
+						<ArrowRight />
+						<ArrowRight size={24} />
+						<ArrowRight size={32} />
+					</div>
+				</Specimen>
+			</SystemSection>
+
+			<SystemSection
+				id="components"
+				title="Components"
+				summary="The reusable pieces. Everything here is server-rendered Astro with no client framework; interactivity is a handful of inline scripts."
+			>
+				<Specimen
+					name="Slider"
+					meta="min · max · value · step"
+					note="Wraps a native range input and keeps the filled track in sync through a --progress custom property, seeded server-side so there is no flash. It holds no logic — listen for input on the consumer."
+				>
+					<div class="flex flex-wrap items-center gap-8">
+						<Slider class="w-48" aria-label="Slider at 50" />
+						<Slider
+							class="w-48"
+							value={15}
+							aria-label="Slider at 15"
+						/>
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="ProjectCard"
+					meta="name · description · href? · verified? · status? · icon?"
+					note="Wrapped in ProjectsGrid, which is a bare two-column grid. The badge appears for verified, the flask for status='experiment', and the external-link affordance only when href is set."
+				>
+					<ProjectsGrid>
+						<ProjectCard
+							name="Devsync"
+							description="Team tooling"
+							icon="/favicon-96x96.png"
+							href="/projects"
+						/>
+						<ProjectCard
+							name="Deducta"
+							description="Product engineering"
+							verified
+						/>
+						<ProjectCard
+							name="Tray"
+							description="Parts inventory"
+							status="experiment"
+						/>
+						<ProjectCard
+							name="Archive"
+							description="No icon, badge or link"
+						/>
+					</ProjectsGrid>
+				</Specimen>
+
+				<Specimen
+					name="FilterTabs"
+					meta="tabs: { label, href, filter?, active? }[]"
+					note="Active state is server-rendered, then reconciled client-side against the ?filter= query. The outbox uses the same visual recipe on buttons instead of links."
+				>
+					<FilterTabs tabs={demoTabs} />
+				</Specimen>
+
+				<Specimen
+					name="Ghost control"
+					meta="type-label · hover:text-text-third"
+					note="The only button recipe on the site: stripped to text, with hover lifting it one step up the text ramp."
+				>
+					<div class="flex items-center gap-6">
+						<button class={controlClass} type="button">
+							Sort
+							<ChevronDown size={12} />
+						</button>
+						<button class={controlClass} type="button">
+							Restore posts
+						</button>
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="Text link"
+					meta="text-text-third → text-text-primary"
+					note="Inline links inside prose underline instead; this recipe is for standalone actions."
+				>
+					<a
+						class="flex w-fit items-center gap-2.5 text-text-third transition-colors hover:text-text-primary"
+						href="#components"
+					>
+						<span class="type-title">Send</span>
+						<ArrowRight />
+					</a>
+				</Specimen>
+
+				<Specimen
+					name="Text fields"
+					meta="type-label + type-body-small"
+					note="Deliberately chrome-free: transparent background, no border, no focus ring. The label and placeholder carry the affordance."
+				>
+					<div class="flex flex-wrap gap-8">
+						<div class="flex w-48 shrink-0 flex-col gap-4">
+							<label class="type-label" for="system-email"
+								>Email</label
+							>
+							<input
+								id="system-email"
+								type="email"
+								placeholder="john@hd.com"
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none"
+							/>
+						</div>
+						<div class="flex min-w-64 flex-1 flex-col gap-4">
+							<label class="type-label" for="system-message"
+								>Message</label
+							>
+							<textarea
+								id="system-message"
+								rows="3"
+								placeholder="Write your message here..."
+								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none resize-none"
+							></textarea>
+						</div>
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="Tooltip"
+					meta="group + group-hover"
+					note="CSS only. The trigger owns group and cursor-help; the bubble fades and slides in. Used on the wordmark in the header."
+				>
+					<span
+						class="group relative inline-flex w-fit cursor-help items-center type-body-small text-text-third"
+					>
+						Hover me
+						<span
+							role="tooltip"
+							class="pointer-events-none absolute top-1/2 left-full ml-2.5 -translate-x-1 -translate-y-1/2 rounded-md border border-border-secondary bg-surface-secondary px-2.5 py-1.5 text-xs whitespace-nowrap text-text-secondary opacity-0 transition-all duration-150 ease-out group-hover:translate-x-0 group-hover:opacity-100"
+						>
+							If you're not sure, call me Will
+						</span>
+					</span>
+				</Specimen>
+
+				<Specimen
+					name="FormattedDate"
+					meta="date: Date"
+					note="Emits a <time> element with a machine-readable ISO datetime and an en-US short display date."
+				>
+					<p class="type-body-small text-text-inactive">
+						<FormattedDate date={new Date('2015-07-20')} />
+					</p>
+				</Specimen>
+			</SystemSection>
+
+			<SystemSection
+				id="patterns"
+				title="Patterns"
+				summary="Recurring layout decisions that are not components. Nothing in Tailwind's spacing, radius or breakpoint scales is overridden — only the colours and fonts are."
+			>
+				<Specimen
+					name="Page shell"
+					meta="header · main · footer"
+					note="Every page shares this measure and gutter, so the header aligns to page content. Reading columns narrow further with max-w-2xl."
+				>
+					<pre
+						class={snippetClass}><code>&lt;main class="mx-auto max-w-5xl px-6 sm:px-8 py-6 sm:py-8"&gt;</code></pre>
+				</Specimen>
+
+				<Specimen
+					name="Spacing"
+					meta="0.25rem step · shown at true size"
+					note="Vertical page rhythm is py-6 sm:py-8 per section, the same padding the header uses."
+				>
+					<div class="flex flex-col gap-4">
+						{
+							spacingRhythm.map((step) => (
+								<div class="flex items-center gap-5">
+									<code class="w-20 shrink-0 type-monospaced text-text-secondary">
+										{step.name}
+									</code>
+									<span class="flex w-12 shrink-0">
+										<span
+											class="h-2 rounded-sm bg-text-inactive"
+											style={`width: ${String(step.px)}px`}
+										/>
+									</span>
+									<span class="type-body-small text-text-inactive">
+										{step.use}
+									</span>
+								</div>
+							))
+						}
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="Divided rows"
+					meta="[[data-outbox-row]+&]:border-t"
+					note="The rule lives on the row and keys off a preceding sibling, so the first row is never capped — and filtering by detaching rows keeps that true without extra bookkeeping."
+				>
+					<div>
+						{
+							samplePosts.map((post, index) => (
+								<PostRow post={post} index={index} />
+							))
+						}
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="Horizontal rail"
+					meta="no-scrollbar · snap-x"
+					note="Used by the home carousel: scrollbars hidden, scrolling untouched, slides snapping to the start edge."
+				>
+					<div
+						class="no-scrollbar flex w-full snap-x snap-mandatory gap-4 overflow-x-auto"
+					>
+						{
+							[1, 2, 3, 4, 5, 6].map((slide) => (
+								<div class="flex h-24 w-64 shrink-0 snap-start items-center justify-center rounded-xl border border-border bg-surface type-monospaced text-text-third">
+									{slide}
+								</div>
+							))
+						}
+					</div>
+				</Specimen>
+
+				<Specimen
+					name="Empty state"
+					meta="type-body-small · text-text-inactive"
+					note="Centred, dimmed, and generously padded so a filtered list never collapses."
+				>
+					<p
+						class="m-0 py-12 text-center type-body-small text-text-inactive"
+					>
+						No posts in this category yet.
+					</p>
+				</Specimen>
+			</SystemSection>
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,22 @@
+---
+// A single documented example: the thing itself, above its name and spec.
+
+interface Props {
+	name: string;
+	/** Right-aligned spec, e.g. `24px · 500 · 1.4`. */
+	meta?: string;
+	/** Caveat or usage guidance shown under the example. */
+	note?: string;
+}
+
+const { name, meta, note } = Astro.props;
+---
+
+<div class="flex min-w-0 flex-col gap-4">
+	<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+		<code class="type-monospaced text-text-secondary">{name}</code>
+		{meta && <span class="type-monospaced text-text-inactive">{meta}</span>}
+	</div>
+	<slot />
+	{note && <p class="type-body-small text-text-inactive">{note}</p>}
+</div>
