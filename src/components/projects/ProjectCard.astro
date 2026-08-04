@@ -29,7 +29,9 @@ const { name, description, href, verified = false, status, icon } = Astro.props;
 			{verified && <VerifiedBadge class="shrink-0" />}
 			{status === 'experiment' && <LabExperiment class="shrink-0" />}
 		</div>
-		<p class="type-body leading-none text-text-third">{description}</p>
+		<p class="type-body-small leading-none text-text-third">
+			{description}
+		</p>
 	</div>
 	{
 		href && (
