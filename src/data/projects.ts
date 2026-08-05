@@ -1,13 +1,28 @@
-import { downloadAsset, fetchBase, fetchNote, frontmatterString } from './api';
+import { assetUrl, fetchNote, frontmatterString } from './api';
+import type { ApiListItem } from './api';
 
+/**
+ * Project lifecycle. These are the names the UI speaks — `ProjectCard` renders
+ * a lab badge for `experiment` — so vault frontmatter is normalised onto them
+ * rather than the other way around.
+ */
 export type ProjectStatus = 'active' | 'archived' | 'experiment';
 
-export interface Project {
+/** Vault `status` values, mapped onto the statuses the UI knows about. */
+const STATUSES = new Map<string, ProjectStatus>([
+	['active', 'active'],
+	['archived', 'archived'],
+	['experiment', 'experiment'],
+	['experimental', 'experiment'],
+]);
+
+export interface Product {
+	id: string;
 	name: string;
 	description: string;
 	status: ProjectStatus;
 	link?: string;
-	/** Public URL path of the project's icon, downloaded at build time. */
+	/** Absolute vault URL, optimised into the build by `astro:assets`. */
 	icon?: string;
 }
 
@@ -21,9 +36,9 @@ function firstSentence(text: string): string {
 }
 
 /**
- * Resolve an `icon: "[[name.png]]"` frontmatter wikilink to a local public
- * URL path. The list endpoint carries only frontmatter, so the note detail
- * is fetched for its `assets` map.
+ * Resolve an `icon: "[[name.png]]"` frontmatter wikilink to the asset's
+ * absolute vault URL. The list endpoint carries only frontmatter, so the note
+ * detail is fetched for its `assets` map.
  */
 async function resolveIcon(
 	id: string,
@@ -33,37 +48,31 @@ async function resolveIcon(
 	if (!target) return undefined;
 	const note = await fetchNote('products', id);
 	const apiPath = note.assets[target];
-	if (!apiPath) return undefined;
-	return downloadAsset(target, apiPath);
+	return apiPath ? assetUrl(apiPath) : undefined;
 }
 
 /**
- * Products from the Obsidian API. Notes without a recognised `status`
- * (e.g. templates) are skipped.
+ * Map an API list item onto a project. Returns undefined for notes without a
+ * recognised `status` (e.g. templates), which the caller reports.
  */
-export async function getProjects(): Promise<Project[]> {
-	const items = await fetchBase('products');
-	const projects: Project[] = [];
-	for (const item of items) {
-		const status = frontmatterString(item.frontmatter, 'status');
-		if (
-			status !== 'active' &&
-			status !== 'archived' &&
-			status !== 'experiment'
-		)
-			continue;
-		projects.push({
-			name: item.title,
-			description:
-				frontmatterString(item.frontmatter, 'description') ??
-				firstSentence(item.excerpt),
-			status,
-			link: frontmatterString(item.frontmatter, 'url'),
-			icon: await resolveIcon(
-				item.id,
-				frontmatterString(item.frontmatter, 'icon'),
-			),
-		});
-	}
-	return projects;
+export async function toProduct(
+	item: ApiListItem,
+): Promise<Product | undefined> {
+	const status = STATUSES.get(
+		frontmatterString(item.frontmatter, 'status') ?? '',
+	);
+	if (!status) return undefined;
+	return {
+		id: item.id,
+		name: item.title,
+		description:
+			frontmatterString(item.frontmatter, 'description') ??
+			firstSentence(item.excerpt),
+		status,
+		link: frontmatterString(item.frontmatter, 'url'),
+		icon: await resolveIcon(
+			item.id,
+			frontmatterString(item.frontmatter, 'icon'),
+		),
+	};
 }

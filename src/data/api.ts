@@ -74,6 +74,15 @@ export function fetchNote(base: string, id: string): Promise<ApiNote> {
 	return getJson<ApiNote>(`/${base}/${id}`);
 }
 
+/**
+ * Absolute URL for an asset path from a note's `assets` map. Those paths are
+ * server-absolute (`/api/assets/…`), so they resolve against the API origin
+ * rather than being appended to the base URL.
+ */
+export function assetUrl(apiPath: string): string {
+	return new URL(apiPath, apiUrl()).href;
+}
+
 /** Read a string frontmatter field, ignoring nulls and template junk. */
 export function frontmatterString(
 	frontmatter: Record<string, unknown>,

@@ -1,15 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
+
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import FilterTabs from '../../components/projects/FilterTabs.astro';
 import ProjectCard from '../../components/projects/ProjectCard.astro';
 import ProjectsGrid from '../../components/projects/ProjectsGrid.astro';
-import { getProjects } from '../../data/projects';
 
 import { SITE_TITLE } from '../../consts';
 
-const projects = await getProjects();
+const projects = (await getCollection('products')).map((entry) => entry.data);
 
 const filterTabs = [
 	{ label: 'All', href: '/projects', filter: '', active: true },

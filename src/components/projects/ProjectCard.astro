@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+
 import VerifiedBadge from '../icons/VerifiedBadge.astro';
 import ExternalLink from '../icons/ExternalLink.astro';
 import LabExperiment from '../icons/LabExperiment.astro';
@@ -10,10 +12,14 @@ interface Props {
 	href?: string;
 	verified?: boolean;
 	status?: ProjectStatus;
+	/** Absolute vault URL. Downloaded and optimised at build time. */
 	icon?: string;
 }
 
 const { name, description, href, verified = false, status, icon } = Astro.props;
+
+/** Rendered into a fixed 56px box, so only a 2x variant is worth emitting. */
+const ICON_SIZE = 56;
 ---
 
 <article class="flex items-center gap-6">
@@ -21,7 +27,20 @@ const { name, description, href, verified = false, status, icon } = Astro.props;
 		class="size-14 shrink-0 overflow-hidden rounded-xl border border-border bg-surface"
 		aria-hidden="true"
 	>
-		{icon && <img class="size-full object-cover" src={icon} alt="" />}
+		{
+			icon && (
+				<Picture
+					class="size-full object-cover"
+					src={icon}
+					alt=""
+					width={ICON_SIZE}
+					height={ICON_SIZE}
+					densities={[2]}
+					formats={['avif', 'webp']}
+					loading="lazy"
+				/>
+			)
+		}
 	</div>
 	<div class="flex min-w-0 flex-1 flex-col gap-3">
 		<div class="flex items-center gap-3">

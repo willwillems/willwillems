@@ -9,6 +9,7 @@ import {
 	frontmatterString,
 	resolveEmbeds,
 } from './data/api';
+import { toProduct } from './data/projects';
 
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
@@ -90,4 +91,44 @@ const notes = defineCollection({
 	}),
 });
 
-export const collections = { blog, notes };
+/**
+ * Projects pulled from the Obsidian API at build time. Icons are stored as
+ * absolute vault URLs and optimised into the build by `astro:assets`, so
+ * nothing here touches the filesystem.
+ */
+const products = defineCollection({
+	loader: {
+		name: 'obsidian-products',
+		load: async (context) => {
+			const { store, logger } = context;
+			logger.info('Loading products from the Obsidian API…');
+			store.clear();
+			for (const item of await fetchBase('products')) {
+				const product = await toProduct(item);
+				if (!product) {
+					logger.warn(
+						`Skipping product "${item.id}" — unrecognised status ${JSON.stringify(frontmatterString(item.frontmatter, 'status'))}.`,
+					);
+					continue;
+				}
+				store.set({
+					id: product.id,
+					data: await context.parseData({
+						id: product.id,
+						data: { ...product },
+					}),
+				});
+			}
+		},
+	},
+	schema: z.object({
+		id: z.string(),
+		name: z.string(),
+		description: z.string(),
+		status: z.enum(['active', 'archived', 'experiment']),
+		link: z.url().optional(),
+		icon: z.url().optional(),
+	}),
+});
+
+export const collections = { blog, notes, products };
