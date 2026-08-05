@@ -9,6 +9,8 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+import ky from 'ky';
+
 export interface ApiListItem {
 	id: string;
 	title: string;
@@ -44,30 +46,28 @@ function apiUrl(): string {
 }
 
 /**
- * The vault scales to zero, so the first connections of a build can be dropped
- * while it wakes. Retry transport failures only — a response that arrives is
- * handled by the caller, so a genuine outage still fails the build.
+ * The vault scales to zero and takes a few seconds to wake, and a cold build
+ * asks it for everything at once, so the first requests can be dropped or come
+ * back 502/503 while it boots. Retry those; anything still failing after the
+ * retries throws and fails the build, which is what we want for a real outage.
+ *
+ * URLs are passed absolute rather than via `baseUrl`: standard URL resolution
+ * would resolve `/posts` against `https://host/api` as `https://host/posts`,
+ * silently dropping the `/api` prefix.
  */
-async function fetchRetry(url: string, attempts = 3): Promise<Response> {
-	for (let attempt = 1; ; attempt++) {
-		try {
-			return await fetch(url);
-		} catch (error) {
-			if (attempt === attempts) throw error;
-			await new Promise((resolve) => setTimeout(resolve, attempt * 500));
-		}
-	}
-}
+const api = ky.extend({
+	timeout: 15_000,
+	retry: {
+		limit: 3,
+		// A cold build fans every request out at once, so spread the retries
+		// instead of replaying the same thundering herd.
+		jitter: true,
+		retryOnTimeout: true,
+	},
+});
 
-async function getJson<T>(path: string): Promise<T> {
-	const url = `${apiUrl()}${path}`;
-	const res = await fetchRetry(url);
-	if (!res.ok) {
-		throw new Error(
-			`Notes API request failed: GET ${url} → ${String(res.status)} ${res.statusText}`,
-		);
-	}
-	return res.json() as Promise<T>;
+function getJson<T>(path: string): Promise<T> {
+	return api.get(`${apiUrl()}${path}`).json<T>();
 }
 
 /** Fetch every list item in a base, following pagination. */
@@ -134,21 +134,10 @@ export function downloadAsset(name: string, apiPath: string): Promise<string> {
 	const existing = downloaded.get(name);
 	if (existing) return existing;
 	const promise = (async () => {
-		// Asset paths are server-absolute (`/api/assets/…`), so resolve
-		// against the API origin rather than appending to the base URL.
-		const url = new URL(apiPath, apiUrl()).href;
-		const res = await fetchRetry(url);
-		if (!res.ok) {
-			throw new Error(
-				`Notes API request failed: GET ${url} → ${String(res.status)} ${res.statusText}`,
-			);
-		}
+		const bytes = await api.get(assetUrl(apiPath)).arrayBuffer();
 		const localName = name.replaceAll(path.sep, '-').replaceAll('/', '-');
 		await mkdir(ASSET_DIR, { recursive: true });
-		await writeFile(
-			path.join(ASSET_DIR, localName),
-			Buffer.from(await res.arrayBuffer()),
-		);
+		await writeFile(path.join(ASSET_DIR, localName), Buffer.from(bytes));
 		return `${ASSET_ROUTE}/${encodeURIComponent(localName)}`;
 	})();
 	// Drop failed downloads so a transient error can be retried on the
