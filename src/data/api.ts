@@ -43,9 +43,25 @@ function apiUrl(): string {
 	return url.replace(/\/+$/, '');
 }
 
+/**
+ * The vault scales to zero, so the first connections of a build can be dropped
+ * while it wakes. Retry transport failures only — a response that arrives is
+ * handled by the caller, so a genuine outage still fails the build.
+ */
+async function fetchRetry(url: string, attempts = 3): Promise<Response> {
+	for (let attempt = 1; ; attempt++) {
+		try {
+			return await fetch(url);
+		} catch (error) {
+			if (attempt === attempts) throw error;
+			await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+		}
+	}
+}
+
 async function getJson<T>(path: string): Promise<T> {
 	const url = `${apiUrl()}${path}`;
-	const res = await fetch(url);
+	const res = await fetchRetry(url);
 	if (!res.ok) {
 		throw new Error(
 			`Notes API request failed: GET ${url} → ${String(res.status)} ${res.statusText}`,
@@ -121,7 +137,7 @@ export function downloadAsset(name: string, apiPath: string): Promise<string> {
 		// Asset paths are server-absolute (`/api/assets/…`), so resolve
 		// against the API origin rather than appending to the base URL.
 		const url = new URL(apiPath, apiUrl()).href;
-		const res = await fetch(url);
+		const res = await fetchRetry(url);
 		if (!res.ok) {
 			throw new Error(
 				`Notes API request failed: GET ${url} → ${String(res.status)} ${res.statusText}`,
