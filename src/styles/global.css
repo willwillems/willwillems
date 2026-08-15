@@ -31,6 +31,15 @@ html {
 	scrollbar-gutter: stable;
 }
 
+/* Nothing in the page can paint into a reserved gutter, so it would show as a
+   strip beside the full-width mobile menu. Touch browsers ignore the
+   reservation anyway. */
+@media (width < 40rem) {
+	html {
+		scrollbar-gutter: auto;
+	}
+}
+
 body {
 	background: radial-gradient(
 			50.46% 119.63% at 17.86% 2.9%,

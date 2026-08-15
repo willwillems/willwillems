@@ -1,27 +1,18 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { NAV_ITEMS, SITE_TITLE } from '../consts';
 import HeaderLogo from './HeaderLogo.astro';
-import ChevronDown from './icons/ChevronDown.astro';
 import AtSign from './icons/AtSign.astro';
 
-const navItems = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Projects', href: '/projects' },
-	{ label: 'Posts', href: '/posts' },
-	{ label: 'About', href: '/about' },
-];
-
 const pathname = Astro.url.pathname;
-const currentPage =
-	navItems.find(
-		(item) =>
-			item.href === pathname ||
-			(item.href !== '/' && pathname.startsWith(item.href)),
-	)?.label ?? 'Menu';
+const currentPage = NAV_ITEMS.find(
+	(item) =>
+		item.href === pathname ||
+		(item.href !== '/' && pathname.startsWith(item.href)),
+)?.label;
 ---
 
 <header
-	class="mx-auto grid max-w-5xl grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-8 px-6 sm:px-8 py-4 sm:py-6 text-sm"
+	class="relative mx-auto grid max-w-5xl grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-8 px-6 sm:px-8 py-4 sm:py-6 text-sm"
 >
 	<div class="flex min-w-12 items-center justify-start">
 		<HeaderLogo />
@@ -31,7 +22,7 @@ const currentPage =
 		aria-label={`${SITE_TITLE} primary navigation`}
 	>
 		{
-			navItems.map((item) => (
+			NAV_ITEMS.map((item) => (
 				<a
 					href={item.href}
 					class:list={[
@@ -48,11 +39,15 @@ const currentPage =
 	</nav>
 	<div class="flex min-w-12 items-center justify-end sm:hidden">
 		<button
-			class="flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-white"
-			popovertarget="mobile-nav"
+			type="button"
+			id="menu-toggle"
+			class="-mr-2.5 flex cursor-pointer flex-col items-center gap-[6px] border-none bg-transparent p-2.5 text-white"
+			aria-controls="site-menu"
+			aria-expanded="false"
+			aria-label="Menu"
 		>
-			<span>{currentPage}</span>
-			<ChevronDown />
+			<span class="bar"></span>
+			<span class="bar"></span>
 		</button>
 	</div>
 	<div class="hidden min-w-12 items-center justify-end sm:flex">
@@ -60,87 +55,128 @@ const currentPage =
 			<AtSign class="text-white" />
 		</a>
 	</div>
+
+	<nav
+		id="site-menu"
+		class="site-menu absolute inset-x-0 top-full bg-surface-secondary sm:hidden"
+		aria-label={`${SITE_TITLE} mobile navigation`}
+	>
+		<ul class="flex flex-col px-6 py-5">
+			{
+				NAV_ITEMS.map((item) => (
+					<li>
+						<a
+							href={item.href}
+							class="type-heading-2 block py-2 font-normal text-text-secondary no-underline"
+						>
+							{item.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
 </header>
 
-<div id="mobile-nav" popover class="mobile-nav">
-	<nav class="flex flex-col" aria-label={`${SITE_TITLE} mobile navigation`}>
-		{
-			navItems.map((item) => (
-				<a
-					href={item.href}
-					class:list={[
-						'block px-5 py-2 no-underline',
-						item.label === currentPage
-							? 'text-text-primary'
-							: 'text-text-third',
-					]}
-				>
-					{item.label}
-				</a>
-			))
-		}
-		<hr class="mx-5 my-1 border-t border-border-secondary" />
-		<a href="/#contact" class="block px-5 py-2 text-text-third no-underline"
-			>Contact</a
-		>
-	</nav>
-</div>
-
 <script>
-	document.getElementById('mobile-nav')?.addEventListener('click', (e) => {
-		if ((e.target as HTMLElement).closest('a')) {
-			document.getElementById('mobile-nav')?.hidePopover();
-		}
-	});
+	const root = document.documentElement;
+	const toggle = document.getElementById('menu-toggle');
+	const menu = document.getElementById('site-menu');
+
+	if (toggle && menu) {
+		const setOpen = (open: boolean) => {
+			// Measured rather than derived from the item count so the reveal
+			// stays correct through font loading, wrapping and padding changes.
+			if (open) {
+				root.style.setProperty('--menu-h', `${menu.offsetHeight}px`);
+			}
+			root.toggleAttribute('data-menu-open', open);
+			toggle.setAttribute('aria-expanded', String(open));
+		};
+
+		toggle.addEventListener('click', () => {
+			setOpen(!root.hasAttribute('data-menu-open'));
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') setOpen(false);
+		});
+	}
 </script>
 
 <style>
-	/* Popover requires non-utility styles for :popover-open, ::backdrop, and @starting-style */
-	.mobile-nav {
-		position: fixed;
-		top: 3.5rem;
-		right: 2rem;
-		left: auto;
-		margin: 0;
-		background: var(--color-surface-secondary);
-		border: 1px solid var(--color-border-secondary);
-		border-radius: 11px;
-		padding: 0.5rem 0;
-		min-width: 10rem;
-		opacity: 0;
-		scale: 0.95;
+	/* Two bars that slide together and cross into an X. `translate` and
+	   `rotate` are separate properties so they interpolate independently. */
+	.bar {
+		width: 20px;
+		height: 2px;
+		background: currentColor;
 		transition:
-			opacity 0.15s ease,
-			scale 0.15s ease,
-			overlay 0.15s allow-discrete,
-			display 0.15s allow-discrete;
+			translate 0.3s var(--menu-ease),
+			rotate 0.3s var(--menu-ease);
+	}
 
-		&:popover-open {
-			opacity: 1;
-			scale: 1;
+	:global(html[data-menu-open]) .bar:first-child {
+		translate: 0 4px;
+		rotate: 45deg;
+	}
 
-			@starting-style {
-				opacity: 0;
-				scale: 0.95;
-			}
+	:global(html[data-menu-open]) .bar:last-child {
+		translate: 0 -4px;
+		rotate: -45deg;
+	}
+
+	/* The panel is only ever painted in the strip the page content has
+	   vacated: the clip and the content's translate share a duration and an
+	   easing, so the reveal edge tracks the content's top edge exactly.
+	   Without this the panel would paint over content that is still there —
+	   nothing below the header has a background of its own to occlude it. */
+	.site-menu {
+		visibility: hidden;
+		clip-path: inset(0 0 100% 0);
+		transition:
+			clip-path 0.35s var(--menu-ease),
+			visibility 0s 0.35s;
+	}
+
+	:global(html[data-menu-open]) .site-menu {
+		visibility: visible;
+		clip-path: inset(0 0 0 0);
+		transition-delay: 0s;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bar {
+			transition: none;
 		}
 
-		&::backdrop {
-			background: rgb(0 0 0 / 0.5);
-			backdrop-filter: blur(4px);
-			opacity: 0;
-			transition:
-				opacity 0.15s ease,
-				overlay 0.15s allow-discrete,
-				display 0.15s allow-discrete;
+		.site-menu {
+			transition: none;
 		}
+	}
+</style>
 
-		&:popover-open::backdrop {
-			opacity: 1;
+<style is:global>
+	:root {
+		--menu-ease: cubic-bezier(0.32, 0.72, 0, 1);
+		--menu-h: 0px;
+	}
 
-			@starting-style {
-				opacity: 0;
-			}
+	/* The page content lives in the page files, so reaching it means leaving
+	   component scope. Transform only — no reflow while animating. */
+	main,
+	footer {
+		transition: translate 0.35s var(--menu-ease);
+	}
+
+	html[data-menu-open] :is(main, footer) {
+		translate: 0 var(--menu-h);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		main,
+		footer {
+			transition: none;
 		}
 	}
 </style>
