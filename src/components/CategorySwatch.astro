@@ -1,0 +1,14 @@
+---
+import { type Category, CATEGORY_COLORS } from './outbox/outbox';
+
+interface Props {
+	category: Category;
+}
+
+const { category } = Astro.props;
+---
+
+<span
+	class="size-3 shrink-0 rounded-[1px]"
+	style={`background: ${CATEGORY_COLORS[category]}`}
+	aria-hidden="true"></span>

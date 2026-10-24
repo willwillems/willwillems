@@ -1,5 +1,6 @@
 ---
-import { type Category, CATEGORY_COLORS } from './outbox/outbox';
+import CategorySwatch from './CategorySwatch.astro';
+import type { Category } from './outbox/outbox';
 
 interface Props {
 	category: Category;
@@ -10,9 +11,6 @@ const { category, class: className } = Astro.props;
 ---
 
 <span class:list={['flex items-center gap-3', className]}>
-	<span
-		class="size-3 shrink-0 rounded-[1px]"
-		style={`background: ${CATEGORY_COLORS[category]}`}
-		aria-hidden="true"></span>
+	<CategorySwatch category={category} />
 	{category}
 </span>

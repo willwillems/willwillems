@@ -12,14 +12,14 @@ const iso = post.publishedAt?.toISOString().slice(0, 10) ?? '';
 ---
 
 <article
-	class="grid gap-2 py-6 max-md:grid-cols-1 md:grid-cols-[1fr_3fr] md:gap-x-8 [[data-outbox-row]+&]:border-t [[data-outbox-row]+&]:border-border"
+	class="post-grid gap-y-2 py-6 [[data-outbox-row]+&]:border-t [[data-outbox-row]+&]:border-border"
 	style={`view-transition-name: outbox-row-${String(index)}`}
 	data-outbox-row
 	data-post-category={post.category}
 	data-date={iso}
 >
 	<div class="flex flex-col gap-4 text-sm">
-		<span class="text-sm text-text-primary">{post.category}</span>
+		<span class="text-text-primary">{post.category}</span>
 		{
 			post.publishedAt && (
 				<span class="text-text-inactive type-body-small">

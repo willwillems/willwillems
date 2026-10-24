@@ -27,6 +27,29 @@ if (!OBSIDIAN_API_URL) {
 const API_HOSTNAME = new URL(OBSIDIAN_API_URL).hostname;
 
 /**
+ * Wrap every markdown table in a `.table-scroll` box. Tables keep full column
+ * width, and the few too wide for a phone scroll inside the box instead of
+ * dragging the whole page sideways.
+ *
+ * @param {import('hast').Root | import('hast').Element} node
+ */
+function wrapTables(node) {
+	node.children.forEach((child, index) => {
+		if (child.type !== 'element') return;
+		if (child.tagName === 'table') {
+			node.children[index] = {
+				type: 'element',
+				tagName: 'div',
+				properties: { className: ['table-scroll'] },
+				children: [child],
+			};
+		} else {
+			wrapTables(child);
+		}
+	});
+}
+
+/**
  * Vault attachments are downloaded into `public/vault-assets/` on demand, but
  * some of those downloads happen while pages render, which is *after* Astro has
  * already copied `public/` into the output directory. On a warm local build the
@@ -94,7 +117,7 @@ export default defineConfig({
 	},
 	markdown: {
 		// Obsidian-style `> [!tip]` callouts, for blog posts and vault notes alike.
-		rehypePlugins: [rehypeCallouts],
+		rehypePlugins: [rehypeCallouts, () => wrapTables],
 		shikiConfig: {
 			theme: 'min-dark',
 		},

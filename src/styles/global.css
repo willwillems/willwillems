@@ -35,8 +35,8 @@ html {
 /* Nothing in the page can paint into a reserved gutter, so it would show as a
    strip beside the full-width mobile menu. Touch browsers ignore the
    reservation anyway. */
-@media (width < 40rem) {
-	html {
+html {
+	@variant max-sm {
 		scrollbar-gutter: auto;
 	}
 }
@@ -110,6 +110,26 @@ body {
 	line-height: 1.7;
 }
 
+/* The site's reading grid: a narrow meta column beside a content column three
+   times as wide, stacked on small screens. minmax(0, …) stops wide content
+   (code, tables) from squeezing the narrow column. */
+@utility post-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+
+	@variant md {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		column-gap: --spacing(8);
+	}
+}
+
+/* Underlined link in the dim decoration colour, as used in prose. */
+@utility link-underline {
+	text-decoration-line: underline;
+	text-underline-offset: 3px;
+	text-decoration-color: var(--color-text-inactive);
+}
+
 @utility no-scrollbar {
 	scrollbar-width: none;
 
@@ -123,7 +143,7 @@ body {
 	font-size: var(--text-sm);
 	line-height: 1.7;
 
-	:where(p, ul, ol, pre, blockquote, table) {
+	:where(p, ul, ol, pre, blockquote, .table-scroll) {
 		margin-block: 1.25em;
 	}
 
@@ -147,19 +167,19 @@ body {
 	}
 
 	:where(a) {
-		text-decoration: underline;
-		text-underline-offset: 3px;
-		text-decoration-color: var(--color-text-inactive);
+		@apply link-underline;
+	}
+
+	:where(ul, ol) {
+		padding-inline-start: 1.5em;
 	}
 
 	:where(ul) {
 		list-style: disc;
-		padding-inline-start: 1.5em;
 	}
 
 	:where(ol) {
 		list-style: decimal;
-		padding-inline-start: 1.5em;
 	}
 
 	:where(code) {
@@ -171,13 +191,68 @@ body {
 		background: var(--color-surface-secondary);
 		border-radius: 4px;
 		padding: 0.15em 0.35em;
+		overflow-wrap: break-word;
 	}
 
 	:where(pre) {
 		border-radius: 8px;
 		padding: 1rem 1.25rem;
+		/* Wrap long lines rather than scroll: few lines overflow the reading
+		   column, and those few should be readable in place. */
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+	}
+
+	/* Shiki wraps each source line in a .line span. A hanging indent sets
+	   wrapped continuations in by 2ch, so they don't read as new lines.
+	   Inline-block lets text-indent apply without the extra blank line a
+	   block would add next to Shiki's newline text nodes. */
+	:where(pre .line) {
+		display: inline-block;
+		padding-inline-start: 2ch;
+		text-indent: -2ch;
+	}
+
+	/* Tables follow the divided-rows pattern: dim labels, hairlines between
+	   rows, no boxes. Wide ones scroll inside their wrapper (see astro.config). */
+	:where(.table-scroll) {
 		overflow-x: auto;
 		scrollbar-color: var(--color-surface) transparent;
+	}
+
+	:where(table) {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	/* A phone can't fit most tables anyway, and squeezing them first stacks
+	   cells one word per line. Keep cells on one line and let the box scroll. */
+	:where(table) {
+		@variant max-md {
+			width: max-content;
+			min-width: 100%;
+		}
+	}
+
+	:where(th, td) {
+		padding: 0.6em 1.5em 0.6em 0;
+		text-align: start;
+		vertical-align: top;
+	}
+
+	:where(th:last-child, td:last-child) {
+		padding-inline-end: 0;
+	}
+
+	:where(th) {
+		padding-block-start: 0;
+		font-weight: 400;
+		white-space: nowrap;
+		color: var(--color-text-inactive);
+	}
+
+	:where(tbody tr) {
+		border-block-start: 1px solid var(--color-border);
 	}
 
 	:where(blockquote) {

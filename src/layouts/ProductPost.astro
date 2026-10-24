@@ -27,9 +27,7 @@ const STATUS_DOT: Record<string, string> = {
 	<!-- Product Hunt's anatomy (icon, tagline, visit button, info
 	     sidebar) folded onto the post grid: the info sidebar takes the narrow
 	     column where posts keep their date. -->
-	<article
-		class="grid grid-cols-[minmax(0,1fr)] gap-y-8 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:gap-x-8 md:gap-y-10"
-	>
+	<article class="post-grid gap-y-8 md:gap-y-10">
 		<header
 			class="flex items-start gap-4 md:col-span-2 md:grid md:grid-cols-subgrid md:gap-x-8"
 		>
@@ -109,7 +107,7 @@ const STATUS_DOT: Record<string, string> = {
 							<dd>
 								<a
 									href={link.href}
-									class="text-text-secondary underline decoration-text-inactive underline-offset-3 hover:text-text-primary"
+									class="link-underline text-text-secondary hover:text-text-primary"
 								>
 									{link.label}
 								</a>
