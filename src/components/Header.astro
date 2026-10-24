@@ -3,45 +3,49 @@ import { NAV_ITEMS, SITE_TITLE } from '../consts';
 import HeaderLogo from './HeaderLogo.astro';
 import AtSign from './icons/AtSign.astro';
 
-const pathname = Astro.url.pathname;
-const currentPage = NAV_ITEMS.find(
-	(item) =>
-		item.href === pathname ||
-		(item.href !== '/' && pathname.startsWith(item.href)),
+// `build.format: 'file'` emits the home page as `/index.html`, so the raw
+// pathname never equals `/`. Strip the file part (and any trailing slash) so
+// every route compares against its clean href.
+const pathname =
+	Astro.url.pathname.replace(/(?:\/index)?\.html$/, '').replace(/\/+$/, '') ||
+	'/';
+const currentPage = NAV_ITEMS.find((item) =>
+	pathname.startsWith(item.href),
 )?.label;
 ---
 
 <header
-	class="relative mx-auto grid max-w-5xl grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-8 px-6 sm:px-8 py-4 sm:py-6 text-sm"
+	class="relative mx-auto flex max-w-5xl items-center justify-between gap-8 px-6 sm:px-8 py-4 sm:py-6 text-sm"
 >
-	<div class="flex min-w-12 items-center justify-start">
-		<HeaderLogo />
-	</div>
-	<nav
-		class="hidden items-center justify-center gap-12 sm:flex"
-		aria-label={`${SITE_TITLE} primary navigation`}
-	>
-		{
-			NAV_ITEMS.map((item) => (
-				<a
-					href={item.href}
-					class:list={[
-						'no-underline',
-						item.label === currentPage
-							? 'text-text-primary'
-							: 'text-text-third',
-					]}
-				>
-					{item.label}
-				</a>
-			))
-		}
-	</nav>
-	<div class="flex min-w-12 items-center justify-end sm:hidden">
+	<HeaderLogo />
+	<div class="flex items-center gap-12">
+		<nav
+			class="hidden items-center gap-10 sm:flex"
+			aria-label={`${SITE_TITLE} primary navigation`}
+		>
+			{
+				NAV_ITEMS.map((item) => (
+					<a
+						href={item.href}
+						class:list={[
+							'no-underline',
+							item.label === currentPage
+								? 'text-text-primary'
+								: 'text-text-third',
+						]}
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+		<a href="/#contact" aria-label="Contact" class="hidden sm:block">
+			<AtSign class="text-white" />
+		</a>
 		<button
 			type="button"
 			id="menu-toggle"
-			class="-mr-2.5 flex cursor-pointer flex-col items-center gap-[6px] border-none bg-transparent p-2.5 text-white"
+			class="-mr-2.5 flex cursor-pointer flex-col items-center gap-[6px] border-none bg-transparent p-2.5 text-white sm:hidden"
 			aria-controls="site-menu"
 			aria-expanded="false"
 			aria-label="Menu"
@@ -49,11 +53,6 @@ const currentPage = NAV_ITEMS.find(
 			<span class="bar"></span>
 			<span class="bar"></span>
 		</button>
-	</div>
-	<div class="hidden min-w-12 items-center justify-end sm:flex">
-		<a href="/#contact" aria-label="Contact">
-			<AtSign class="text-white" />
-		</a>
 	</div>
 
 	<nav

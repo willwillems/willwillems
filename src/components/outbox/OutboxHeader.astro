@@ -1,15 +1,15 @@
 ---
 import CategoryDropdown from './CategoryDropdown.astro';
 import CategoryTabs from './CategoryTabs.astro';
+import type { Category } from './outbox';
 
 interface Props {
-	categories: string[];
-	categoryColors: Record<string, string>;
-	counts: Record<string, number>;
+	categories: Category[];
+	counts: Partial<Record<Category, number>>;
 	total: number;
 }
 
-const { categories, categoryColors, counts, total } = Astro.props;
+const { categories, counts, total } = Astro.props;
 ---
 
 <div
@@ -19,7 +19,6 @@ const { categories, categoryColors, counts, total } = Astro.props;
 		<h2 class="text-text-primary">Outbox</h2>
 		<CategoryDropdown
 			categories={categories}
-			categoryColors={categoryColors}
 			counts={counts}
 			total={total}
 		/>

@@ -1,13 +1,12 @@
 ---
 import type { HeatmapBucket } from './outbox';
-import { EMPTY_CELL_COLOR } from './outbox';
+import { CATEGORY_COLORS, EMPTY_CELL_COLOR } from './outbox';
 
 interface Props {
 	buckets: HeatmapBucket[];
-	categoryColors: Record<string, string>;
 }
 
-const { buckets, categoryColors } = Astro.props;
+const { buckets } = Astro.props;
 
 // Layout: rows are days of the week, columns are weeks. Pad the leading slot
 // so the very first bucket lines up with its weekday row. Cells are anchored
@@ -94,8 +93,7 @@ const controlClass =
 					const row = (slot % 7) + 1;
 					const k = columnCount - col + 1;
 					const color =
-						bucket.dominantCategory &&
-						categoryColors[bucket.dominantCategory];
+						bucket.category && CATEGORY_COLORS[bucket.category];
 					return (
 						<div
 							class="rounded-[1px] transition-colors duration-500"

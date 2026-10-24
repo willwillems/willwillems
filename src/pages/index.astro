@@ -48,12 +48,12 @@ const heroImages = [
 			</section>
 
 			<section id="contact" class="flex flex-col gap-8 py-16">
-				<div class="flex flex-col gap-8">
+				<div class="group flex flex-col gap-8">
 					<div class="flex items-start justify-between">
 						<h2 class="type-title">Say hello</h2>
 						<a
 							href="#"
-							class="flex items-center gap-2.5 text-text-third hover:text-text-primary transition-colors"
+							class="flex items-center gap-2.5 text-text-third group-has-[input:not(:placeholder-shown)]:text-text-primary group-has-[textarea:not(:placeholder-shown)]:text-text-primary hover:text-text-primary transition-colors"
 						>
 							<span class="type-title">Send</span>
 							<ArrowRight />
@@ -69,7 +69,7 @@ const heroImages = [
 								id="contact-email"
 								type="email"
 								placeholder="john@hd.com"
-								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none"
+								class="bg-transparent type-body-small text-text-primary placeholder:text-text-third outline-none"
 							/>
 						</div>
 						<div class="flex min-w-64 flex-1 flex-col gap-4">
@@ -80,7 +80,7 @@ const heroImages = [
 								id="contact-message"
 								rows="3"
 								placeholder="Write your message here..."
-								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none resize-none"
+								class="bg-transparent type-body-small text-text-primary placeholder:text-text-third outline-none resize-none"
 							></textarea>
 						</div>
 					</div>

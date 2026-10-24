@@ -1,0 +1,127 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import ExternalLink from '../components/icons/ExternalLink.astro';
+import type { Post } from '../data/posts';
+import PostShell from './PostShell.astro';
+
+type Product = NonNullable<CollectionEntry<'notes'>['data']['product']>;
+
+interface Props {
+	title: string;
+	description?: string;
+	product: Product;
+	related?: Post[];
+}
+
+const { title, description, product, related } = Astro.props;
+
+const STATUS_DOT: Record<string, string> = {
+	active: 'bg-emerald-400',
+	experimental: 'bg-amber-400',
+	archived: 'bg-text-inactive',
+};
+---
+
+<PostShell title={title} description={description} related={related}>
+	<!-- Product Hunt's anatomy (icon, tagline, visit button, info
+	     sidebar) folded onto the post grid: the info sidebar takes the narrow
+	     column where posts keep their date. -->
+	<article
+		class="grid grid-cols-[minmax(0,1fr)] gap-y-8 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:gap-x-8 md:gap-y-10"
+	>
+		<header
+			class="flex items-start gap-4 md:col-span-2 md:grid md:grid-cols-subgrid md:gap-x-8"
+		>
+			{
+				product.icon ? (
+					<img
+						src={product.icon}
+						alt=""
+						width="56"
+						height="56"
+						class="size-12 shrink-0 rounded-xl border border-border object-cover md:size-14"
+					/>
+				) : (
+					<span />
+				)
+			}
+			<div class="flex min-w-0 flex-1 flex-col gap-1">
+				<div class="flex items-center gap-1.5">
+					<h1 class="type-heading-3 text-text-primary">{title}</h1>
+					{
+						product.url && (
+							<a
+								href={product.url}
+								aria-label={`Visit the ${title} website`}
+								title="Visit website"
+								class="grid size-7 shrink-0 place-items-center rounded-full text-text-third transition-colors hover:bg-surface-secondary hover:text-text-primary"
+							>
+								<ExternalLink size={14} />
+							</a>
+						)
+					}
+				</div>
+				{
+					product.tagline && (
+						<p class="type-body text-text-third">
+							{product.tagline}
+						</p>
+					)
+				}
+			</div>
+		</header>
+
+		<dl
+			class="type-body-small grid grid-cols-2 gap-x-8 gap-y-5 self-start md:sticky md:top-8 md:grid-cols-1"
+		>
+			{
+				product.type && (
+					<div>
+						<dt class="text-text-inactive">Type</dt>
+						<dd class="text-text-secondary">{product.type}</dd>
+					</div>
+				)
+			}
+			{
+				product.status && (
+					<div>
+						<dt class="text-text-inactive">Status</dt>
+						<dd class="flex items-center gap-2 text-text-secondary capitalize">
+							<span
+								class:list={[
+									'size-1.5 rounded-full',
+									STATUS_DOT[product.status] ??
+										'bg-text-inactive',
+								]}
+								aria-hidden="true"
+							/>
+							{product.status}
+						</dd>
+					</div>
+				)
+			}
+			{
+				product.links.length > 0 && (
+					<div class="col-span-2 md:col-span-1">
+						<dt class="text-text-inactive">Links</dt>
+						{product.links.map((link) => (
+							<dd>
+								<a
+									href={link.href}
+									class="text-text-secondary underline decoration-text-inactive underline-offset-3 hover:text-text-primary"
+								>
+									{link.label}
+								</a>
+							</dd>
+						))}
+					</div>
+				)
+			}
+		</dl>
+
+		<div class="prose text-text-secondary">
+			<slot />
+		</div>
+	</article>
+</PostShell>

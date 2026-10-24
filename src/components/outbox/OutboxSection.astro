@@ -1,14 +1,16 @@
 ---
 import ActivityHeatmap from './ActivityHeatmap.astro';
 import OutboxHeader from './OutboxHeader.astro';
+import PinnedPosts from './PinnedPosts.astro';
 import PostList from './PostList.astro';
 import type { Post } from '../../data/posts';
+import type { Category } from './outbox';
 import {
-	buildCategoryColorMap,
 	buildHeatmapBuckets,
+	CATEGORY_COLORS,
 	countByCategory,
-	deriveCategories,
 } from './outbox';
+import { PINNED_SLUGS } from '../../consts';
 
 interface Props {
 	posts: Post[];
@@ -21,21 +23,25 @@ const orderedPosts = [...posts].sort(
 	(a, b) => (b.publishedAt?.valueOf() ?? 0) - (a.publishedAt?.valueOf() ?? 0),
 );
 
-const categories = deriveCategories(posts);
-const categoryColors = buildCategoryColorMap(categories);
-const buckets = buildHeatmapBuckets(posts, categories);
+const buckets = buildHeatmapBuckets(posts);
 const counts = countByCategory(posts);
+const categories = Object.keys(CATEGORY_COLORS).filter(
+	(category) => category in counts,
+) as Category[];
+const pinned = PINNED_SLUGS.flatMap((slug) =>
+	posts.filter((post) => post.slug === slug),
+);
 ---
 
-<section class="flex flex-col gap-10" data-outbox-section>
+<section class="flex flex-col gap-6" data-outbox-section>
+	{pinned.length > 0 && <PinnedPosts posts={pinned} />}
 	<div class="flex flex-col gap-8">
 		<OutboxHeader
 			categories={categories}
-			categoryColors={categoryColors}
 			counts={counts}
 			total={posts.length}
 		/>
-		<ActivityHeatmap buckets={buckets} categoryColors={categoryColors} />
+		<ActivityHeatmap buckets={buckets} />
 	</div>
 	<PostList posts={orderedPosts} />
 </section>
@@ -110,9 +116,9 @@ const counts = countByCategory(posts);
 			const visible: RowEl[] = [];
 			let categoryCount = 0;
 			for (const row of sorted) {
-				const cats = (row.dataset.categories ?? '').split(',');
 				const inCategory =
-					activeCategory === '' || cats.includes(activeCategory);
+					activeCategory === '' ||
+					row.dataset.postCategory === activeCategory;
 				if (inCategory) categoryCount++;
 				if (inCategory && !eatenDates.has(row.dataset.date ?? '')) {
 					visible.push(row);

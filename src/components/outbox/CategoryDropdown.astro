@@ -1,24 +1,24 @@
 ---
 import ChevronDown from '../icons/ChevronDown.astro';
+import { CATEGORY_COLORS } from './outbox';
+import type { Category } from './outbox';
 
 interface Props {
-	categories: string[];
-	/** category → palette colour, shared with the activity heatmap. */
-	categoryColors: Record<string, string>;
-	/** category → number of posts carrying it. */
-	counts: Record<string, number>;
+	categories: Category[];
+	/** category → number of posts filed under it. */
+	counts: Partial<Record<Category, number>>;
 	/** Total number of posts, shown against the "All" option. */
 	total: number;
 }
 
-const { categories, categoryColors, counts, total } = Astro.props;
+const { categories, counts, total } = Astro.props;
 
 const options = [
 	{ label: 'All', category: '', color: null, count: total },
 	...categories.map((label) => ({
 		label,
 		category: label,
-		color: categoryColors[label] ?? null,
+		color: CATEGORY_COLORS[label],
 		count: counts[label] ?? 0,
 	})),
 ];

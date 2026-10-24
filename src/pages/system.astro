@@ -16,13 +16,7 @@ import LabExperiment from '../components/icons/LabExperiment.astro';
 import VerifiedBadge from '../components/icons/VerifiedBadge.astro';
 
 import PostRow from '../components/outbox/PostRow.astro';
-import {
-	CATEGORY_PALETTE,
-	EMPTY_CELL_COLOR,
-} from '../components/outbox/outbox';
-import FilterTabs from '../components/projects/FilterTabs.astro';
-import ProjectCard from '../components/projects/ProjectCard.astro';
-import ProjectsGrid from '../components/projects/ProjectsGrid.astro';
+import { CATEGORY_COLORS, EMPTY_CELL_COLOR } from '../components/outbox/outbox';
 
 import Specimen from '../components/system/Specimen.astro';
 import Swatch from '../components/system/Swatch.astro';
@@ -127,12 +121,6 @@ const icons = [
 	{ name: 'VerifiedBadge', Icon: VerifiedBadge },
 ];
 
-const demoTabs = [
-	{ label: 'All', href: '#components', active: true },
-	{ label: 'Active', href: '#components' },
-	{ label: 'Archived', href: '#components' },
-];
-
 const samplePosts: Post[] = [
 	{
 		slug: 'sample-a',
@@ -140,7 +128,7 @@ const samplePosts: Post[] = [
 		publishedAt: new Date('2015-07-20'),
 		excerpt:
 			'A build log for a hardware MIDI controller with no fixed purpose.',
-		categories: ['Hardware'],
+		category: 'Projects',
 		href: '#patterns',
 	},
 	{
@@ -148,7 +136,7 @@ const samplePosts: Post[] = [
 		title: 'Using scoped BEM with Tailwind',
 		publishedAt: new Date('2019-03-11'),
 		excerpt: 'Naming things when the utilities have already named them.',
-		categories: ['Blog'],
+		category: 'Blog',
 		href: '#patterns',
 	},
 ];
@@ -257,15 +245,21 @@ const proseCode = `export function excerpt(content: string, length = 160): strin
 				</Specimen>
 
 				<Specimen
-					name="CATEGORY_PALETTE"
+					name="CATEGORY_COLORS"
 					meta="components/outbox/outbox.ts"
-					note="Handed to outbox categories in first-seen order, wrapping modulo the palette length. These live outside @theme because they are data, not theme."
+					note="One fixed colour per outbox category, shared by the heatmap, filters and pinned list. These live outside @theme because they are data, not theme."
 				>
 					<div class="grid grid-cols-2 gap-6 sm:grid-cols-3">
 						{
-							CATEGORY_PALETTE.map((color) => (
-								<Swatch color={color} label={color} />
-							))
+							Object.entries(CATEGORY_COLORS).map(
+								([category, color]) => (
+									<Swatch
+										color={color}
+										label={category}
+										meta={color}
+									/>
+								),
+							)
 						}
 						<Swatch
 							color={EMPTY_CELL_COLOR}
@@ -428,43 +422,6 @@ const proseCode = `export function excerpt(content: string, length = 160): strin
 				</Specimen>
 
 				<Specimen
-					name="ProjectCard"
-					meta="name · description · href? · verified? · status? · icon?"
-					note="Wrapped in ProjectsGrid, which is a bare two-column grid. The badge appears for verified, the flask for status='experiment', and the external-link affordance only when href is set."
-				>
-					<ProjectsGrid>
-						<ProjectCard
-							name="Devsync"
-							description="Team tooling"
-							icon="/favicon-96x96.png"
-							href="/projects"
-						/>
-						<ProjectCard
-							name="Deducta"
-							description="Product engineering"
-							verified
-						/>
-						<ProjectCard
-							name="Tray"
-							description="Parts inventory"
-							status="experiment"
-						/>
-						<ProjectCard
-							name="Archive"
-							description="No icon, badge or link"
-						/>
-					</ProjectsGrid>
-				</Specimen>
-
-				<Specimen
-					name="FilterTabs"
-					meta="tabs: { label, href, filter?, active? }[]"
-					note="Active state is server-rendered, then reconciled client-side against the ?filter= query. The outbox uses the same visual recipe on buttons instead of links."
-				>
-					<FilterTabs tabs={demoTabs} />
-				</Specimen>
-
-				<Specimen
 					name="Ghost control"
 					meta="type-label · hover:text-text-third"
 					note="The only button recipe on the site: stripped to text, with hover lifting it one step up the text ramp."
@@ -497,7 +454,7 @@ const proseCode = `export function excerpt(content: string, length = 160): strin
 				<Specimen
 					name="Text fields"
 					meta="type-label + type-body-small"
-					note="Deliberately chrome-free: transparent background, no border, no focus ring. The label and placeholder carry the affordance."
+					note="Deliberately chrome-free: transparent background, no border, no focus ring. The label and placeholder carry the affordance. Entered text is text-text-primary so it reads as content, not placeholder."
 				>
 					<div class="flex flex-wrap gap-8">
 						<div class="flex w-48 shrink-0 flex-col gap-4">
@@ -508,7 +465,7 @@ const proseCode = `export function excerpt(content: string, length = 160): strin
 								id="system-email"
 								type="email"
 								placeholder="john@hd.com"
-								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none"
+								class="bg-transparent type-body-small text-text-primary placeholder:text-text-third outline-none"
 							/>
 						</div>
 						<div class="flex min-w-64 flex-1 flex-col gap-4">
@@ -519,7 +476,7 @@ const proseCode = `export function excerpt(content: string, length = 160): strin
 								id="system-message"
 								rows="3"
 								placeholder="Write your message here..."
-								class="bg-transparent type-body-small text-text-third placeholder:text-text-third outline-none resize-none"
+								class="bg-transparent type-body-small text-text-primary placeholder:text-text-third outline-none resize-none"
 							></textarea>
 						</div>
 					</div>

@@ -1,20 +1,46 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import ProductPost from '../../layouts/ProductPost.astro';
+import { getOutboxPosts, type Post } from '../../data/posts';
+import { buildRelatedIndex } from '../../data/related';
 
 export async function getStaticPaths() {
-	const [notes, blog] = await Promise.all([
+	const [notes, blog, posts] = await Promise.all([
 		getCollection('notes'),
 		getCollection('blog'),
+		getOutboxPosts(),
 	]);
+
+	const relatedIndex = buildRelatedIndex([
+		...notes.map((note) => ({
+			id: note.id,
+			title: note.data.title,
+			body: note.body ?? '',
+			category: note.data.category,
+		})),
+		...blog.map((post) => ({
+			id: post.id,
+			title: post.data.title,
+			body: post.body ?? '',
+			category: 'Blog',
+		})),
+	]);
+	const postsBySlug = new Map(posts.map((post) => [post.slug, post]));
+	const relatedTo = (slug: string): Post[] =>
+		(relatedIndex.get(slug) ?? []).flatMap((id) => {
+			const post = postsBySlug.get(id);
+			return post ? [post] : [];
+		});
+
 	return [
 		...notes.map((note) => ({
 			params: { slug: note.id },
-			props: { note },
+			props: { note, related: relatedTo(note.id) },
 		})),
 		...blog.map((post) => ({
 			params: { slug: post.id },
-			props: { post },
+			props: { post, related: relatedTo(post.id) },
 		})),
 	];
 }
@@ -22,9 +48,10 @@ export async function getStaticPaths() {
 interface Props {
 	note?: CollectionEntry<'notes'>;
 	post?: CollectionEntry<'blog'>;
+	related: Post[];
 }
 
-const { note, post } = Astro.props;
+const { note, post, related } = Astro.props;
 const entry = note ?? post;
 if (!entry) throw new Error(`No entry for /posts/${Astro.params.slug}`);
 const { Content } = await render(entry);
@@ -32,16 +59,26 @@ const { Content } = await render(entry);
 
 {
 	post ? (
-		<BlogPost {...post.data}>
+		<BlogPost {...post.data} category="Blog" related={related}>
 			<Content />
 		</BlogPost>
+	) : note?.data.product ? (
+		<ProductPost
+			title={note.data.title}
+			description={note.data.excerpt}
+			product={note.data.product}
+			related={related}
+		>
+			<Content />
+		</ProductPost>
 	) : (
 		note && (
 			<BlogPost
 				title={note.data.title}
 				description={note.data.excerpt}
-				category={note.data.category}
 				pubDate={note.data.created}
+				category={note.data.category}
+				related={related}
 			>
 				<Content />
 			</BlogPost>

@@ -1,6 +1,8 @@
 ---
+import type { Category } from './outbox';
+
 interface Props {
-	categories: string[];
+	categories: Category[];
 }
 
 const { categories } = Astro.props;

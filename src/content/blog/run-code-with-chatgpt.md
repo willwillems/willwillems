@@ -2,7 +2,6 @@
 title: 'Javascript code execution in ChatGPT'
 pubDate: 2022-12-04
 duration: '4 min'
-category: 'ML'
 heroImage: 'https://i.imgur.com/NqKNJDS.jpg'
 ---
 

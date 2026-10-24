@@ -10,10 +10,17 @@ export interface NavItem {
 	href: string;
 }
 
+/** Outbox slugs pinned above the feed, in display order. */
+export const PINNED_SLUGS = [
+	'morley-kert',
+	'esp-boards',
+	'devsync',
+	'whoishiringme',
+	's1',
+];
+
 /** Primary navigation, shared by the desktop header and the mobile menu. */
 export const NAV_ITEMS: NavItem[] = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Projects', href: '/projects' },
-	{ label: 'Posts', href: '/posts' },
-	{ label: 'About', href: '/about' },
+	{ label: 'Outbox', href: '/posts' },
+	{ label: 'Now', href: '/now' },
 ];

@@ -2,7 +2,6 @@
 title: 'Using node with Babel 7'
 pubDate: 2018-09-11
 duration: '4 min'
-category: 'Development'
 heroImage: '/img/babel+node-thumb.jpeg'
 ---
 

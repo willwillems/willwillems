@@ -2,7 +2,6 @@
 title: 'Building a website with VuePress'
 pubDate: 2019-01-23
 duration: '8 min'
-category: 'VuePress'
 heroImage: 'https://source.unsplash.com/Wiu3w-99tNg/'
 ---
 
@@ -21,17 +20,17 @@ VuePress is a simple static site generator initially created to support the docs
 ## Who this guide is for
 
 - You want to create a static website powered by Vue  
-  :x: → _Why are you even here?_  
-  :white*check_mark: → \_Continue* :arrow_heading_down:
+  ❌ → _Why are you even here?_  
+  ✅ → _Continue_ ⤵️
 - Your website is content-centric (e.g. not a web app)  
-  :x: → _Static is going to be tougher for you in general but you might checkout [Nuxt](https://nuxtjs.org)_  
-  :white*check_mark: → \_Continue* :arrow_heading_down:
+  ❌ → _Static is going to be tougher for you in general but you might checkout [Nuxt](https://nuxtjs.org)_  
+  ✅ → _Continue_ ⤵️
 - Your content is, or is going to be, in markdown  
-  :x: → _If you are already on any kind of JAMstack [Nuxt](https://nuxtjs.org) might be a better option for now_  
-  :white*check_mark: → \_Continue* :arrow_heading_down:
+  ❌ → _If you are already on any kind of JAMstack [Nuxt](https://nuxtjs.org) might be a better option for now_  
+  ✅ → _Continue_ ⤵️
 - You want to create something else than docs for your project  
-  :x: → _Creating docs? Continue to the [VuePress docs](https://vuepress.vuejs.org), they are excellent for this._  
-  :white*check_mark: → \_Continue* :arrow_heading_down:
+  ❌ → _Creating docs? Continue to the [VuePress docs](https://vuepress.vuejs.org), they are excellent for this._  
+  ✅ → _Continue_ ⤵️
 
 ## How this will work
 
@@ -57,9 +56,8 @@ Now let's get to the VuePress specific stuff:
 
 First off, add the VuePress package itself with `npm i -D vuepress`
 
-::: warning
-In this guide we are using VuePress v1 so depending on when you are reading this you might have to install `vuepress@next` to get the proper version.
-:::
+> [!warning]
+> In this guide we are using VuePress v1 so depending on when you are reading this you might have to install `vuepress@next` to get the proper version.
 
 You can also add VuePress globally with `npm install -g vuepress` to be able to use commands such as `vuepress dev` in the terminal but we'll add these commands as NPM scripts anyway so this is up to you.
 
@@ -86,16 +84,15 @@ my-project
 
 The `.vuepress` directory is going to be the backbone of this project containing all the files concerning your website besides the actual content itself, this will be placed in the root of the project folder.
 
-::: tip Wait what is in that weird folder?
-Basically the `.vuepress` directory will contain anything Vue related:
-
-- If you want to use a custom theme it will be in there in the `theme` folder
-- If you want to use Vue components inside your markdown you'll place them there in the `components` folder
-- If you want to add custom routes you can do so there using the `enhanceApp.js` file.
-- If you want to tweak your markdown settings they will be available in there in the `config.js` file.
-
-This creates a very clean separation of your Vue related files and everything outside it (your markdown content).
-:::
+> [!info] Wait what is in that weird folder?
+> Basically the `.vuepress` directory will contain anything Vue related:
+>
+> - If you want to use a custom theme it will be in there in the `theme` folder
+> - If you want to use Vue components inside your markdown you'll place them there in the `components` folder
+> - If you want to add custom routes you can do so there using the `enhanceApp.js` file.
+> - If you want to tweak your markdown settings they will be available in there in the `config.js` file.
+>
+> This creates a very clean separation of your Vue related files and everything outside it (your markdown content).
 
 For some more info about this folder and what it will contain [check this out](https://vuepress.vuejs.org/guide/directory-structure.html).
 
@@ -139,17 +136,14 @@ Now it's time to reap the fruits of our labor, if you've done everything correct
 
 If everything looks good you can generate your new webpage using `npm run build`.
 
-::: tip Where does my markdown content end up?
-
-The way VuePress routes your compiled markdown files is very straightforward, with the exemption of `[README.md](http://readme.md)` which gets turned into an `index.html` file the rest of the content can be found at their respective position inside the project. For example:
-
-`/about.md` → `/about.html`
-
-`/posts/vuepress-rocks.md` → `/posts/vuepress-rocks.md`
-
-`/posts/README.md` → `/posts`
-
-:::
+> [!info] Where does my markdown content end up?
+> The way VuePress routes your compiled markdown files is very straightforward, with the exemption of `[README.md](http://readme.md)` which gets turned into an `index.html` file the rest of the content can be found at their respective position inside the project. For example:
+>
+> `/about.md` → `/about.html`
+>
+> `/posts/vuepress-rocks.md` → `/posts/vuepress-rocks.md`
+>
+> `/posts/README.md` → `/posts`
 
 ## Using static assets
 

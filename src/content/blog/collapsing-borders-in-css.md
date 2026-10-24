@@ -2,7 +2,6 @@
 title: 'Collapsing borders in CSS with box-shadow'
 pubDate: 2020-12-20
 duration: '4 min'
-category: 'Development'
 heroImage: 'https://i.imgur.com/2Ng6N2a.png'
 ---
 

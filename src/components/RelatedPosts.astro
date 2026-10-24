@@ -1,0 +1,48 @@
+---
+import CategoryLabel from './CategoryLabel.astro';
+import FormattedDate from './FormattedDate.astro';
+import type { Post } from '../data/posts';
+
+interface Props {
+	posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+	posts.length > 0 && (
+		<section class="mt-20 sm:mt-28" aria-labelledby="related">
+			<h2 id="related" class="sr-only">
+				Related posts
+			</h2>
+			<ul class="flex flex-col">
+				{posts.map((post) => (
+					<li>
+						<a
+							href={post.href}
+							class="group grid grid-cols-[minmax(0,1fr)] gap-y-0.5 py-2.5 no-underline md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:items-baseline md:gap-x-8"
+						>
+							<CategoryLabel
+								category={post.category}
+								class="type-body-small text-text-third"
+							/>
+							<span class="flex items-baseline gap-4">
+								<span class="type-body min-w-0 flex-1 truncate text-text-secondary transition-colors group-hover:text-text-primary group-hover:underline group-hover:decoration-text-inactive group-hover:underline-offset-4">
+									{post.title}
+								</span>
+								{post.publishedAt && (
+									<span class="type-body-small shrink-0 text-text-inactive">
+										<FormattedDate
+											date={post.publishedAt}
+										/>
+									</span>
+								)}
+							</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}

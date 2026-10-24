@@ -2,7 +2,6 @@
 title: 'Dishes by city'
 pubDate: 2019-02-15
 duration: '4 min'
-category: 'Personal'
 heroImage: 'https://source.unsplash.com/N_Y88TWmGwA/'
 ---
 

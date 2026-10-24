@@ -4,63 +4,27 @@ import type { Post } from '../../data/posts';
 export const EMPTY_CELL_COLOR = '#1c1c1c';
 
 /**
- * Distinct colours for category-driven heatmap cells. Tuned to sit on top of
- * the dark theme background. Amber leads to match the design's headline tone.
+ * Every outbox category and its colour, in tab order. Tuned to sit on top of
+ * the dark theme background.
  */
-export const CATEGORY_PALETTE = [
-	'#f5c518', // amber
-	'#4d9de0', // sky
-	'#9b59b6', // violet
-	'#2ecc71', // green
-	'#e67e22', // orange
-	'#1abc9c', // teal
-	'#e74c3c', // red
-	'#f1c40f', // yellow
-] as const;
+export const CATEGORY_COLORS = {
+	Research: '#f5c518', // amber
+	Posts: '#4d9de0', // sky
+	Products: '#e74c3c', // red
+	Resources: '#9b59b6', // violet
+	Projects: '#2ecc71', // green
+	Blog: '#e67e22', // orange
+} as const;
 
-/**
- * Derive the ordered list of unique category labels from the data. First-seen
- * order is preserved; this is the canonical ordering used by tabs, the
- * category → colour map, and the heatmap tie-breaking rule.
- */
-export function deriveCategories(posts: Post[]): string[] {
-	const seen = new Set<string>();
-	const ordered: string[] = [];
+export type Category = keyof typeof CATEGORY_COLORS;
+
+/** Count how many posts are filed under each category. */
+export function countByCategory(
+	posts: Post[],
+): Partial<Record<Category, number>> {
+	const counts: Partial<Record<Category, number>> = {};
 	for (const post of posts) {
-		for (const category of post.categories) {
-			if (!seen.has(category)) {
-				seen.add(category);
-				ordered.push(category);
-			}
-		}
-	}
-	return ordered;
-}
-
-/**
- * Map each derived category to a palette colour. Categories beyond the palette
- * length wrap around.
- */
-export function buildCategoryColorMap(
-	categories: string[],
-): Record<string, string> {
-	const map: Record<string, string> = {};
-	for (let i = 0; i < categories.length; i++) {
-		map[categories[i]] = CATEGORY_PALETTE[i % CATEGORY_PALETTE.length];
-	}
-	return map;
-}
-
-/**
- * Count how many posts carry each category. Posts with several categories
- * count once per category, matching the tab/dropdown filter semantics.
- */
-export function countByCategory(posts: Post[]): Record<string, number> {
-	const counts: Record<string, number> = {};
-	for (const post of posts) {
-		for (const category of post.categories) {
-			counts[category] = (counts[category] ?? 0) + 1;
-		}
+		counts[post.category] = (counts[post.category] ?? 0) + 1;
 	}
 	return counts;
 }
@@ -92,8 +56,8 @@ export function excerpt(content: string, length = 160): string {
 export interface HeatmapBucket {
 	date: Date;
 	postCount: number;
-	dominantCategory: string | null;
-	/** Link target for the day's post (first in source order when several). */
+	/** Category and link of the day's post (first in source order when several). */
+	category: Category | null;
 	href: string | null;
 }
 
@@ -107,12 +71,11 @@ export const HEATMAP_WINDOW_DAYS = 2 * 52 * 7; // 104 weeks
 
 /**
  * Build a rolling window of heatmap buckets ending on `asOf` (default ~2 years).
- * For each day, computes the number of posts published that day and the dominant
- * category (most posts of that category that day; ties broken by `categoryOrder`).
+ * For each day, records the number of posts published that day and the
+ * category and link of the first one.
  */
 export function buildHeatmapBuckets(
 	posts: Post[],
-	categoryOrder: string[],
 	asOf: Date = new Date(),
 	windowDays: number = HEATMAP_WINDOW_DAYS,
 ): HeatmapBucket[] {
@@ -146,34 +109,10 @@ export function buildHeatmapBuckets(
 		const key = isoDayKey(date);
 		const dayPosts = byDate.get(key) ?? [];
 
-		let dominantCategory: string | null = null;
-		if (dayPosts.length > 0) {
-			const counts = new Map<string, number>();
-			for (const post of dayPosts) {
-				for (const cat of post.categories) {
-					counts.set(cat, (counts.get(cat) ?? 0) + 1);
-				}
-			}
-			// Tie-break by category order (lower index wins).
-			let bestCount = -1;
-			let bestIndex = Infinity;
-			for (const [cat, count] of counts) {
-				const idx = categoryOrder.indexOf(cat);
-				if (
-					count > bestCount ||
-					(count === bestCount && idx < bestIndex)
-				) {
-					bestCount = count;
-					bestIndex = idx;
-					dominantCategory = cat;
-				}
-			}
-		}
-
 		buckets.push({
 			date,
 			postCount: dayPosts.length,
-			dominantCategory,
+			category: dayPosts[0]?.category ?? null,
 			href: dayPosts[0]?.href ?? null,
 		});
 	}

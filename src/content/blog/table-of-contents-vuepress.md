@@ -2,7 +2,6 @@
 title: 'Creating a simple table of contents in Vuepress'
 pubDate: 2020-12-18
 duration: '2 min'
-category: 'VuePress'
 ---
 
 Most examples use pretty complicated Markdown extensions or way to extensive implementations, here's a super simple way.

@@ -2,7 +2,6 @@
 title: 'A case against CSS frameworks'
 pubDate: 2018-12-13
 duration: '5 min'
-category: 'Vue.js'
 heroImage: '/img/css-frameworks-thumb.png'
 ---
 

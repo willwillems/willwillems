@@ -2,7 +2,6 @@
 title: 'Tailwind for actual front-end developers'
 pubDate: 2020-11-18
 duration: '8 min'
-category: 'Development'
 heroImage: 'https://i.imgur.com/V8KMjHP.png'
 ---
 

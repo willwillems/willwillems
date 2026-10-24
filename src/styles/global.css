@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'rehype-callouts/theme/obsidian';
 
 @font-face {
 	font-family: 'Gochi Hand';
@@ -176,12 +177,49 @@ body {
 		border-radius: 8px;
 		padding: 1rem 1.25rem;
 		overflow-x: auto;
+		scrollbar-color: var(--color-surface) transparent;
 	}
 
 	:where(blockquote) {
 		border-inline-start: 2px solid var(--color-border-secondary);
 		padding-inline-start: 1em;
 		color: var(--color-text-third);
+	}
+
+	/* The callout theme keys dark mode off a `.dark` class; the site is
+	   always dark, so use its dark palette unconditionally. */
+	.callout {
+		--rc-color-light: var(--rc-color-dark);
+		mix-blend-mode: normal;
+		line-height: inherit;
+		margin-block: 1.5em;
+		padding: 1em 1.5em 1.25em;
+		border-inline-start: 2px solid var(--rc-color-dark);
+		border-radius: 0 6px 6px 0;
+		background-color: rgb(from var(--rc-color-dark) r g b / 0.08);
+		color: var(--color-text-secondary);
+	}
+
+	.callout-title {
+		align-items: center;
+		gap: 0.6em;
+		color: var(--color-text-primary);
+	}
+
+	.callout-title-icon {
+		color: var(--rc-color-dark);
+	}
+
+	.callout-content :where(a) {
+		text-decoration-color: var(--rc-color-dark);
+	}
+
+	:where(.callout-content > :first-child) {
+		margin-block-start: 0.5em;
+	}
+
+	:where(.callout-content > :last-child) {
+		margin-block-end: 0;
 	}
 
 	:where(hr) {

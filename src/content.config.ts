@@ -9,7 +9,7 @@ import {
 	frontmatterString,
 	resolveEmbeds,
 } from './data/api';
-import { toProduct } from './data/projects';
+import { parseProduct } from './data/product';
 
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
@@ -22,7 +22,6 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			duration: z.string().optional(),
-			category: z.string().optional(),
 			heroImage: z.string().optional(),
 		}),
 });
@@ -33,6 +32,7 @@ const OUTBOX_BASES = [
 	{ base: 'projects', category: 'Projects' },
 	{ base: 'research', category: 'Research' },
 	{ base: 'resources', category: 'Resources' },
+	{ base: 'products', category: 'Products' },
 ] as const;
 
 /**
@@ -60,7 +60,11 @@ const notes = defineCollection({
 						);
 					}
 					const note = await fetchNote(base, item.id);
-					const body = await resolveEmbeds(note);
+					let body = await resolveEmbeds(note);
+					let product;
+					if (category === 'Products') {
+						({ product, body } = await parseProduct(note, body));
+					}
 					const data = await context.parseData({
 						id: slug,
 						data: {
@@ -71,6 +75,7 @@ const notes = defineCollection({
 								item.frontmatter,
 								'created',
 							)?.toISOString(),
+							product,
 						},
 					});
 					store.set({
@@ -85,50 +90,29 @@ const notes = defineCollection({
 	},
 	schema: z.object({
 		title: z.string(),
-		category: z.enum(['Posts', 'Projects', 'Research', 'Resources']),
+		category: z.enum([
+			'Posts',
+			'Projects',
+			'Research',
+			'Resources',
+			'Products',
+		]),
 		excerpt: z.string(),
 		created: z.coerce.date().optional(),
+		/** Structured metadata, only present on Products. */
+		product: z
+			.object({
+				tagline: z.string().optional(),
+				url: z.string().optional(),
+				icon: z.string().optional(),
+				type: z.string().optional(),
+				status: z.string().optional(),
+				links: z.array(
+					z.object({ label: z.string(), href: z.string() }),
+				),
+			})
+			.optional(),
 	}),
 });
 
-/**
- * Projects pulled from the Obsidian API at build time. Icons are stored as
- * absolute vault URLs and optimised into the build by `astro:assets`, so
- * nothing here touches the filesystem.
- */
-const products = defineCollection({
-	loader: {
-		name: 'obsidian-products',
-		load: async (context) => {
-			const { store, logger } = context;
-			logger.info('Loading products from the Obsidian API…');
-			store.clear();
-			for (const item of await fetchBase('products')) {
-				const product = await toProduct(item);
-				if (!product) {
-					logger.warn(
-						`Skipping product "${item.id}" — unrecognised status ${JSON.stringify(frontmatterString(item.frontmatter, 'status'))}.`,
-					);
-					continue;
-				}
-				store.set({
-					id: product.id,
-					data: await context.parseData({
-						id: product.id,
-						data: { ...product },
-					}),
-				});
-			}
-		},
-	},
-	schema: z.object({
-		id: z.string(),
-		name: z.string(),
-		description: z.string(),
-		status: z.enum(['active', 'archived', 'experiment']),
-		link: z.url().optional(),
-		icon: z.url().optional(),
-	}),
-});
-
-export const collections = { blog, notes, products };
+export const collections = { blog, notes };

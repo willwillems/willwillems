@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
+import rehypeCallouts from 'rehype-callouts';
 import { loadEnv } from 'vite';
 
 import tailwindcss from '@tailwindcss/vite';
@@ -92,6 +93,8 @@ export default defineConfig({
 		remotePatterns: [{ protocol: 'https', hostname: API_HOSTNAME }],
 	},
 	markdown: {
+		// Obsidian-style `> [!tip]` callouts, for blog posts and vault notes alike.
+		rehypePlugins: [rehypeCallouts],
 		shikiConfig: {
 			theme: 'min-dark',
 		},
@@ -99,9 +102,11 @@ export default defineConfig({
 	build: {
 		format: 'file',
 	},
-	// Live URLs from the VuePress era whose slugs changed when the blog
-	// moved to Astro's content loader (which slugifies filenames).
 	redirects: {
+		'/about': '/now',
+		'/projects': '/posts',
+		// Live URLs from the VuePress era whose slugs changed when the blog
+		// moved to Astro's content loader (which slugifies filenames).
 		'/posts/learn-to-manage-large-vue js-components':
 			'/posts/learn-to-manage-large-vue-js-components',
 		'/posts/using-scoped-BEM-with-Tailwind':

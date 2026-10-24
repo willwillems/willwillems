@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 
 import { excerpt } from '../components/outbox/outbox';
+import type { Category } from '../components/outbox/outbox';
 
 export interface Post {
 	slug: string;
@@ -8,13 +9,13 @@ export interface Post {
 	/** Publish date; undefined for notes without a `created` frontmatter date. */
 	publishedAt?: Date;
 	excerpt: string;
-	categories: string[];
+	category: Category;
 	href: string;
 }
 
 /**
  * All outbox items: notes from the Obsidian API (Posts, Projects, Research,
- * Resources) merged with the git-based blog under the "Blog" category. Source
+ * Resources, Products) merged with the git-based blog under the "Blog" category. Source
  * order is fixed so derived tab order and heatmap colours are stable across
  * builds.
  */
@@ -29,7 +30,7 @@ export async function getOutboxPosts(): Promise<Post[]> {
 		title: note.data.title,
 		publishedAt: note.data.created,
 		excerpt: note.data.excerpt,
-		categories: [note.data.category],
+		category: note.data.category,
 		href: `/posts/${note.id}.html`,
 	}));
 
@@ -38,7 +39,7 @@ export async function getOutboxPosts(): Promise<Post[]> {
 		title: post.data.title,
 		publishedAt: post.data.pubDate,
 		excerpt: post.data.description ?? excerpt(post.body ?? ''),
-		categories: ['Blog'],
+		category: 'Blog',
 		href: `/posts/${post.id}.html`,
 	}));
 

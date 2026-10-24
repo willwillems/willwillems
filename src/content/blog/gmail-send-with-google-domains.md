@@ -2,7 +2,6 @@
 title: 'Send email from Gmail using a Google Domains domain'
 pubDate: 2020-10-04
 duration: '6 min'
-category: 'Other'
 ---
 
 If you're using Google Domains you cannot only receive emails for free but also send them for free using Gmail. It's pretty simple and provides you with free professional email addresses.

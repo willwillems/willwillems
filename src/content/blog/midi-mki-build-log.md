@@ -2,7 +2,6 @@
 title: 'The "Generic MIDI controller"'
 pubDate: 2015-07-20
 duration: '7 min'
-category: 'Hardware'
 heroImage: 'https://i.imgur.com/S8VBkrj.png'
 ---
 

@@ -32,11 +32,14 @@ Always run `npm run validate` before considering work complete.
 src/
   components/   Astro components (.astro)
   content/      Markdown blog posts (Content Collections)
+  data/         Build-time data: Obsidian API client, outbox posts, products, related posts
   layouts/      Page layouts
   pages/        File-based routing
   styles/       Global CSS (Tailwind)
 public/         Static assets (fonts, images)
 ```
+
+Two collections in `src/content.config.ts`: `blog` (local Markdown) and `notes` (fetched from the Obsidian API at build time; one category per API base, `OUTBOX_BASES`). Products are `notes` with a `product` field, rendered by `ProductPost.astro`.
 
 ## Conventions
 
@@ -47,5 +50,5 @@ public/         Static assets (fonts, images)
 - **Components**: Astro components (`.astro`). No client-side framework (React/Vue/Svelte) unless explicitly requested.
 - **Styling**: Tailwind utility classes. Avoid custom CSS unless Tailwind cannot express it.
 - **Typography**: Use the `type-*` utility classes from `src/styles/global.css` for all text styling instead of ad-hoc font-size/weight/line-height utilities. Available: `type-heading-1`, `type-heading-2`, `type-heading-3`, `type-title`, `type-body`, `type-body-small`, `type-label`, `type-monospaced`.
-- **Content**: Blog posts are Markdown files in `src/content/blog/` with frontmatter: `title` (required), `description`, `pubDate` (required), `updatedDate`, `duration`, `category`, `heroImage`.
+- **Content**: Blog posts are Markdown files in `src/content/blog/` with frontmatter: `title` (required), `description`, `pubDate` (required), `updatedDate`, `duration`, `heroImage`.
 - **Node**: v24 (see `.node-version`). ESM only (`"type": "module"`).

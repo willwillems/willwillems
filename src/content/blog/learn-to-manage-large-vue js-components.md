@@ -2,7 +2,6 @@
 title: 'Learn to manage large Vue.js components in 4 min'
 pubDate: 2018-11-20
 duration: '4 min'
-category: 'Vue.js'
 heroImage: '/img/vue-components-thumb.png'
 ---
 

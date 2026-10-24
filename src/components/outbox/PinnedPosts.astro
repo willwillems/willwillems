@@ -1,0 +1,42 @@
+---
+import Pin from '../icons/Pin.astro';
+import type { Post } from '../../data/posts';
+import { CATEGORY_COLORS } from './outbox';
+
+interface Props {
+	posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<section class="mb-10 flex flex-col gap-6">
+	<h2 class="flex items-center gap-3 type-title text-text-primary">
+		<Pin class="text-text-third" />
+		Pinned
+	</h2>
+	<ul class="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
+		{
+			posts.map((post) => (
+				<li class="flex items-center gap-4 type-body-small">
+					<span
+						class="size-3 shrink-0 rounded-[1px]"
+						style={`background: ${CATEGORY_COLORS[post.category]}`}
+						aria-hidden="true"
+					/>
+					<a
+						href={post.href}
+						class="min-w-0 flex-1 truncate text-text-primary no-underline hover:underline"
+					>
+						{post.title}
+					</a>
+					{post.publishedAt && (
+						<span class="shrink-0 text-text-inactive">
+							{post.publishedAt.getUTCFullYear()}
+						</span>
+					)}
+				</li>
+			))
+		}
+	</ul>
+</section>
