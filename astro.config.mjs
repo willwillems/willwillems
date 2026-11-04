@@ -3,6 +3,7 @@
 import { cp, readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
+import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
@@ -116,8 +117,12 @@ export default defineConfig({
 		remotePatterns: [{ protocol: 'https', hostname: API_HOSTNAME }],
 	},
 	markdown: {
-		// Obsidian-style `> [!tip]` callouts, for blog posts and vault notes alike.
-		rehypePlugins: [rehypeCallouts, () => wrapTables],
+		// Astro's default processor (Sätteri) can't run rehype plugins, so use
+		// the unified one. Obsidian-style `> [!tip]` callouts, for blog posts
+		// and vault notes alike.
+		processor: unified({
+			rehypePlugins: [rehypeCallouts, () => wrapTables],
+		}),
 		shikiConfig: {
 			theme: 'min-dark',
 		},
