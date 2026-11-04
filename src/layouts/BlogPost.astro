@@ -1,7 +1,9 @@
 ---
+import AiLabel from '../components/AiLabel.astro';
 import CategoryLabel from '../components/CategoryLabel.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import type { Category } from '../components/outbox/outbox';
+import type { AiLabel as AiLabelValue } from '../data/ai-label';
 import type { Post } from '../data/posts';
 import PostShell from './PostShell.astro';
 
@@ -11,10 +13,11 @@ interface Props {
 	pubDate?: Date;
 	updatedDate?: Date;
 	category: Category;
+	ai?: AiLabelValue;
 	related?: Post[];
 }
 
-const { title, description, pubDate, updatedDate, category, related } =
+const { title, description, pubDate, updatedDate, category, ai, related } =
 	Astro.props;
 ---
 
@@ -29,7 +32,7 @@ const { title, description, pubDate, updatedDate, category, related } =
 		<div class="flex flex-col gap-1">
 			<h1 class="type-heading-3 text-text-primary">{title}</h1>
 			{
-				(pubDate ?? updatedDate) && (
+				(pubDate ?? updatedDate ?? ai) && (
 					<p class="type-body-small text-text-third">
 						{pubDate && <FormattedDate date={pubDate} />}
 						{updatedDate && (
@@ -37,6 +40,12 @@ const { title, description, pubDate, updatedDate, category, related } =
 								{pubDate && ' · '}Updated{' '}
 								<FormattedDate date={updatedDate} />
 							</span>
+						)}
+						{ai && (
+							<>
+								{(pubDate ?? updatedDate) && ' · '}
+								<AiLabel label={ai} class="align-bottom" />
+							</>
 						)}
 					</p>
 				)

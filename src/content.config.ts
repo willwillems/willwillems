@@ -9,6 +9,7 @@ import {
 	frontmatterString,
 	resolveEmbeds,
 } from './data/api';
+import { AI_LABELS, isAiLabel } from './data/ai-label';
 import { parseProduct } from './data/product';
 
 const blog = defineCollection({
@@ -23,6 +24,7 @@ const blog = defineCollection({
 			updatedDate: z.coerce.date().optional(),
 			duration: z.string().optional(),
 			heroImage: z.string().optional(),
+			ai: z.enum(AI_LABELS).optional(),
 		}),
 });
 
@@ -61,6 +63,12 @@ const notes = defineCollection({
 					}
 					const note = await fetchNote(base, item.id);
 					let body = await resolveEmbeds(note);
+					const ai = item.frontmatter.ai;
+					if (ai !== undefined && !isAiLabel(ai)) {
+						logger.warn(
+							`Note "${slug}" has unknown ai label ${JSON.stringify(ai)} — expected one of ${AI_LABELS.join(', ')}.`,
+						);
+					}
 					let product;
 					if (category === 'Products') {
 						({ product, body } = await parseProduct(note, body));
@@ -75,6 +83,7 @@ const notes = defineCollection({
 								item.frontmatter,
 								'created',
 							)?.toISOString(),
+							ai: isAiLabel(ai) ? ai : undefined,
 							product,
 						},
 					});
@@ -99,6 +108,8 @@ const notes = defineCollection({
 		]),
 		excerpt: z.string(),
 		created: z.coerce.date().optional(),
+		/** How AI was used to make the note (https://ai-label.org). */
+		ai: z.enum(AI_LABELS).optional(),
 		/** Structured metadata, only present on Products. */
 		product: z
 			.object({
